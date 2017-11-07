@@ -69,6 +69,9 @@ add_library(testLoopFunction SHARED
 #				testbench.h
 #				testbench.cpp
 #	)
+MESSAGE(
+${LUA_LIBRARIES}
+)
 
 target_link_libraries( testLoopFunction
 ${OpenCV_LIBS} 
