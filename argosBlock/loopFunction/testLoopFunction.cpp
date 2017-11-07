@@ -10,14 +10,23 @@ FILE *namelist;
 char boxnamebase[100] = "testbox";
 char boxnameline[100];
 char boxnamenumber[10];
-int lastn = 0;
+
+char tagnamebase[100] = "testtag";
+char tagnameline[100];
+char tagnamenumber[10];
 #define MAX_LINE 1024
 
 //CBoxEntity* pcBox[20];
 //CBoxEntity* pcBox;
 
+int lasttagn = 0;
+int lastboxn = 0;
+int flagdrawtag = 0;
+int flagdrawbox = 1;
+
 CVector3 cv3 = CVector3(0.4,0.4,0);
-CVector3 size3 = CVector3(0.05,0.05,0.005);
+CVector3 size3 = CVector3(0.05,0.05,0.05);
+CVector3 size3tag = CVector3(0.05,0.05,0.005);
 CQuaternion cq = CQuaternion(1,0,0,0);
 
 void testLoopFunction::PreStep()
@@ -28,8 +37,19 @@ void testLoopFunction::PreStep()
 	printf("here is the start of frame");
 	printf("clock : %d\n",GetSpace().GetSimulationClock());
 	//if (tags_n != 0)
-	//for (i = 0; i < tags_n; i++)
-	for (i = 0; i < lastn; i++)
+	if (flagdrawtag == 1)
+	for (i = 0; i < lasttagn; i++)
+	{
+		strcpy(tagnameline,tagnamebase);
+		tagnamenumber[0] = i+'0';
+		tagnamenumber[1] = '\0';
+		strcat(tagnameline,tagnamenumber);
+
+		//printf("removing %s\n",boxnameline);
+		RemoveEntity(tagnameline);
+	}
+	if (flagdrawbox == 1)
+	for (i = 0; i < lastboxn; i++)
 	//if (GetSpace().GetSimulationClock() != 1)
 	{
 		/*
@@ -52,7 +72,7 @@ void testLoopFunction::PreStep()
 		boxnamenumber[1] = '\0';
 		strcat(boxnameline,boxnamenumber);
 
-		printf("removing %s\n",boxnameline);
+		//printf("removing %s\n",boxnameline);
 		RemoveEntity(boxnameline);
 		//pcBox->Destroy();
 	}
@@ -74,20 +94,17 @@ void testLoopFunction::PreStep()
 		testbench_step(thename);
 	}   
 
+	printf("boxes n = %d\n",boxes_n);
+
 
 	//// add new entity
-	//if (tags_n != 0)
+	////////// draw tags ///////////////////////
+	if (flagdrawtag == 1)
 	for (i = 0; i < tags_n; i++)
 	{
-			/*
-			CVector3 cv3 = CVector3(0.4,0.4,0);
-			CVector3 size3 = CVector3(0.05,0.05,0.05);
-			CQuaternion cq = CQuaternion(1,0,0,0);
-			*/
-		// left and right hand should convert x axis
-		cv3.SetX(tags_pos[i][3]/500);
-		cv3.SetY(tags_pos[i][4]/500);
-		cv3.SetZ(tags_pos[i][5]/500);
+		cv3.SetX(tags_pos[i][3]);
+		cv3.SetY(tags_pos[i][4]);
+		cv3.SetZ(tags_pos[i][5]);
 
 		///*
 		cq = CQuaternion(	tags_pos[i][9],
@@ -97,17 +114,56 @@ void testLoopFunction::PreStep()
 		//*/
 
 
+		strcpy(tagnameline,tagnamebase);
+		tagnamenumber[0] = i+'0';
+		tagnamenumber[1] = '\0';
+		strcat(tagnameline,tagnamenumber);
+		//printf("%s\n",boxnameline);
+
+		pcTag[i] = new CBoxEntity(tagnameline,cv3,cq,false,size3tag,1);
+		AddEntity(*pcTag[i]);
+		//printf("%lf, %lf, %lf\n",cv3.GetX(),cv3.GetY(),cv3.GetZ());
+	}
+	lasttagn = tags_n;
+
+	////////// draw boxes ///////////////////////
+	if (flagdrawbox == 1)
+	for (i = 0; i < boxes_n; i++)
+	{
+			/*
+			CVector3 cv3 = CVector3(0.4,0.4,0);
+			CVector3 size3 = CVector3(0.05,0.05,0.05);
+			CQuaternion cq = CQuaternion(1,0,0,0);
+			*/
+		// left and right hand should convert x axis
+		/*
+		cv3.SetX(tags_pos[i][3]/100);
+		cv3.SetY(tags_pos[i][4]/100);
+		cv3.SetZ(tags_pos[i][5]/100);
+		*/
+		cv3.SetX(boxes_pos[i][3]);
+		cv3.SetY(boxes_pos[i][4]);
+		cv3.SetZ(boxes_pos[i][5]);
+
+		///*
+		cq = CQuaternion(	boxes_pos[i][9],
+							boxes_pos[i][6],
+							boxes_pos[i][7],
+							boxes_pos[i][8]);
+		//*/
+
+
 		strcpy(boxnameline,boxnamebase);
 		boxnamenumber[0] = i+'0';
 		boxnamenumber[1] = '\0';
 		strcat(boxnameline,boxnamenumber);
-		printf("%s\n",boxnameline);
+		//printf("%s\n",boxnameline);
 
 		pcBox[i] = new CBoxEntity(boxnameline,cv3,cq,false,size3,1);
 		AddEntity(*pcBox[i]);
-		printf("%lf, %lf, %lf\n",cv3.GetX(),cv3.GetY(),cv3.GetZ());
+		//printf("%lf, %lf, %lf\n",cv3.GetX(),cv3.GetY(),cv3.GetZ());
 	}
-	lastn = tags_n;
+	lastboxn = boxes_n;
 	printf("here is the end of step\n\n");
 }
 
@@ -116,8 +172,8 @@ void testLoopFunction::Init(TConfigurationNode& t_tree)
 	//namelist = fopen("loopFunction/data/exp-13-passed.txt","r");
 	//namelist = fopen("../data/exp-13-passed.txt","r");
 	//namelist = fopen("../data/exp-11-passed.txt","r");
-	//namelist = fopen("../data/exp-16-passed.txt","r");
-	namelist = fopen("../data/exp-10-failed.txt","r");
+	namelist = fopen("../data/exp-16-passed.txt","r");
+	//namelist = fopen("../data/exp-10-failed.txt","r");
 	if (namelist == NULL)
 	{
 		printf("open file namelist failed\n");

@@ -19,4 +19,5 @@ private:
 	int flag;
 	CCylinderEntity* pcCylinder;
 	CBoxEntity* pcBox[100];
+	CBoxEntity* pcTag[100];
 };

@@ -88,7 +88,8 @@ statemachine = State:create
                         if a[1].value ~= 0 or a[22].value~=0 or 
                            a[2].value ~= 0 or a[23].value~=0 or
                            a[3].value ~= 0 or a[24].value~=0 then
-                           return true 
+                           --return true 
+                           return false
                         else
                            return false
                         end

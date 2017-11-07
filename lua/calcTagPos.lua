@@ -20,7 +20,6 @@ function calTagPos(tag)
 	--	print("\t\ttagcorner",i,"x = ",tag.corners[i].x,"y = ",tag.corners[i].y) end
 
 	tag.corners.halfL = tag.halfL;
-	print("halfL",tag.corners.halfL)
 	res = libsolvepnp.solvepnp(tag.corners)
 		--[[
 			res has: 	translation x,y,z
@@ -37,6 +36,9 @@ function calTagPos(tag)
 	y = res.translation.y
 	z = res.translation.z
 	res.translation = Vec3:create(x,y,z)
+
+	scale = 1
+	res.translation = res.translation * scale
 
 	local dir = Vec3:create(0,0,1)
 

@@ -2,7 +2,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.o"
   "CMakeFiles/testLoopFunction.dir/testbench.cpp.o"
   "libtestLoopFunction.pdb"
-  "libtestLoopFunction.dylib"
+  "libtestLoopFunction.so"
 )
 
 # Per-language clean rules from dependency scanning.

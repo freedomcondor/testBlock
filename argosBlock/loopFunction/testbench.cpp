@@ -29,6 +29,8 @@ struct tagsinfo
 
 int tags_n;
 double tags_pos[20][10];
+int boxes_n;
+double boxes_pos[20][10];
 
 //////////////////////////////////////////////////////////////////////////////////
 int testbench_init(int SystemWeight, int SystemHeight)
@@ -239,10 +241,15 @@ int testbench_step(char charFileName[])
 	//printf("in C\n");
 	if (lua_istable(L,1))
 	{
+		lua_pushstring(L,"tags");
+		lua_gettable(L,-2);			//stack 2 now is the number n
+									// add one layer
+
+		//////////////////////////////// tags ////////////////////////
 		//printf("back is table\n");	// stack 1
 		lua_pushstring(L,"n");		//stack 2
-		lua_gettable(L,1);			//stack 2 now is the number n
-		n = (int)luaL_checknumber(L,2);
+		lua_gettable(L,-2);			//stack 2 now is the number n
+		n = (int)luaL_checknumber(L,-1);
 		tags_n = n;
 		//printf("number: %d\n",n);	//stack 2 now is the number n
 		lua_pop(L,1);				// here goes stack 2
@@ -251,56 +258,56 @@ int testbench_step(char charFileName[])
 		for (int i = 0; i < n; i++)
 		{
 			lua_pushnumber(L,i+1);		//stack 2
-			lua_gettable(L,1);			//stack 2 now is the table of {rota, tran}
+			lua_gettable(L,-2);			//stack 2 now is the table of {rota, tran}
 				lua_pushstring(L,"rotation");		//stack 3
-				lua_gettable(L,2);			//stack 3 now is the table{x,y,z}
+				lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
 					lua_pushstring(L,"x");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					rx = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					rx = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 					lua_pushstring(L,"y");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					ry = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					ry = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 					lua_pushstring(L,"z");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					rz = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					rz = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 				lua_pop(L,1);			// here goes stack 3
 
 				lua_pushstring(L,"translation");		//stack 3
-				lua_gettable(L,2);			//stack 3 now is the table{x,y,z}
+				lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
 					lua_pushstring(L,"x");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					tx = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					tx = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 					lua_pushstring(L,"y");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					ty = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					ty = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 					lua_pushstring(L,"z");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					tz = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					tz = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 				lua_pop(L,1);			// here goes stack 3
 
 				lua_pushstring(L,"quaternion");		//stack 3
-				lua_gettable(L,2);			//stack 3 now is the table{x,y,z}
+				lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
 					lua_pushstring(L,"x");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					qx = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					qx = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 					lua_pushstring(L,"y");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					qy = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					qy = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 					lua_pushstring(L,"z");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					qz = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					qz = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 					lua_pushstring(L,"w");		//stack 4
-					lua_gettable(L,3);			//stack 4 now is the value
-					qw = lua_tonumber(L,4);
+					lua_gettable(L,-2);			//stack 4 now is the value
+					qw = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 				lua_pop(L,1);			// here goes stack 3
 			lua_pop(L,1);				// goes stack 2
@@ -323,7 +330,91 @@ int testbench_step(char charFileName[])
 			printf("tra y:%lf\n",ty);
 			printf("tra z:%lf\n",tz);
 			*/
-		}
+		}	// end of for i for tags
+		lua_pop(L,1);			// here goes stack 2
+
+		//////////////////////////////// boxes ////////////////////////
+		lua_pushstring(L,"boxes");
+		lua_gettable(L,-2);			//stack 2 now is the string boxes
+
+		lua_pushstring(L,"n");		//stack 2 + 1
+		lua_gettable(L,-2);			//stack 2+1 now is the number n
+		n = (int)luaL_checknumber(L,-1);
+		boxes_n = n;
+		lua_pop(L,1);				// here goes stack 2+1
+									// add one layer below
+
+		/// iteration boxes ////
+		// get every boxes pos
+		for (int i = 0; i < n; i++)
+		{
+			lua_pushnumber(L,i+1);		//stack 2 + 1
+			lua_gettable(L,-2);			//stack 2 now is the table of {rota, tran}
+				lua_pushstring(L,"rotation");		//stack 3
+				lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
+					lua_pushstring(L,"x");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					rx = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+					lua_pushstring(L,"y");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					ry = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+					lua_pushstring(L,"z");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					rz = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+				lua_pop(L,1);			// here goes stack 3
+
+				lua_pushstring(L,"translation");		//stack 3
+				lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
+					lua_pushstring(L,"x");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					tx = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+					lua_pushstring(L,"y");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					ty = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+					lua_pushstring(L,"z");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					tz = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+				lua_pop(L,1);			// here goes stack 3
+
+				lua_pushstring(L,"quaternion");		//stack 3
+				lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
+					lua_pushstring(L,"x");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					qx = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+					lua_pushstring(L,"y");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					qy = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+					lua_pushstring(L,"z");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					qz = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+					lua_pushstring(L,"w");		//stack 4
+					lua_gettable(L,-2);			//stack 4 now is the value
+					qw = lua_tonumber(L,-1);
+					lua_pop(L,1);			// here goes stack 4
+				lua_pop(L,1);			// here goes stack 3
+			lua_pop(L,1);				// goes stack 2
+
+			boxes_pos[i][0] = rx;
+			boxes_pos[i][1] = ry;
+			boxes_pos[i][2] = rz;
+			boxes_pos[i][3] = tx;
+			boxes_pos[i][4] = ty;
+			boxes_pos[i][5] = tz;
+			boxes_pos[i][6] = qx;
+			boxes_pos[i][7] = qy;
+			boxes_pos[i][8] = qz;
+			boxes_pos[i][9] = qw;
+
+		}	// end of for i for boxes
 	}
 
 	////////////// show image and next frame //////////////////
