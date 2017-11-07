@@ -22,14 +22,13 @@ taglist
 }
 --]]
 
-package.path = package.path ..';../lua/?.lua'
-package.path = package.path ..';../../lua/?.lua'
+package.path = package.path ..';../lua/?.lua'		-- for opengl testbench
+package.path = package.path ..';../../lua/?.lua'	-- for argos testbench
 --package.path = package.path ..';loopFunction/?.lua'
 require("calcTagPos")
 
 function func(tagList)
-	--[[
-		-- for testing tagList
+	--[[ -- for testing tagList
 	print(a.timestamp)
 	print(a.n)
 	for i = 1, a.n do
@@ -49,11 +48,16 @@ function func(tagList)
 	for i = 1, tagList.n do
 		--print("\tfor the",i,"tag")
 
+		tagList[i].halfL = 5
 		pos[i] = calTagPos(tagList[i])
+			-- calTagPos returns a table (for each tag)
+				-- {rotation = {x=,y=,z=}  the direction vector of the tag
+				--	translation = {x=,y=,z=} the position of the the tag
+				--	quaternion = {x,y,z,w}  the quaternion rotation of the tag
+				-- }
 	end
 
-	--[[
-		-- for testing pos(calTagPos returns)
+	--[[ -- for testing pos(calTagPos returns)
 	print(pos.n)
 	if pos.n ~= 0 then
 		print(pos[1].rotation.x)

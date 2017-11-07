@@ -31,7 +31,13 @@ const cv::Matx<double, 5, 1> cDistortionParameters =
 
 static int solvepnp(lua_State *L)
 {
-    double R = 5;
+    double R;
+
+	lua_pushstring(L,"halfL");		//stack 2
+	lua_gettable(L,1);			//stack 2 is the corner {x = , y = }
+	R = lua_tonumber(L,2);		// stack 2
+	lua_pop(L,1);				// stack 2 gone (the corner)
+
     vector<cv::Point3d> ob;
     ob.push_back( Point3d(-R, -R, 0));
     ob.push_back( Point3d( R, -R, 0));

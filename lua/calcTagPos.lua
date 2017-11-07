@@ -1,16 +1,26 @@
-package.cpath = package.cpath .. ';../lua/solvepnp/build/?.so'
-package.cpath = package.cpath .. ';../../lua/solvepnp/build/?.so'
+package.cpath = package.cpath .. ';../lua/solvepnp/build/?.so'		-- for opengl testbench
+package.cpath = package.cpath .. ';../../lua/solvepnp/build/?.so'	-- for argos testbench
 require("libsolvepnp")
 
-package.path = package.path .. ';../lua/?.lua'
-package.path = package.path .. ';../../lua/?.lua'
+package.path = package.path .. ';../lua/?.lua'		-- for opengl testbench
+package.path = package.path .. ';../../lua/?.lua'	-- for argos testbench
 local Vec3 = require("Vector3")
 local Qua = require("Quaternion")
 
 function calTagPos(tag)
+	-- tag is the information for a single tag, has:
+		-- halfL = <a number>, the halfL of the box
+		-- center = {x = xx, y = xx}
+		-- corners = {
+		--				1 = {x = xx, y = xx}
+		--				2 = {x = xx, y = xx}
+		--			}
+
 	--for i = 1,4 do
 	--	print("\t\ttagcorner",i,"x = ",tag.corners[i].x,"y = ",tag.corners[i].y) end
 
+	tag.corners.halfL = tag.halfL;
+	print("halfL",tag.corners.halfL)
 	res = libsolvepnp.solvepnp(tag.corners)
 		--[[
 			res has: 	translation x,y,z
@@ -36,45 +46,16 @@ function calTagPos(tag)
 	th = math.sqrt(x * x + y * y + z * z)
 	rotqq = Qua:createFromRotation(x,y,z,th)
 
-	--[[
-	res.quaternion = {}
-	res.quaternion.x = x/th
-	res.quaternion.y = y/th
-	res.quaternion.z = z/th
-	res.quaternion.th = th
-	--]]
-
-	---[[
 	res.quaternion = {}
 	res.quaternion.x = rotqq.v.x
 	res.quaternion.y = rotqq.v.y
 	res.quaternion.z = rotqq.v.z
 	res.quaternion.w = rotqq.w
-	--]]
 
-	--[[
-	--print(math.sin(0.5 * math.pi))
-	a = x / th
-	b = y / th
-	c = z / th
-	d = math.cos(th/2)
-	-- print(a * a + b * b + c * c)  -- should be 1
- 	a = a * math.sin(th/2)
- 	b = b * math.sin(th/2)
- 	c = c * math.sin(th/2)
-	rotq = Qua:create(a,b,c,d)
-	--]]
-
-	--dir = dir:rotate(rotq)
 	dir = dir:rotatedby(rotqq)
 		-- dir is a vector
 
 	res.rotation = dir
-	--[[
-	res.rotation.x = 2 * (a * c + b * d)
-	res.rotation.y = 2 * (b * c - a * d)
-	res.rotation.z = 1 - 2 * (a * a + b * b)
-	--]]
 
 	--[[
 	print("\t\tin lua result: ",res.rotation.x)
