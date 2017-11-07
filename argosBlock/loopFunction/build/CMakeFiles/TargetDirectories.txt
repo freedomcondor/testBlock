@@ -1,3 +1,0 @@
-/home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles/edit_cache.dir
-/home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles/rebuild_cache.dir
-/home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles/testLoopFunction.dir

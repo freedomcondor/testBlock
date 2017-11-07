@@ -39,6 +39,15 @@ IF (NOT AprilTag_FOUND)
 	MESSAGE (WARNING "The AprilTag Library has not been found!")
 ENDIF (NOT AprilTag_FOUND)
 
+#======= ARGoS Package ============
+
+# Find the ARGoS package, make sure to save the ARGoS prefix
+find_package(PkgConfig)
+pkg_check_modules(ARGOS REQUIRED argos3_simulator)
+set(ARGOS_PREFIX ${ARGOS_PREFIX} CACHE INTERNAL "")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ARGOS_PREFIX}/share/argos3/cmake)
+
+link_directories(${ARGOS_LIBRARY_DIRS})
 
 include_directories(    
 	${OpenCV_INCLUDE_DIRS} 
@@ -65,6 +74,8 @@ target_link_libraries( testLoopFunction
 ${OpenCV_LIBS} 
 ${AprilTag_LIB} 
 ${LUA_LIBRARIES}
+argos3core_simulator
+argos3plugin_simulator_entities
 #${testbench}
 #${OPENGL_LIBRARIES}
 #${GLUT_LIBRARIES}
