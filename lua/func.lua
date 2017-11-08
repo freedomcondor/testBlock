@@ -26,6 +26,7 @@ package.path = package.path ..';../lua/?.lua'		-- for opengl testbench
 package.path = package.path ..';../../lua/?.lua'	-- for argos testbench
 --package.path = package.path ..';loopFunction/?.lua'
 require("calcTagPos")
+require("calcBoxPos")
 Vec3 = require("Vector3")
 
 function func(tagList)
@@ -83,76 +84,12 @@ function func(tagList)
 		--print("rotation:",pos[i].rotation)
 	end
 
-	-- Calc boxes --------- ------------------------------------
+	-- Calc postion of boxes ----------------------------------
+	pos.halfBox = halfBox
+	boxes = calcBoxPos(pos)
 
-	local boxcenters = {n = tagList.n}
-	for i = 1, tagList.n do
-		boxcenters[i] = pos[i].translation - halfBox * (pos[i].rotation:nor())
-	end
-
-	local boxes = {n = 0}
-	--[[
-		boxes = {	n
-					1 = {	nTags = x
-							average = <vector>
-							rotation = <vector>
-							quaternion = <quaternion>
-							1 = tag No. x
-							2 = tag No. x
-						}
-				}
-	--]]
-	local dis
-	local flag
-	for i = 1, tagList.n do
-		-- go through all the tags, focal tag is boxcenters[i]
-		j = 1; flag = 0 
-		while j <= boxes.n do
-			-- go through all the known boxes
-			dis = boxes[j].average - boxcenters[i]
-			if (dis:len() < halfBox) then
-				-- it mean this tag belongs to a known box, boxes[j]
-				boxes[j].average = 	(boxes[j].average * boxes[j].nTags + boxcenters[i]) / 
-									(boxes[j].nTags + 1)
-				boxes[j].nTags = boxes[j].nTags + 1
-				boxes[j][boxes[j].nTags] = i 
-
-				flag = 1
-				break
-			end
-			j = j + 1
-		end
-		if flag == 0 then
-			-- it mean this tag does not belong to any known boxes
-			boxes.n = boxes.n + 1
-			boxes[boxes.n] = {	nTags = 1, 
-								average = boxcenters[i],
-								rotation = pos[i].rotation,
-								quaternion = pos[i].quaternion,
-								translation = boxcenters[i] * 2 - pos[i].translation,
-							 }
-			boxes[boxes.n][1] = i
-		end
-	end
-
-	---[[
-	for i = 1, boxes.n do
-		--boxes[i].translation = boxes[i].average
-		--boxes[i].rotation = boxes[i].average
-		--boxes[i].quaternion = boxes[i].average
-		--print("translation",boxes[i].average)
-		--print("rotation",boxes[i].rotation)
-		--print("quaternion",boxes[i].quaternion)
-	end
-	--]]
-
-	--[[ -- for testing pos(calTagPos returns)
-	print(pos.n)
-	if pos.n ~= 0 then
-		print(pos[1].rotation.x)
-		print(pos[1].quaternion.w)
-	end
-	--]]
+	-- Calc structure ?
+	-- to be filled
 
 	return {tags = pos,boxes = boxes}
 	--return pos

@@ -1,0 +1,9 @@
+argosBlock   <----|  testbench  <----- lua
+openglBlock	 <----|
+
+you can use both argos or opengl to run the testbench,
+
+the testbench loads an image, finds its tags, and call lua to calc the pos of the tags
+after calling lua, it stores the result in a array (in testbench.h), so that argos or opengl can see the results.
+
+argos and opengl call testbench, and use the results to draw 3D items.

@@ -81,40 +81,40 @@ CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.o.provides: CMakeFiles/test
 CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.o.provides.build: CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.o
 
 
-CMakeFiles/testLoopFunction.dir/testbench.cpp.o: CMakeFiles/testLoopFunction.dir/flags.make
-CMakeFiles/testLoopFunction.dir/testbench.cpp.o: ../testbench.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/testLoopFunction.dir/testbench.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/testLoopFunction.dir/testbench.cpp.o -c /home/harry/testBlock/argosBlock/loopFunction/testbench.cpp
+CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o: CMakeFiles/testLoopFunction.dir/flags.make
+CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o: /home/harry/testBlock/testbench/testbench.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o -c /home/harry/testBlock/testbench/testbench.cpp
 
-CMakeFiles/testLoopFunction.dir/testbench.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/testLoopFunction.dir/testbench.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/harry/testBlock/argosBlock/loopFunction/testbench.cpp > CMakeFiles/testLoopFunction.dir/testbench.cpp.i
+CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/harry/testBlock/testbench/testbench.cpp > CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.i
 
-CMakeFiles/testLoopFunction.dir/testbench.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/testLoopFunction.dir/testbench.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/harry/testBlock/argosBlock/loopFunction/testbench.cpp -o CMakeFiles/testLoopFunction.dir/testbench.cpp.s
+CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/harry/testBlock/testbench/testbench.cpp -o CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.s
 
-CMakeFiles/testLoopFunction.dir/testbench.cpp.o.requires:
+CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o.requires:
 
-.PHONY : CMakeFiles/testLoopFunction.dir/testbench.cpp.o.requires
+.PHONY : CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o.requires
 
-CMakeFiles/testLoopFunction.dir/testbench.cpp.o.provides: CMakeFiles/testLoopFunction.dir/testbench.cpp.o.requires
-	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/testbench.cpp.o.provides.build
-.PHONY : CMakeFiles/testLoopFunction.dir/testbench.cpp.o.provides
+CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o.provides: CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o.requires
+	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o.provides.build
+.PHONY : CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o.provides
 
-CMakeFiles/testLoopFunction.dir/testbench.cpp.o.provides.build: CMakeFiles/testLoopFunction.dir/testbench.cpp.o
+CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o.provides.build: CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o
 
 
 # Object files for target testLoopFunction
 testLoopFunction_OBJECTS = \
 "CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.o" \
-"CMakeFiles/testLoopFunction.dir/testbench.cpp.o"
+"CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o"
 
 # External object files for target testLoopFunction
 testLoopFunction_EXTERNAL_OBJECTS =
 
 libtestLoopFunction.so: CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.o
-libtestLoopFunction.so: CMakeFiles/testLoopFunction.dir/testbench.cpp.o
+libtestLoopFunction.so: CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o
 libtestLoopFunction.so: CMakeFiles/testLoopFunction.dir/build.make
 libtestLoopFunction.so: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.9
 libtestLoopFunction.so: /usr/lib/x86_64-linux-gnu/libopencv_ts.so.2.4.9
@@ -147,7 +147,7 @@ CMakeFiles/testLoopFunction.dir/build: libtestLoopFunction.so
 .PHONY : CMakeFiles/testLoopFunction.dir/build
 
 CMakeFiles/testLoopFunction.dir/requires: CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.o.requires
-CMakeFiles/testLoopFunction.dir/requires: CMakeFiles/testLoopFunction.dir/testbench.cpp.o.requires
+CMakeFiles/testLoopFunction.dir/requires: CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o.requires
 
 .PHONY : CMakeFiles/testLoopFunction.dir/requires
 

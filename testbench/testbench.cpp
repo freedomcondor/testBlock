@@ -41,7 +41,10 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	//if ((luaL_loadfile(L,"../func.lua")) || (lua_pcall(L,0,0,0)))
 	//if ((luaL_loadfile(L,"../func.lua")) || (lua_pcall(L,0,0,0)))
 	if ((luaL_loadfile(L,"../lua/func.lua")) || (lua_pcall(L,0,0,0)))
-		{printf("open lua file fail : %s\n",lua_tostring(L,-1));return -1;}
+	{
+		if ((luaL_loadfile(L,"../../lua/func.lua")) || (lua_pcall(L,0,0,0)))
+			{printf("open lua file fail : %s\n",lua_tostring(L,-1));return -1;}
+	}
 
 	////////// apriltag initial ////////////////////////////////////////////////////
 				// these might be needed
@@ -180,6 +183,7 @@ int testbench_step(char charFileName[])
 
 		////  output and draw
 		////////// draw center /////////
+		/*
 		x_temp = psDetection->c[1];
 		y_temp = psDetection->c[0];
 		//printf("%d %d\n",x_temp, y_temp);
@@ -194,6 +198,7 @@ int testbench_step(char charFileName[])
 			//drawCross(imageRGB,x_temp,y_temp,"blue");
 			drawCross(imageRGB,x_temp,y_temp,"red");
 		}
+		*/
 
 		/////////// Lua build table into stack ////////////////////////////
 		lua_pushnumber(L,j+1);		//Stack 3 is the index of this tag
@@ -243,7 +248,7 @@ int testbench_step(char charFileName[])
 	{
 		lua_pushstring(L,"tags");
 		lua_gettable(L,-2);			//stack 2 now is the number n
-									// add one layer
+									// add one layer below
 
 		//////////////////////////////// tags ////////////////////////
 		//printf("back is table\n");	// stack 1
@@ -415,6 +420,80 @@ int testbench_step(char charFileName[])
 			boxes_pos[i][9] = qw;
 
 		}	// end of for i for boxes
+	}
+
+	////////////// draw something on the image ////////////////
+	cv::Matx31d RotationVector;
+	cv::Matx31d TranslationVector;
+	double rotationscale;
+
+	std::vector<cv::Point3d> m_vecOriginPts;
+	m_vecOriginPts.push_back(cv::Point3d(0.0f,0.0f, 0.0f));
+
+	const double m_fFx = 8.8396142504070610e+02;
+	const double m_fFy = 8.8396142504070610e+02;
+	/* camera principal point */
+	const double m_fPx = 3.1950000000000000e+02;
+	const double m_fPy = 1.7950000000000000e+02;
+	/* camera distortion coefficients */
+	const double m_fK1 = 1.8433447851104852e-02;
+	const double m_fK2 = 1.6727474183089033e-01;
+	const double m_fK3 = -1.5480889084966631e+00;
+	/* camera matrix */
+	const cv::Matx<double, 3, 3> cCameraMatrix =
+			cv::Matx<double, 3, 3>(	m_fFx, 0.0f, m_fPx,
+									0.0f, m_fFy, m_fPy,
+									0.0f,  0.0f,  1.0f);
+	/* camera distortion parameters */
+	const cv::Matx<double, 5, 1> cDistortionParameters =
+		cv::Matx<double, 5, 1>(m_fK1, m_fK2, 0.0f, 0.0f, m_fK3);
+	std::vector<cv::Point2d> vecBlockCentrePixel;
+
+
+	for (j = 0; j < zarray_size(psDetections); j++)
+	{
+		// draw 2D point detected, using psDetections
+		apriltag_detection_t *psDetection;
+		zarray_get(psDetections, j, &psDetection);
+		////  output and draw
+		////////// draw center /////////
+		x_temp = psDetection->c[1];
+		y_temp = psDetection->c[0];
+		//printf("%d %d\n",x_temp, y_temp);
+		//drawCross(imageRGB,x_temp,y_temp,"green");
+		drawCross(imageRGB,x_temp,y_temp,"red");
+
+		////////// draw corners /////////
+		for (k = 0; k < 4; k++)
+		{
+			x_temp = psDetection->p[k][1];
+			y_temp = psDetection->p[k][0];
+			//drawCross(imageRGB,x_temp,y_temp,"blue");
+			drawCross(imageRGB,x_temp,y_temp,"red");
+		}
+
+		// draw 3D point, using boxes_pos and tags_pos
+		// left and right hand using opencv
+		TranslationVector = cv::Matx31d( -tags_pos[j][3], tags_pos[j][4], tags_pos[j][5]);
+		qx = tags_pos[j][6];
+		qy = tags_pos[j][7];
+		qz = tags_pos[j][8];
+		qw = tags_pos[j][9];
+		rotationscale = sqrt(qx*qx+qy*qy+qz*qz) / qw;
+		qx = qx / rotationscale;
+		qy = qy / rotationscale;
+		qz = qz / rotationscale;
+		RotationVector = cv::Matx31d( qx, -qy, -qz);
+
+		cv::projectPoints(	m_vecOriginPts,
+							RotationVector,
+							TranslationVector,
+							cCameraMatrix,
+							cDistortionParameters,
+							vecBlockCentrePixel);
+		//printf("%lf %lf\n",vecBlockCentrePixel[0].x, vecBlockCentrePixel[0].y);
+		
+		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"green");
 	}
 
 	////////////// show image and next frame //////////////////

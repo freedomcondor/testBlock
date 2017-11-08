@@ -61,8 +61,8 @@ include_directories(
 add_library(testLoopFunction SHARED
 		   		testLoopFunction.cpp
 				testLoopFunction.h
-				testbench.h
-				testbench.cpp
+				../../testbench/testbench.h
+				../../testbench/testbench.cpp
 			)
 
 #add_library(testbench SHARED

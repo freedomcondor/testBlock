@@ -2,7 +2,7 @@
 #include <argos3/plugins/simulator/entities/cylinder_entity.h>
 #include <argos3/plugins/simulator/entities/box_entity.h>
 
-#include "testbench.h"
+#include "../../testbench/testbench.h"
 
 using namespace argos;
 

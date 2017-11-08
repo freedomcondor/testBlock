@@ -123,6 +123,33 @@ testLoopFunction/fast:
 	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/build
 .PHONY : testLoopFunction/fast
 
+home/harry/testBlock/testbench/testbench.o: home/harry/testBlock/testbench/testbench.cpp.o
+
+.PHONY : home/harry/testBlock/testbench/testbench.o
+
+# target to build an object file
+home/harry/testBlock/testbench/testbench.cpp.o:
+	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o
+.PHONY : home/harry/testBlock/testbench/testbench.cpp.o
+
+home/harry/testBlock/testbench/testbench.i: home/harry/testBlock/testbench/testbench.cpp.i
+
+.PHONY : home/harry/testBlock/testbench/testbench.i
+
+# target to preprocess a source file
+home/harry/testBlock/testbench/testbench.cpp.i:
+	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.i
+.PHONY : home/harry/testBlock/testbench/testbench.cpp.i
+
+home/harry/testBlock/testbench/testbench.s: home/harry/testBlock/testbench/testbench.cpp.s
+
+.PHONY : home/harry/testBlock/testbench/testbench.s
+
+# target to generate assembly for a file
+home/harry/testBlock/testbench/testbench.cpp.s:
+	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.s
+.PHONY : home/harry/testBlock/testbench/testbench.cpp.s
+
 testLoopFunction.o: testLoopFunction.cpp.o
 
 .PHONY : testLoopFunction.o
@@ -150,33 +177,6 @@ testLoopFunction.cpp.s:
 	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.s
 .PHONY : testLoopFunction.cpp.s
 
-testbench.o: testbench.cpp.o
-
-.PHONY : testbench.o
-
-# target to build an object file
-testbench.cpp.o:
-	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/testbench.cpp.o
-.PHONY : testbench.cpp.o
-
-testbench.i: testbench.cpp.i
-
-.PHONY : testbench.i
-
-# target to preprocess a source file
-testbench.cpp.i:
-	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/testbench.cpp.i
-.PHONY : testbench.cpp.i
-
-testbench.s: testbench.cpp.s
-
-.PHONY : testbench.s
-
-# target to generate assembly for a file
-testbench.cpp.s:
-	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/testbench.cpp.s
-.PHONY : testbench.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -186,12 +186,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... testLoopFunction"
+	@echo "... home/harry/testBlock/testbench/testbench.o"
+	@echo "... home/harry/testBlock/testbench/testbench.i"
+	@echo "... home/harry/testBlock/testbench/testbench.s"
 	@echo "... testLoopFunction.o"
 	@echo "... testLoopFunction.i"
 	@echo "... testLoopFunction.s"
-	@echo "... testbench.o"
-	@echo "... testbench.i"
-	@echo "... testbench.s"
 .PHONY : help
 
 
