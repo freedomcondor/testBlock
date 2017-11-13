@@ -25,7 +25,7 @@ function solveSquare(uv,_L,camera,distort)
 	---------------------- prepare -----------------------------
 	local ku,kv,u0,v0
 	local u1,v1,u2,v2,u3,v3,u4,v4
-	local L = _L
+	local L = _L 
 	local hL = _L / 2
 
 	-- get ku,kv,u0,v0
@@ -94,6 +94,8 @@ function solveSquare(uv,_L,camera,distort)
 		  {	0,		-kv,	0,		kv,	  -(v4-v0),	0,		-kv,	v4-v0	},
 		})
 
+	A = A:exc(5,8,"col")
+
 	local B = Vec:create(8,{ 
 		--	z
 			u1-u0,
@@ -107,6 +109,7 @@ function solveSquare(uv,_L,camera,distort)
 			})
 	B = -B
 	local AB = A:link(B,"col")
+	print("AB=",AB)
 	local res1,exc,success = AB:tri()
 	local res,exc,success = AB:dia()
 	local Ks = res:takeDia()
@@ -136,16 +139,16 @@ function solveSquare(uv,_L,camera,distort)
 	y = Zs[2] / Ks[2]
 	a = Zs[3] / Ks[3]
 	b = Zs[4] / Ks[4]
-	c = Zs[5] / Ks[5]
+	q = Zs[5] / Ks[5]	--c = Zs[5] / Ks[5]
 	p = Zs[6] / Ks[6]
-	q = Zs[7] / Ks[7]
+	c = Zs[7] / Ks[7]	--q = Zs[7] / Ks[7]
 	r = Zs[8] / Ks[8]
 
 	---- 3 constraints ----
 	-- a^2 + b^2 + c^2 = hL^2
-	local z1 = hL^2 / (a^2 + b^2 + c^2)
+	local z1 = math.sqrt(hL^2 / (a^2 + b^2 + c^2))
 	-- p^2 + q^2 + r^2 = hL^2
-	local z2 = hL^2 / (p^2 + q^2 + r^2)
+	local z2 = math.sqrt(hL^2 / (p^2 + q^2 + r^2))
 	-- ap + bq + cr = 0
 	local constrain = a*p + b*q + c*r
 
@@ -172,8 +175,8 @@ function solveSquare(uv,_L,camera,distort)
 	print("constrain = ",constrain)
 
 	print("loc = ",loc)
-	print("abc = ",abc)
-	print("pqr = ",pqr)
+	print("abc = ",abc,"len = ",abc:len())
+	print("pqr = ",pqr,"len = ",pqr:len())
 	--]]
 	local dir = abc * pqr
 

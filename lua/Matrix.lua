@@ -370,7 +370,7 @@ function Matrix:link(y,z)
 end
 
 function almostZero(x,y)
-	y = y or 3
+	y = y or 10
 	local t = x * (10^y)
 	if -1 < t and t < 1 then
 		return true
@@ -428,12 +428,12 @@ function Matrix:triangle()
 		v = c:takeVec(i)
 		for j = i+1, c.n do
 			if (flag == 1) then
-				c = c:addVec(-v * c[j][i] / c[i][i],j)
+				c = c:addVec(-v * (c[j][i] / c[i][i]),j)
 			else
 				success = false
 			end
 		end
-		--print("tri check, step",i,":",c)
+		print("tri check, step",i,":",c)
 	end
 
 	return c, excMark:takeVec(1,"col"), success
@@ -475,7 +475,7 @@ function Matrix:diagonal()
 			local j = i - jj
 			--if (c[i][i] ~= 0) then
 			if almostZero(c[i][i]) == false then
-				c = c:addVec(-v * c[j][i] / c[i][i],j)
+				c = c:addVec(-v * (c[j][i] / c[i][i]),j)
 			end
 		end
 	end
