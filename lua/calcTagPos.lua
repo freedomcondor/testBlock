@@ -1,6 +1,7 @@
 package.cpath = package.cpath .. ';../lua/solvepnp/build/?.so'		-- for opengl testbench
 package.cpath = package.cpath .. ';../../lua/solvepnp/build/?.so'	-- for argos testbench
 require("libsolvepnp")
+require("solveSquare")
 
 package.path = package.path .. ';../lua/?.lua'		-- for opengl testbench
 package.path = package.path .. ';../../lua/?.lua'	-- for argos testbench
@@ -20,7 +21,9 @@ function calTagPos(tag)
 	--	print("\t\ttagcorner",i,"x = ",tag.corners[i].x,"y = ",tag.corners[i].y) end
 
 	tag.corners.halfL = tag.halfL;
-	res = libsolvepnp.solvepnp(tag.corners)
+	resCV = libsolvepnp.solvepnp(tag.corners)
+	res = solveSquare(tag.corners,tag.halfL * 2,{883.9614,883.9614,319.5000,179.5000})
+
 		--[[
 			res has: 	translation x,y,z
 						rotation x,y,z which is solvepnp returns
@@ -36,6 +39,12 @@ function calTagPos(tag)
 	y = res.translation.y
 	z = res.translation.z
 	res.translation = Vec3:create(x,y,z)
+
+	--[[
+	print("solvepnp res loc:",res.translation)
+	print("solveSqu res loc:",resSquare)
+	res.translation = resSquare
+	--]]
 
 	scale = 1
 	res.translation = res.translation * scale
