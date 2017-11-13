@@ -22,7 +22,10 @@ function calTagPos(tag)
 
 	tag.corners.halfL = tag.halfL;
 	res = libsolvepnp.solvepnp(tag.corners)
-	resSqu = solveSquare(tag.corners,tag.halfL * 2,{883.9614,883.9614,319.5000,179.5000})
+	resSqu = solveSquare(	tag.corners,
+							tag.halfL * 2,
+							{883.9614,883.9614,319.5000,179.5000},
+							{0.018433,0.16727,0,0,-1.548088})
 
 		--[[
 			res has: 	translation x,y,z
@@ -67,6 +70,9 @@ function calTagPos(tag)
 		-- dir is a vector
 
 	res.rotation = dir
+
+	--------------------------
+	res.rotation = resSqu.translation
 
 	--[[
 	print("\t\tin lua result: ",res.rotation.x)

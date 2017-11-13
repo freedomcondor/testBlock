@@ -433,7 +433,7 @@ function Matrix:triangle()
 				success = false
 			end
 		end
-		print("tri check, step",i,":",c)
+		--print("tri check, step",i,":",c)
 	end
 
 	return c, excMark:takeVec(1,"col"), success
