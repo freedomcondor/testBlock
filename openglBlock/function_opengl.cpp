@@ -43,7 +43,7 @@ int function_init(int SystemWeight, int SystemHeight)
 
 int function_draw()
 {
-	double rx,ry,rz,tx,ty,tz;
+	double rx,ry,rz,tx,ty,tz,qx,qy,qz,qw;
 	int i;
 	/*
 	for (int i = 0; i < herd.n_indi; i++)
@@ -63,18 +63,27 @@ int function_draw()
 		tx = tags_pos[i][3]/scale;
 		ty = tags_pos[i][4]/scale;
 		tz = tags_pos[i][5]/scale;
+		qx = tags_pos[i][6]/scale;
+		qy = tags_pos[i][7]/scale;
+		qz = tags_pos[i][8]/scale;
+		qw = tags_pos[i][9];
 
 		///*
-		drawSphere(tx,ty,tz,0.02);
 
 		//drawSphere(rx,ry,rz,0.02);
 
-		///*
+		/*
 		drawCylinder(	0.005, 0.005, 0.05,
 						tx,	ty, tz,
 						-rx,	-ry, -rz);
+		*/
+		///*
+		drawCylinder(	0.005, 0.005, 0.05,
+						rx,	ry, rz,
+						-qx,	-qy, -qz);
 		//*/
-		//*/
+		drawSphere(tx,ty,tz,0.02);
+
 		//drawSphere(tx+rx*0.05,ty+ry*0.05,tz+rz*0.05,0.02);
 	}
 

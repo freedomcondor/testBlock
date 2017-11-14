@@ -82,6 +82,7 @@ function solveSquare(_uv,_L,camera,distort)
 		K4 = distort[6] or 0
 		K5 = distort[7] or 0
 		K6 = distort[8] or 0
+
 		local tx,ty,r2,DIS
 		for i = 1,4 do
 			tx = (uv[i].x - u0) / ku
@@ -125,6 +126,15 @@ function solveSquare(_uv,_L,camera,distort)
 	u1 = u1 or 1; v1 = v1 or 1; u2 = u2 or 1; v2 = v2 or 1;
 	u3 = u3 or 1; v3 = v3 or 1; u4 = u4 or 1; v4 = v4 or 1;
 
+	--[[ fake a data to debug
+	local ttt = 100
+	u0 = 0; v0 = 0
+	u1 = ttt; v1 = ttt
+	u2 = ttt; v2 = -ttt
+	u3 = -ttt; v3 = -ttt
+	u4 = -ttt; v4 = ttt
+	--]]
+
 	---[[ print check
 	print("ku = ",ku); print("kv = ",kv); print("u0 = ",u0); print("v0 = ",v0);
 	print("u1 = ",u1); print("v1 = ",v1); print("u2 = ",u2); print("v2 = ",v2);
@@ -149,7 +159,7 @@ function solveSquare(_uv,_L,camera,distort)
 		  {	0,		-kv,	0,		kv,	  -(v4-v0),	0,		-kv,	v4-v0	},
 		})
 
-	A = A:exc(5,8,"col")
+	--A = A:exc(5,7,"col")
 
 	local B = Vec:create(8,{ 
 		--	z
@@ -194,9 +204,11 @@ function solveSquare(_uv,_L,camera,distort)
 	y = Zs[2] / Ks[2]
 	a = Zs[3] / Ks[3]
 	b = Zs[4] / Ks[4]
-	q = Zs[5] / Ks[5]	--c = Zs[5] / Ks[5]
+								--q = Zs[5] / Ks[5]	
+	c = Zs[5] / Ks[5]
 	p = Zs[6] / Ks[6]
-	c = Zs[7] / Ks[7]	--q = Zs[7] / Ks[7]
+								--c = Zs[7] / Ks[7]	
+	q = Zs[7] / Ks[7]
 	r = Zs[8] / Ks[8]
 
 	---- 3 constraints ----
@@ -207,7 +219,10 @@ function solveSquare(_uv,_L,camera,distort)
 	-- ap + bq + cr = 0
 
 	-- strict should be 0, maybe better have a check
-	z = (z1 + z2) / 2  
+	z = math.sqrt(2 * hL^2 / (a^2 + b^2 + c^2 + p^2 + q^2 + r^2))
+	--z = math.sqrt(z1 * z2)
+	--z = (z1 + z2) / 2
+	--z = z1  
 		-- or better be sqrt(z1 * z2)? 
 		-- need to think of geometric significance
 	x = x * z
@@ -234,7 +249,10 @@ function solveSquare(_uv,_L,camera,distort)
 	print("abc = ",abc,"len = ",abc:len())
 	print("pqr = ",pqr,"len = ",pqr:len())
 	--]]
-	local dir = abc * pqr
 
-	return {translation = loc, rotation = dir, quaternion = dir}
+	local dir = abc * pqr
+	--local dir = abc 
+
+	--return {translation = loc, rotation = dir, quaternion = dir}
+	return {translation = loc, rotation = abc, quaternion = pqr}
 end

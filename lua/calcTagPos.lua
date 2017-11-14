@@ -73,6 +73,7 @@ function calTagPos(tag)
 
 	--------------------------
 	res.rotation = resSqu.translation
+	res.quaternion = resSqu.quaternion
 
 	--[[
 	print("\t\tin lua result: ",res.rotation.x)
