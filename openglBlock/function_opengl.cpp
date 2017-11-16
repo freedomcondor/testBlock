@@ -79,8 +79,8 @@ int function_draw()
 		*/
 		///*
 		drawCylinder(	0.005, 0.005, 0.05,
-						rx,	ry, rz,
-						-qx,	-qy, -qz);
+						tx,	ty, tz,
+						-rx,	-ry, -rz);
 		//*/
 		drawSphere(tx,ty,tz,0.02);
 
