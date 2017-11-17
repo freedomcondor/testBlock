@@ -3,6 +3,50 @@ Vec3 = require("Vector3")
 Mat = require("Matrix")
 Qua = require("Quaternion")
 
+require("solve7add1")
+
+function sort(_set)
+	local set = {n = _set.n}
+	local n = _set.n
+	for i = 1, n do
+		set[i] = _set[i]
+	end
+
+	local t
+	for i = 1 , n-1 do
+		for j = i+1, n do
+			if set[i] < set[j] then
+				t = set[i]
+				set[i] = set[j]
+				set[j] = t
+			end
+		end
+	end
+	return set
+end
+
+function medianSet(set,y)
+	y = y or 2
+	local sorted = sort(set)
+	local c = {n = math.ceil(sorted.n/y)}
+	for i = 1,c.n do
+		c[i] = sorted[math.ceil(set.n/2) - math.ceil(set.n/y) + i]
+	end
+	return c
+end
+
+function median(set)
+	local sorted = sort(set)
+	return sorted[sorted.n/2]
+end
+function average(set)
+	local sum = 0
+	for i = 1,set.n do
+		sum = sum+set[i]
+	end
+	return sum/set.n
+end
+
 function solveSquare(_uv,_L,camera,distort)
 	--[[
 		uv[1] = {x = **, y = **}
@@ -38,7 +82,7 @@ function solveSquare(_uv,_L,camera,distort)
 		return nil
 	end
 		--get ku,kv,u0,v0
-	---[[
+	--[[
 	print("ku = ",ku); print("kv = ",kv); print("u0 = ",u0); print("v0 = ",v0);
 	--]]
 
@@ -93,7 +137,7 @@ function solveSquare(_uv,_L,camera,distort)
 					(1 +  (K1 + (K2 + (K3) * r2) * r2) * r2)
 			tx = tx * DIS
 			ty = ty * DIS
-			print("DIS = ",DIS)
+			--print("DIS = ",DIS)
 			uv[i].x = tx * ku + u0
 			uv[i].y = ty * kv + v0
 		end
@@ -136,7 +180,7 @@ function solveSquare(_uv,_L,camera,distort)
 	u4 = -ttt; v4 = ttt
 	--]]
 
-	---[[ print check
+	--[[ print check
 	print("ku = ",ku); print("kv = ",kv); print("u0 = ",u0); print("v0 = ",v0);
 	print("u1 = ",u1); print("v1 = ",v1); print("u2 = ",u2); print("v2 = ",v2);
 	print("u3 = ",u3); print("v3 = ",v3); print("u4 = ",u4); print("v4 = ",v4);
@@ -145,6 +189,32 @@ function solveSquare(_uv,_L,camera,distort)
 	-- now we have ku kv u0 v0, and ux(1-4) vx(1-4), and L 
 	----------------------------------------------------------
 	-- trick starts
+
+	local z_set = {n = 0}
+	local z_res
+	---[[
+	for i = 1,8 do
+		z_res = solve7add1(hL,	ku,kv,u0,v0,
+								u1,v1,u2,v2,
+								u3,v3,u4,v4,
+							i)
+		for j = 1,z_res.n do
+			z_set[z_set.n + j] = z_res[j]
+		end
+		z_set.n = z_set.n + z_res.n
+	end
+	--]]
+
+	z_set = medianSet(z_set,6)
+	--[[
+	print("---z set: ---",z_set.n)
+	for i = 1,z_set.n do
+		print("z = ",z_set[i])
+	end
+	--]]
+
+	--local zz = median(z_set)
+	local zz = average(z_set)
 
 	-------------------------------------------------------------------------------
 	-- solve equation dymatically--------------------------------------------------
@@ -315,6 +385,9 @@ function solveSquare(_uv,_L,camera,distort)
 	--z = math.sqrt(z1 * z2)
 	--z = (z1 + z2) / 2
 	--z = z1  
+	print("z method1 = ",z)
+	z = zz
+	print("z method2 = ",z)
 		-- or better be sqrt(z1 * z2)? 
 		-- need to think of geometric significance
 
@@ -346,7 +419,7 @@ function solveSquare(_uv,_L,camera,distort)
 	local axis = (abc - abc_o) * (pqr - pqr_o)
 	axis = axis:nor()
 
-	print("axis",axis)
+	--print("axis",axis)
 
 	local rot_o = abc_o - axis ^ abc * axis
 	local rot_d = abc - axis ^ abc * axis
@@ -354,11 +427,11 @@ function solveSquare(_uv,_L,camera,distort)
 	rot_d = rot_d:len()
 	local cos = rot_o ^ rot_d
 	local th = math.acos(cos)
-	print("th = ",th)
+	--print("th = ",th)
 
 	local quater = Qua:createFromRotation(axis,th)
 
-	---[[ print check
+	--[[ print check
 	print("z1 = ",z1)
 	print("z2 = ",z2)
 	print("constrain = ",constrain)

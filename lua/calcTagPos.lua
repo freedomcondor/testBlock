@@ -59,8 +59,8 @@ function calTagPos(tag)
 	local th = math.sqrt(x * x + y * y + z * z)
 	local rotqq = Qua:createFromRotation(x,y,z,th)
 
-	print("CV's rotation axis",x/th,y/th,z/th)
-	print("Squ's rotation axis",resSqu.rotation)
+	--print("CV's rotation axis",x/th,y/th,z/th)
+	--print("Squ's rotation axis",resSqu.rotation)
 
 	resCV.quaternion = rotqq
 	-- because quaternion has q.v.x q.v.y q.v.z and q.w, need to generate q.x q.y q.z
@@ -84,8 +84,9 @@ function calTagPos(tag)
 	---[[ print check the location
 	print("solvepnp res loc:",resCV.translation)
 	print("solveSqu res loc:",resSqu.translation)
+	--]]
 
-	---[[ print check the quaternion
+	--[[ print check the quaternion
 	print("solvepnp res qua:",resCV.quaternion)
 	print("solveSqu res qua:",resSqu.quaternion)
 

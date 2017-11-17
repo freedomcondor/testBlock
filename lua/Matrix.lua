@@ -370,7 +370,7 @@ function Matrix:link(y,z)
 end
 
 function almostZero(x,y)
-	y = y or 10
+	y = y or 5
 	local t = x * (10^y)
 	if -1 < t and t < 1 then
 		return true
@@ -426,16 +426,17 @@ function Matrix:triangle()
 			end
 		end
 		v = c:takeVec(i)
-		for j = i+1, c.n do
-			if (flag == 1) then
+		if (flag == 1) then
+			for j = i+1, c.n do
 				c = c:addVec(-v * (c[j][i] / c[i][i]),j)
-			else
-				success = false
 			end
+		else
+			success = false
 		end
 		--print("tri check, step",i,":",c)
 	end
 
+	--print(success)
 	return c, excMark:takeVec(1,"col"), success
 end
 
@@ -504,7 +505,7 @@ function Matrix:__tostring()
 	for i = 1, self.n do
 		if i == 1 then str = str .. "\t[[" else str = str .. "\t [" end
 		for j = 1, self.m do
-			--[[
+			---[[
 			if self[i][j] % 1 ~= 0 then -- not a integer
 				str = str .. string.format("%7.3f",self[i][j])-- .. "\t"
 			else						-- a integer
@@ -512,7 +513,7 @@ function Matrix:__tostring()
 			end
 			--]]
 			--str = str .. self[i][j] .. '\t'
-			str = str .. string.format("%8e",self[i][j]) .. '\t'
+			--str = str .. string.format("%3e",self[i][j]) .. '\t'
 			if j ~= self.m  then str = str .. ","
 							else str = str .. "]" end
 		end
