@@ -203,167 +203,48 @@ function solveSquare(_uv,_L,camera,distort)
 			minerr = z_res.err
 		end
 	end
+	------------------- method 2 ------------------
+	--[[
+	local z_set = {n = 0}
+	local z_res
+	---[[
+	for i = 1,8 do
+		z_res = solve7add1(hL,	ku,kv,u0,v0,
+								u1,v1,u2,v2,
+								u3,v3,u4,v4,
+							i)
+		for j = 1,z_res.n do
+			z_set[z_set.n + j] = z_res[j]
+		end
+		z_set.n = z_set.n + z_res.n
+	end
+	--]]
+
+	--z_set = medianSet(z_set,6)
+	--[[
+	print("---z set: ---",z_set.n)
+	for i = 1,z_set.n do
+		print("z = ",z_set[i])
+	end
+	--]]
+
+	--local zz = median(z_set)
+	--local zz = average(z_set)
 
 	-------------------------------------------------------------------------------
-	-- solve equation dymatically--------------------------------------------------
-	--[[
-	local A = Mat:create(8,8,
-		-- 	x		y (z)	a		b		c		p		q		r
-		{ {	-ku,	0,		-ku,	0,		u1-u0,	-ku,	0,		u1-u0	},
-		  {	0,		-kv,	0,		-kv,	v1-v0,	0,		-kv,	v1-v0	},
-
-		  {	-ku,	0,		-ku,	0,		u2-u0,	ku,		0,	  -(u2-u0)	},
-		  {	0,		-kv,	0,		-kv,	v2-v0,	0,		kv,	  -(v2-v0)	},
-
-		  {	-ku,	0,		ku,		0,	  -(u3-u0),	ku,		0,	  -(u3-u0)	},
-		  {	0,		-kv,	0,		kv,	  -(v3-v0),	0,		kv,	  -(v3-v0)	},
-
-		  {	-ku,	0,		ku,		0,	  -(u4-u0),	-ku,	0,		u4-u0	},
-		  {	0,		-kv,	0,		kv,	  -(v4-v0),	0,		-kv,	v4-v0	},
-		})
-
-	--A = A:exc(5,7,"col")
-
-	local B = Vec:create(8,{ 
-		--	z
-			u1-u0,
-			v1-v0,
-			u2-u0,
-			v2-v0,
-			u3-u0,
-			v3-v0,
-			u4-u0,
-			v4-v0,
-			})
-	B = -B
-	local AB = A:link(B,"col")
-	--print("ori AB=",AB)
-	local res1,exc,success = AB:tri()
-	local res,exc,success = AB:dia()
-	local Ks = res:takeDia()
-	local Zs = res:takeVec(9,"col")
-	
-	--]]
-	--[[ print check A and B
-	print("A=",A)
-	print("B=",B)
-	print("AB=",AB)
-	print("res1=",res1)
-	print("res=",res)
-	print("exc=",exc)
-	print("success=",success)
-	print("Ks = ",Ks)
-	print("Zs = ",Zs)
-	--]]
-	--[[
-
 	local a,b,c,p,q,r,x,y,z
-	------------ no solution --------------------
-	if success == false then
-		-- to be filled
-		return nil -- ?
-	end
-	---------------------------------------------
-
-	x = Zs[1] / Ks[1]
-	y = Zs[2] / Ks[2]
-	a = Zs[3] / Ks[3]
-	b = Zs[4] / Ks[4]
-								--q = Zs[5] / Ks[5]	
-	c = Zs[5] / Ks[5]
-	p = Zs[6] / Ks[6]
-								--c = Zs[7] / Ks[7]	
-	q = Zs[7] / Ks[7]
-	r = Zs[8] / Ks[8]
-	--]]
-	-- now we have x,y,a,b,c,p,q,r to z
-	--------- solve equation end ---------------------------------------
-
-	--or we can
-
-	--------------------------------------------------------------------
-	-- use formula directively(equation solved) ------------------------
-	----------------------------------------------
-
-	---[[
-	local x,y,z,a,b,c,p,q,r
-	a = ( 	u0*u1*v2 - u0*u2*v1 - u0*u1*v3 + u0*u3*v1 
-	  	  + u0*u2*v4 - u0*u4*v2 + u1*u2*v3 - u1*u3*v2 
-	  	  - u0*u3*v4 + u0*u4*v3 - u1*u2*v4 + u2*u4*v1 
-	   	  + u1*u3*v4 - u3*u4*v1 - u2*u4*v3 + u3*u4*v2)
-		/(ku*(   u1*v2 - u2*v1 - u1*v4 + u2*v3 
-			   - u3*v2 + u4*v1 + u3*v4 - u4*v3))
-
-	b =
-	( 	u1*v0*v2 - u2*v0*v1 - u1*v0*v3 + u3*v0*v1 
-	  + u2*v0*v4 + u2*v1*v3 - u3*v1*v2 - u4*v0*v2 
-	  - u1*v2*v4 - u3*v0*v4 + u4*v0*v3 + u4*v1*v2 
-	  + u1*v3*v4 - u4*v1*v3 - u2*v3*v4 + u3*v2*v4)
-	/(kv*( 	  u1*v2 - u2*v1 - u1*v4 + u2*v3 
-			- u3*v2 + u4*v1 + u3*v4 - u4*v3))
-
-	c =	-(u1*v2 - u2*v1 - u1*v3 + u3*v1 + u2*v4 - u4*v2 - u3*v4 + u4*v3)/
-		 (u1*v2 - u2*v1 - u1*v4 + u2*v3 - u3*v2 + u4*v1 + u3*v4 - u4*v3)
-	
-	p =( 	u0*u1*v3 - u0*u3*v1 - u0*u1*v4 - u0*u2*v3 
-		  + u0*u3*v2 + u0*u4*v1 + u0*u2*v4 - u0*u4*v2 
-		  - u1*u3*v2 + u2*u3*v1 + u1*u4*v2 - u2*u4*v1 
-		  + u1*u3*v4 - u1*u4*v3 - u2*u3*v4 + u2*u4*v3)
-		/(ku*(    u1*v2 - u2*v1 - u1*v4 + u2*v3 
-				- u3*v2 + u4*v1 + u3*v4 - u4*v3))
-
-	q =	(	u1*v0*v3 - u3*v0*v1 - u1*v0*v4 - u2*v0*v3 
-		  + u3*v0*v2 + u4*v0*v1 - u1*v2*v3 + u2*v0*v4 
-		  + u2*v1*v3 - u4*v0*v2 + u1*v2*v4 - u2*v1*v4 
-		  + u3*v1*v4 - u4*v1*v3 - u3*v2*v4 + u4*v2*v3) /
-		(kv*(	u1*v2 - u2*v1 - u1*v4 + u2*v3 
-			  - u3*v2 + u4*v1 + u3*v4 - u4*v3))
-	r =	-(	u1*v3 - u3*v1 - u1*v4 - u2*v3 + u3*v2 + u4*v1 + u2*v4 - u4*v2)/
-		 (	u1*v2 - u2*v1 - u1*v4 + u2*v3 - u3*v2 + u4*v1 + u3*v4 - u4*v3)
-
-	x = -(	u0*u1*v2 - u0*u2*v1 - u0*u1*v4 + u0*u2*v3 
-		  - u0*u3*v2 + u0*u4*v1 - u1*u2*v3 + u2*u3*v1 
-		  + u0*u3*v4 - u0*u4*v3 + u1*u2*v4 - u1*u4*v2 
-		  + u1*u4*v3 - u3*u4*v1 - u2*u3*v4 + u3*u4*v2) /
-		(ku*(	u1*v2 - u2*v1 - u1*v4 + u2*v3 
-			  - u3*v2 + u4*v1 + u3*v4 - u4*v3))
-
-	y = -(	u1*v0*v2 - u2*v0*v1 - u1*v0*v4 + u2*v0*v3 
-		  - u3*v0*v2 + u4*v0*v1 - u1*v2*v3 + u3*v1*v2 
-		  + u2*v1*v4 + u3*v0*v4 - u4*v0*v3 - u4*v1*v2 
-		  + u1*v3*v4 - u3*v1*v4 - u2*v3*v4 + u4*v2*v3) /
-		(kv*(	  u1*v2 - u2*v1 - u1*v4 + u2*v3 
-				- u3*v2 + u4*v1 + u3*v4 - u4*v3))
-	--]]
-
-		-- now we have x,y,a,b,c,p,q,r to z
-	------end formula---------------------------------------
-
-	---- 3 constraints to solve z ----
-	-- a^2 + b^2 + c^2 = hL^2
-	local z1 = math.sqrt(hL^2 / (a^2 + b^2 + c^2))
-	-- p^2 + q^2 + r^2 = hL^2
-	local z2 = math.sqrt(hL^2 / (p^2 + q^2 + r^2))
-	-- ap + bq + cr = 0
-		-- this should be 0, maybe better have a check
-
-	z = math.sqrt(2 * hL^2 / (a^2 + b^2 + c^2 + p^2 + q^2 + r^2))
-	--z = math.sqrt(z1 * z2)
-	--z = (z1 + z2) / 2
-	--z = z1  
-		-- or better be sqrt(z1 * z2)? 
-		-- need to think of geometric significance
-
-	x = x * z
-	y = y * z
-	a = a * z
-	b = b * z
-	c = c * z
-	p = p * z
-	q = q * z
-	r = r * z
+	x = z_res.x
+	y = z_res.y
+	z = z_res.z
+	a = z_res.a
+	b = z_res.b
+	c = z_res.c
+	p = z_res.p
+	q = z_res.q
+	r = z_res.r
 		-- because these are calculated from u and v, they are in left hand axis
 
+	--------------------------------------------------------
 	local loc = Vec3:create(-x,y,z)
 	local abc = Vec3:create(-a,b,c)
 	local pqr = Vec3:create(-p,q,r)

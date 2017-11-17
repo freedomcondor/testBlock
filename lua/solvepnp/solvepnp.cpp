@@ -74,7 +74,7 @@ static int solvepnp(lua_State *L)
 	Mat rotation_vector; // Rotation in axis-angle form
 	Mat translation_vector;
 
-	solvePnP(ob,im,cCameraMatrix,cDistortionParameters,rotation_vector, translation_vector);
+	solvePnP(ob,im,cCameraMatrix,cDistortionParameters,rotation_vector, translation_vector,false,CV_P3P);
 
 	//cout << "rotation" << rotation_vector << endl;
 	//cout << "translation" << translation_vector << endl;

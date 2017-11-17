@@ -25,7 +25,8 @@ function solveDeg2(A,B,C)
 			return -B/(2*A), -B/(2*A)
 		end
 		--print("deg2 : really no solution, delta = ",delta)
-		return nil, nil
+		return -B/(2*A), -B/(2*A) -- treat this as nearby solution
+		--return nil, nil
 	end
 	--print("deg2 : has solution, delta = ",delta)
 
@@ -70,13 +71,14 @@ function solve7add1(L,ku,kv,u0,v0,u1,v1,u2,v2,u3,v3,u4,v4,flag)
 		return -1
 	end
 
-	x_z = -B[1][8]/B[1][1];	x_r = -B[1][9]/B[1][1]
-	y_z = -B[2][8]/B[2][2];	y_r = -B[2][9]/B[2][2]
-	q_z = -B[3][8]/B[3][3];	q_r = -B[3][9]/B[3][3]
-	a_z = -B[4][8]/B[4][4];	a_r = -B[4][9]/B[4][4]
-	b_z = -B[5][8]/B[5][5];	b_r = -B[5][9]/B[5][5]
-	c_z = -B[6][8]/B[6][6];	c_r = -B[6][9]/B[6][6]
-	p_z = -B[7][8]/B[7][7];	p_r = -B[7][9]/B[7][7]
+	local x_z = -B[1][8]/B[1][1];	x_r = -B[1][9]/B[1][1]
+	local y_z = -B[2][8]/B[2][2];	y_r = -B[2][9]/B[2][2]
+	local q_z = -B[3][8]/B[3][3];	q_r = -B[3][9]/B[3][3]
+	local a_z = -B[4][8]/B[4][4];	a_r = -B[4][9]/B[4][4]
+	local b_z = -B[5][8]/B[5][5];	b_r = -B[5][9]/B[5][5]
+	local c_z = -B[6][8]/B[6][6];	c_r = -B[6][9]/B[6][6]
+	local p_z = -B[7][8]/B[7][7];	p_r = -B[7][9]/B[7][7]
+	local r_z
 
 	-- ap + bq + cr == 0
 	-- Kzz z^2 + Kzr zr + Krr r2
@@ -90,7 +92,7 @@ function solve7add1(L,ku,kv,u0,v0,u1,v1,u2,v2,u3,v3,u4,v4,flag)
 	--print("r_z1 = ",r_z_res[1])
 	--print("r_z2 = ",r_z_res[2])
 
-	
+	--[[
 	local z = {n = 0}
 	for i = 1,2 do
 	if r_z_res[i] ~= nil then
@@ -124,8 +126,58 @@ function solve7add1(L,ku,kv,u0,v0,u1,v1,u2,v2,u3,v3,u4,v4,flag)
 		end
 	end
 	end
+	--]]
 
-	return z
+	local x,y,z,a,b,c,p,q,r
+
+	local res = {}
+	local z_res = {}
+	for i = 1,2 do
+		if r_z_res[i] ~= nil then
+			x_z = x_z + x_r * r_z_res[i]
+			y_z = y_z + y_r * r_z_res[i]
+			a_z = a_z + a_r * r_z_res[i]
+			b_z = b_z + b_r * r_z_res[i]
+			c_z = c_z + c_r * r_z_res[i]
+			p_z = p_z + p_r * r_z_res[i]
+			q_z = q_z + q_r * r_z_res[i]
+			r_z = r_z_res[i]
+	
+			local Labc = a_z^2 + b_z^2 + c_z^2
+			z_res[i] = math.sqrt(L^2/Labc)
+			
+			x = x_z * z_res[i]
+			y = y_z * z_res[i]
+			a = a_z * z_res[i]
+			b = b_z * z_res[i]
+			c = c_z * z_res[i]
+			p = p_z * z_res[i]
+			q = q_z * z_res[i]
+			r = r_z * z_res[i]
+			z = z_res[i]
+
+			res[i] = {	x = x,
+						y = y,
+						z = z,
+						a = a,
+						b = b,
+						c = c,
+						p = p,
+						q = q,
+						r = r,
+					}
+		end
+	end
+
+	local pqrerr1 = math.abs(res[1].p^2 + res[1].q^2 + res[1].r^2 - L^2)
+	local pqrerr2 = math.abs(res[2].p^2 + res[2].q^2 + res[2].r^2 - L^2)
+	res[1].err = pqrerr1
+	res[2].err = pqrerr2
+	if pqrerr1 > pqrerr2 then
+		return res[2]
+	else
+		return res[1]
+	end
 
 	--[[
 	print("print z :")

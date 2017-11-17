@@ -1,7 +1,7 @@
 package.cpath = package.cpath .. ';../lua/solvepnp/build/?.so'		-- for opengl testbench
 package.cpath = package.cpath .. ';../../lua/solvepnp/build/?.so'	-- for argos testbench
 require("libsolvepnp")
-require("solveSquare")
+require("solveSquare2")
 
 package.path = package.path .. ';../lua/?.lua'		-- for opengl testbench
 package.path = package.path .. ';../../lua/?.lua'	-- for argos testbench
@@ -84,6 +84,7 @@ function calTagPos(tag)
 	---[[ print check the location
 	print("solvepnp res loc:",resCV.translation)
 	print("solveSqu res loc:",resSqu.translation)
+	print("ss")
 	--]]
 
 	--[[ print check the quaternion
@@ -105,4 +106,6 @@ function calTagPos(tag)
 	--return resCV
 	resSqu.quaternion = resCV.quaternion
 	return resSqu
+
+	--return resCV
 end
