@@ -103,9 +103,9 @@ function calTagPos(tag)
 	print("\t\tin lua result: ",res.translation.y)
 	print("\t\tin lua result: ",res.translation.z)
 	--]]
-	--return resCV
-	resSqu.quaternion = resCV.quaternion
-	return resSqu
+	return resCV
+	--resSqu.quaternion = resCV.quaternion
+	--return resSqu
 
 	--return resCV
 end
