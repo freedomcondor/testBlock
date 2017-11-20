@@ -22,7 +22,7 @@ function Quaternion:create(x,y,z,w)
 		return instance
 	end
 
-	instance.v = Vector3:create(0,0,0)
+	instance.v = Vec3:create(0,0,0)
 	instance.w = 0
 	return instance;
 end

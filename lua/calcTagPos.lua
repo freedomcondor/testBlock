@@ -1,10 +1,15 @@
-package.cpath = package.cpath .. ';../lua/solvepnp/build/?.so'		-- for opengl testbench
-package.cpath = package.cpath .. ';../../lua/solvepnp/build/?.so'	-- for argos testbench
+luaPath_gl = ';../lua/'
+luaPath_ar = ';../../lua/'
+package.cpath = package.cpath .. luaPath_gl .. 'solvepnp/build/?.so'		-- for opengl testbench
+package.cpath = package.cpath .. luaPath_ar .. 'solvepnp/build/?.so'	-- for argos testbench
 require("libsolvepnp")
-require("solveSquare2")
 
-package.path = package.path .. ';../lua/?.lua'		-- for opengl testbench
-package.path = package.path .. ';../../lua/?.lua'	-- for argos testbench
+package.path = package.path .. luaPath_gl .. '/solveSqu/?.lua'
+package.path = package.path .. luaPath_ar .. '/solveSqu/?.lua'
+require("solveSquare3")
+
+package.path = package.path .. luaPath_gl .. 'math/?.lua'		-- for opengl testbench
+package.path = package.path .. luaPath_ar .. 'math/?.lua'	-- for argos testbench
 local Vec3 = require("Vector3")
 local Qua = require("Quaternion")
 
@@ -103,6 +108,7 @@ function calTagPos(tag)
 	print("\t\tin lua result: ",res.translation.y)
 	print("\t\tin lua result: ",res.translation.z)
 	--]]
+	resCV.translation = resSqu.translation
 	return resCV
 	--resSqu.quaternion = resCV.quaternion
 	--return resSqu

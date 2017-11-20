@@ -507,9 +507,9 @@ function Matrix:__tostring()
 		for j = 1, self.m do
 			---[[
 			if self[i][j] % 1 ~= 0 then -- not a integer
-				str = str .. string.format("%7.3f",self[i][j])-- .. "\t"
+				str = str .. string.format("%9.3f",self[i][j])-- .. "\t"
 			else						-- a integer
-				str = str .. string.format("%7d",self[i][j])-- .. "\t"
+				str = str .. string.format("%9d",self[i][j])-- .. "\t"
 			end
 			--]]
 			--str = str .. self[i][j] .. '\t'
