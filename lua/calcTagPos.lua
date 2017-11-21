@@ -1,5 +1,5 @@
 require("libsolvepnp")
-require("solveSquare4")
+require("solveSquare")
 
 local Vec3 = require("Vector3")
 local Qua = require("Quaternion")
