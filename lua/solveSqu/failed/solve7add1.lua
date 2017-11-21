@@ -1,5 +1,3 @@
-package.path = package.path .. luaPath_gl .. 'math/?.lua'
-package.path = package.path .. luaPath_ar .. 'math/?.lua'
 Vec = require("Vector")
 Vec3 = require("Vector3")
 Mat = require("Matrix")

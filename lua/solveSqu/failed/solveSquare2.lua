@@ -1,14 +1,13 @@
---print("path =",luaPath_gl)
-package.path = package.path .. luaPath_gl .. 'math/?.lua'
-package.path = package.path .. luaPath_ar .. 'math/?.lua'
+--package.path = package.path .. luaPath_gl .. 'math/?.lua'
+--package.path = package.path .. luaPath_ar .. 'math/?.lua'
+-- math should add to package.path
 Vec = require("Vector")
 Vec3 = require("Vector3")
 Mat = require("Matrix")
 Qua = require("Quaternion")
 
-require("solveQuad")
+require("solve7add1")
 
---[[
 function sort(_set)
 	local set = {n = _set.n}
 	local n = _set.n
@@ -50,7 +49,6 @@ function average(set)
 	end
 	return sum/set.n
 end
---]]
 
 function solveSquare(_uv,_L,camera,distort)
 	--[[
@@ -195,154 +193,107 @@ function solveSquare(_uv,_L,camera,distort)
 	----------------------------------------------------------
 	-- trick starts
 
-	-------------------------------------------------------------------------------
-	-- solve equation dymatically--------------------------------------------------
-	local A = Mat:create(8,9,
-		-- 	x		y 		z		a		b		c		p		q		r
-		{ {	-ku,	0,		u1-u0,	-ku,	0,		u1-u0,	-ku,	0,		u1-u0	},
-		  {	0,		-kv,	v1-v0,	0,		-kv,	v1-v0,	0,		-kv,	v1-v0	},
-
-		  {	-ku,	0,		u2-u0,	-ku,	0,		u2-u0,	ku,		0,	  -(u2-u0)	},
-		  {	0,		-kv,	v2-v0,	0,		-kv,	v2-v0,	0,		kv,	  -(v2-v0)	},
-
-	      {	-ku,	0,		u3-u0,	ku,		0,	  -(u3-u0),	ku,		0,	  -(u3-u0)	},
-	      {	0,		-kv,	v3-v0,	0,		kv,	  -(v3-v0),	0,		kv,	  -(v3-v0)	},
-
-		  {	-ku,	0,		u4-u0,	ku,		0,	  -(u4-u0),	-ku,	0,		u4-u0	},
-    	  {	0,		-kv,	v4-v0,	0,		kv,	  -(v4-v0),	0,		-kv,	v4-v0	},
-		})
-
-	local B = A:exc(3,9,'col')
-	B = B:dia()
-	local x0 = -B[1][9]/B[1][1]
-	local y0 = -B[2][9]/B[2][2]
-
-	A = A:exc(6,7)
-	A.n = 6
-
-	A = A:exc(1,7,'col')
-	A = A:exc(2,8,'col')
-	A = A:exc(3,9,'col')
-	--  p q r a b c x y z
-	--A = A:exc(1,6,'col')
-	--	z q r a b p x y z
-	--A = A:exc(2,3,'col')
-	--	z r q a b p x y z
-
-	--local res1,exc,success = AB:tri()
-	local res,exc,success = A:dia()
-	local Ks = res:takeDia()
-	local Xs = res:takeVec(7,"col")
-	local Ys = res:takeVec(8,"col")
-	local Zs = res:takeVec(9,"col")
-	
-	--[[ print check A and B
-	print("A=",A)
-	print("res1=",res1)
-	print("res=",res)
-	print("exc=",exc)
-	print("success=",success)
-	print("Ks = ",Ks)
-	print("Xs = ",Xs)
-	print("Ys = ",Ys)
-	print("Zs = ",Zs)
-	--]]
-	---[[
-
-	------------ no solution --------------------
-	if success == false then
-		-- to be filled
-		return nil -- ?
+	local solve_res 
+	local minerr = 9999999
+	local z_res
+	for i = 1,8 do
+		solve_res = solve7add1(hL,	ku,kv,u0,v0,
+								u1,v1,u2,v2,
+								u3,v3,u4,v4,
+							i)
+		if solve_res.err < minerr then
+			z_res = solve_res
+			minerr = z_res.err
+		end
 	end
-	---------------------------------------------
+	------------------- method 2 ------------------
+	--[[
+	local z_set = {n = 0}
+	local z_res
+	---[[
+	for i = 1,8 do
+		z_res = solve7add1(hL,	ku,kv,u0,v0,
+								u1,v1,u2,v2,
+								u3,v3,u4,v4,
+							i)
+		for j = 1,z_res.n do
+			z_set[z_set.n + j] = z_res[j]
+		end
+		z_set.n = z_set.n + z_res.n
+	end
+	--]]
 
-	local ax,ay,az,bx,by,bz,cx,cy,cz
-	local px,py,pz,qx,qy,qz,rx,ry,rz
+	--z_set = medianSet(z_set,6)
+	--[[
+	print("---z set: ---",z_set.n)
+	for i = 1,z_set.n do
+		print("z = ",z_set[i])
+	end
+	--]]
 
-	px = -Xs[1]/Ks[1];	py = -Ys[1]/Ks[1];	pz = -Zs[1]/Ks[1]
-	qx = -Xs[2]/Ks[2];	qy = -Ys[2]/Ks[2];	qz = -Zs[2]/Ks[2]
-	rx = -Xs[3]/Ks[3];	ry = -Ys[3]/Ks[3];	rz = -Zs[3]/Ks[3]
-	ax = -Xs[4]/Ks[4];	ay = -Ys[4]/Ks[4];	az = -Zs[4]/Ks[4]
-	bx = -Xs[5]/Ks[5];	by = -Ys[5]/Ks[5];	bz = -Zs[5]/Ks[5]
-	cx = -Xs[6]/Ks[6];	cy = -Ys[6]/Ks[6];	cz = -Zs[6]/Ks[6]
-	-- now we have a,b,c,p,q,r to x y z
-	--------- solve linar equation end ---------------------------------------
+	--local zz = median(z_set)
+	--local zz = average(z_set)
 
-	local a1,b1,c1,d1,e1,f1
-	local a2,b2,c2,d2,e2,f2
+	-------------------------------------------------------------------------------
+	local a,b,c,p,q,r,x,y,z
+	x = z_res.x
+	y = z_res.y
+	z = z_res.z
+	a = z_res.a
+	b = z_res.b
+	c = z_res.c
+	p = z_res.p
+	q = z_res.q
+	r = z_res.r
+		-- because these are calculated from u and v, they are in left hand axis
 
-	--x^2	ap			bq				cr
-	a1 = ax*px			+bx*qx			+cx*rx;
-	--y^2
-	b1 = ay*py			+by*qy			+cy*ry;
-	--xy
-	c1 = ax*py+ay*px	+bx*qy+by*qx	+cx*ry+cy*rx	
-	--xz
-	d1 = ax*pz+az*px	+bx*qz+bz*qx	+cx*rz+cz*rx
-	--yz
-	e1 = ay*pz+az*py	+by*qz+bz*qy 	+cy*rz+cz*ry
-	--z^2
-	f1 = az*pz			+bz*qz			+cz*rz
+	--------------------------------------------------------
+	local loc = Vec3:create(-x,y,z)
+	local abc = Vec3:create(-a,b,c)
+	local pqr = Vec3:create(-p,q,r)
 
-	local a3,b3,c3,d3,e3,f3
-	local a4,b4,c4,d4,e4,f4
-	--x^2	aa			bb				cc
-	a3 = ax*ax			+bx*bx			+cx*cx;
-	--y^2
-	b3 = ay*ay			+by*by			+cy*cy;
-	--xy
-	c3 = ax*ay+ay*ax	+bx*by+by*bx	+cx*cy+cy*cx	
-	--xz
-	d3 = ax*az+az*ax	+bx*bz+bz*bx	+cx*cz+cz*cx
-	--yz
-	e3 = ay*az+az*ay	+by*bz+bz*by 	+cy*cz+cz*cy
-	--z^2
-	f3 = az*az			+bz*bz			+cz*cz
+	-- ap + bq + cr = 0  right angle check
+	local constrain = abc:nor() ^ pqr:nor()
 
-	--x^2	pp			qq				rr
-	a4 = px*px			+qx*qx			+rx*rx;
-	--y^2
-	b4 = py*py			+qy*qy			+ry*ry;
-	--xy
-	c4 = px*py+py*px	+qx*qy+qy*qx	+rx*ry+ry*rx	
-	--xz
-	d4 = px*pz+pz*px	+qx*qz+qz*qx	+rx*rz+rz*rx
-	--yz
-	e4 = py*pz+pz*py	+qy*qz+qz*qy 	+ry*rz+rz*ry
-	--z^2
-	f4 = pz*pz			+qz*qz			+rz*rz
+		-- now we have loc, abc, pqr  in right hand
+	--------------------------------------------------------
 
-	a2 = a3-a4
-	b2 = b3-b4
-	c2 = c3-c4
-	d2 = d3-d4
-	e2 = e3-e4
-	f2 = f3-f4
+	abc = abc:nor()
+	pqr = pqr:nor()
+	-- calc rotation --------
+	local abc_o = Vec3:create(1,0,0)
+	local pqr_o = Vec3:create(0,1,0)
+	local axis = (abc - abc_o) * (pqr - pqr_o)
+	axis = axis:nor()
 
-	local xz,yz
-	xz,yz = solveQuad(	a1,b1,c1,d1,e1,f1,
-						a2,b2,c2,d2,e2,f2,
-						0.00001,x0,y0)
+	--print("axis",axis)
 
-	print("xz,yz : ",xz,yz)
-	local a5,b5,c5,d5,e5,f5
-	--x^2
-	a5 = a3 * xz * xz
-	--y^2
-	b5 = b3 * yz * yz
-	--xy
-	c5 = c3 * xz * yz
-	--xz
-	d5 = d3 * xz
-	--yz
-	e5 = e3 * yz
-	--z^2
-	f5 = f3 
+	local rot_o = abc_o - axis ^ abc * axis
+	local rot_d = abc - axis ^ abc * axis
+	rot_o = rot_o:len()
+	rot_d = rot_d:len()
+	local cos = rot_o ^ rot_d
+	local th = math.acos(cos)
+	--print("th = ",th)
 
-	local x,y,z,a,b,c,p,q,r
-	z = math.sqrt(hL^2/(a5+b5+c5+d5+e5+f5))
-	x = xz * z
-	y = yz * z
+	local quater = Qua:createFromRotation(axis,th)
 
-	return {translation = Vec3:create(-x,y,z), rotation = Vec3:create(), quaternion = Qua:create()}
+	--[[ print check
+	print("z1 = ",z1)
+	print("z2 = ",z2)
+	print("constrain = ",constrain)
+
+	print("loc = ",loc)
+	print("abc = ",abc,"len = ",abc:len())
+	print("pqr = ",pqr,"len = ",pqr:len())
+	print("quater = ",quater)
+	--]]
+
+	local dir = abc * pqr
+	dir = dir:nor()
+	--local dir = abc 
+
+	--return {translation = loc, rotation = dir, quaternion = dir}
+	return {translation = loc, rotation = dir, quaternion = quater}
+	--return {translation = loc, rotation = axis, quaternion = quater}
 end

@@ -5,7 +5,8 @@ function solveQuad(a1,b1,c1,d1,e1,f1,
 	-- solve equations:
 	-- a1x^2 + b1y^2 + c1xy + d1x + e1y + f1 = 0
 	-- a2x^2 + b2y^2 + c2xy + d2x + e2y + f2 = 0
-	-- try starts from x0,y0
+	-- try starts from x0,y0,(0,0) default, until err < standard
+	-- if count > XXXX (specified in line 50), considered no solution
 
 	local count = count or 1
 

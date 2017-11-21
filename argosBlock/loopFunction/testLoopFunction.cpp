@@ -171,8 +171,8 @@ void testLoopFunction::Init(TConfigurationNode& t_tree)
 {
 	//namelist = fopen("loopFunction/data/exp-13-passed.txt","r");
 	//namelist = fopen("../data/exp-13-passed.txt","r");
-	//namelist = fopen("../data/exp-11-passed.txt","r");
-	namelist = fopen("../data/exp-16-passed.txt","r");
+	namelist = fopen("../data/exp-11-passed.txt","r");
+	//namelist = fopen("../data/exp-16-passed.txt","r");
 	//namelist = fopen("../data/exp-10-failed.txt","r");
 	if (namelist == NULL)
 	{

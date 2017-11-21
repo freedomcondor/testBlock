@@ -1,15 +1,6 @@
-luaPath_gl = ';../lua/'
-luaPath_ar = ';../../lua/'
-package.cpath = package.cpath .. luaPath_gl .. 'solvepnp/build/?.so'		-- for opengl testbench
-package.cpath = package.cpath .. luaPath_ar .. 'solvepnp/build/?.so'	-- for argos testbench
 require("libsolvepnp")
+require("solveSquare4")
 
-package.path = package.path .. luaPath_gl .. '/solveSqu/?.lua'
-package.path = package.path .. luaPath_ar .. '/solveSqu/?.lua'
-require("solveSquare3")
-
-package.path = package.path .. luaPath_gl .. 'math/?.lua'		-- for opengl testbench
-package.path = package.path .. luaPath_ar .. 'math/?.lua'	-- for argos testbench
 local Vec3 = require("Vector3")
 local Qua = require("Quaternion")
 
@@ -22,15 +13,19 @@ function calTagPos(tag)
 		--				2 = {x = xx, y = xx}
 		--			}
 
-	--for i = 1,4 do
-	--	print("\t\ttagcorner",i,"x = ",tag.corners[i].x,"y = ",tag.corners[i].y) end
+									--[[ check corners
+										for i = 1,4 do
+											print("\t\ttagcorner",i,"x = ",tag.corners[i].x,
+																	"y = ",tag.corners[i].y) 
+										end
+									--]]
 
 	tag.corners.halfL = tag.halfL;
 	res_cv = libsolvepnp.solvepnp(tag.corners)
 	resSqu = solveSquare(	tag.corners,
 							tag.halfL * 2,
-							{883.9614,883.9614,319.5000,179.5000},
-							{0.018433,0.16727,0,0,-1.548088})
+							{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
+							{0.018433,0.16727,0,0,-1.548088})			-- distort para
 
 		--[[
 			res has: 	translation x,y,z
@@ -51,7 +46,7 @@ function calTagPos(tag)
 	resCV.translation = Vec3:create(x,y,z)
 
 
-	-- scale
+	-- scale , not needed
 	scale = 1
 	resCV.translation = resCV.translation * scale
 	resSqu.translation = resSqu.translation * scale
@@ -64,8 +59,8 @@ function calTagPos(tag)
 	local th = math.sqrt(x * x + y * y + z * z)
 	local rotqq = Qua:createFromRotation(x,y,z,th)
 
-	--print("CV's rotation axis",x/th,y/th,z/th)
-	--print("Squ's rotation axis",resSqu.rotation)
+									--print("CV's rotation axis",x/th,y/th,z/th)
+									--print("Squ's rotation axis",resSqu.rotation)
 
 	resCV.quaternion = rotqq
 	-- because quaternion has q.v.x q.v.y q.v.z and q.w, need to generate q.x q.y q.z
@@ -86,32 +81,29 @@ function calTagPos(tag)
 	resCV.rotation = dirCV
 	--resSqu.rotation = dirSqu
 
-	---[[ print check the location
-	print("solvepnp res loc:",resCV.translation)
-	print("solveSqu res loc:",resSqu.translation)
-	print("ss")
-	--]]
+									---[[ print check the location
+										print("solvepnp res loc:",resCV.translation)
+										print("solveSqu res loc:",resSqu.translation)
+										print("------")
+									--]]
 
-	--[[ print check the quaternion
-	print("solvepnp res qua:",resCV.quaternion)
-	print("solveSqu res qua:",resSqu.quaternion)
+									--[[ print check the quaternion
+										print("solvepnp res qua:",resCV.quaternion)
+										print("solveSqu res qua:",resSqu.quaternion)
 
-	print("solvepnp res dire:",resCV.rotation)
-	print("solveSqu res dire:",resSqu.rotation)
-	--]]
+										print("solvepnp res dire:",resCV.rotation)
+										print("solveSqu res dire:",resSqu.rotation)
+									--]]
 
-	--[[
-	print("\t\tin lua result: ",res.rotation.x)
-	print("\t\tin lua result: ",res.rotation.y)
-	print("\t\tin lua result: ",res.rotation.z)
-	print("\t\tin lua result: ",res.translation.x)
-	print("\t\tin lua result: ",res.translation.y)
-	print("\t\tin lua result: ",res.translation.z)
-	--]]
-	resCV.translation = resSqu.translation
-	return resCV
-	--resSqu.quaternion = resCV.quaternion
-	--return resSqu
-
+									--[[
+										print("\t\tin lua result: ",res.rotation.x)
+										print("\t\tin lua result: ",res.rotation.y)
+										print("\t\tin lua result: ",res.rotation.z)
+										print("\t\tin lua result: ",res.translation.x)
+										print("\t\tin lua result: ",res.translation.y)
+										print("\t\tin lua result: ",res.translation.z)
+									--]]
+	resSqu.quaternion = resCV.quaternion
+	return resSqu
 	--return resCV
 end

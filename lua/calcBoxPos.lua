@@ -1,6 +1,3 @@
---package.path = package.path .. ';../lua/?.lua' 		--for opengl testbench
---package.path = package.path .. ';../../lua/?.lua'	--for argos testbench
-
 --Vec3 = require("Vector3")
 
 function calcBoxPos(pos)

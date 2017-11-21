@@ -1,9 +1,57 @@
+--print("path =",luaPath_gl)
+--package.path = package.path .. luaPath_gl .. 'math/?.lua'
+--package.path = package.path .. luaPath_ar .. 'math/?.lua'
+-- math should add to package.path
 Vec = require("Vector")
 Vec3 = require("Vector3")
 Mat = require("Matrix")
 Qua = require("Quaternion")
 
 require("solveQuad")
+
+--[[
+function sort(_set)
+	local set = {n = _set.n}
+	local n = _set.n
+	for i = 1, n do
+		set[i] = _set[i]
+	end
+
+	local t
+	for i = 1 , n-1 do
+		for j = i+1, n do
+			if set[i] < set[j] then
+				t = set[i]
+				set[i] = set[j]
+				set[j] = t
+			end
+		end
+	end
+	return set
+end
+
+function medianSet(set,y)
+	y = y or 2
+	local sorted = sort(set)
+	local c = {n = math.ceil(sorted.n/y)}
+	for i = 1,c.n do
+		c[i] = sorted[math.ceil(set.n/2) - math.ceil(set.n/y) + i]
+	end
+	return c
+end
+
+function median(set)
+	local sorted = sort(set)
+	return sorted[sorted.n/2]
+end
+function average(set)
+	local sum = 0
+	for i = 1,set.n do
+		sum = sum+set[i]
+	end
+	return sum/set.n
+end
+--]]
 
 function solveSquare(_uv,_L,camera,distort)
 	--[[
@@ -129,6 +177,15 @@ function solveSquare(_uv,_L,camera,distort)
 	u1 = u1 or 1; v1 = v1 or 1; u2 = u2 or 1; v2 = v2 or 1;
 	u3 = u3 or 1; v3 = v3 or 1; u4 = u4 or 1; v4 = v4 or 1;
 
+	--[[ fake a data to debug
+	local ttt = 100
+	u0 = 0; v0 = 0
+	u1 = ttt; v1 = ttt
+	u2 = ttt; v2 = -ttt
+	u3 = -ttt; v3 = -ttt
+	u4 = -ttt; v4 = ttt
+	--]]
+
 	--[[ print check
 	print("ku = ",ku); print("kv = ",kv); print("u0 = ",u0); print("v0 = ",v0);
 	print("u1 = ",u1); print("v1 = ",v1); print("u2 = ",u2); print("v2 = ",v2);
@@ -158,22 +215,26 @@ function solveSquare(_uv,_L,camera,distort)
 
 	local B = A:exc(3,9,'col')
 	B = B:dia()
-	local c0 = -B[6][9]/B[6][6]
-	local r0 = -B[3][9]/B[3][3]
+	local x0 = -B[1][9]/B[1][1]
+	local y0 = -B[2][9]/B[2][2]
 
-	-- drop the last two rows
-	A.n = 6; A[7] = nil; A[9] = nil;
-	-- move c,r,z to the last three cols
+	A = A:exc(6,7)
+	A.n = 6
+
+	A = A:exc(1,7,'col')
+	A = A:exc(2,8,'col')
 	A = A:exc(3,9,'col')
-	A = A:exc(3,8,'col')
-	A = A:exc(6,7,'col')
-	--  x y q a b p c r z
+	--  p q r a b c x y z
+	--A = A:exc(1,6,'col')
+	--	z q r a b p x y z
+	--A = A:exc(2,3,'col')
+	--	z r q a b p x y z
 
-	-- make A into diagonal matrix
+	--local res1,exc,success = AB:tri()
 	local res,exc,success = A:dia()
 	local Ks = res:takeDia()
-	local Cs = res:takeVec(7,"col")
-	local Rs = res:takeVec(8,"col")
+	local Xs = res:takeVec(7,"col")
+	local Ys = res:takeVec(8,"col")
 	local Zs = res:takeVec(9,"col")
 	
 	--[[ print check A and B
@@ -183,85 +244,74 @@ function solveSquare(_uv,_L,camera,distort)
 	print("exc=",exc)
 	print("success=",success)
 	print("Ks = ",Ks)
-	print("Cs = ",Cs)
-	print("Rs = ",Rs)
+	print("Xs = ",Xs)
+	print("Ys = ",Ys)
 	print("Zs = ",Zs)
 	--]]
 	---[[
 
-	------------linar equation no solution --------------------
+	------------ no solution --------------------
 	if success == false then
 		-- to be filled
 		return nil -- ?
 	end
 	---------------------------------------------
 
-	local ac,ar,az,bc,br,bz,xc,xr,xz
-	local pc,pr,pz,qc,qr,qz,yc,yr,yz
+	local ax,ay,az,bx,by,bz,cx,cy,cz
+	local px,py,pz,qx,qy,qz,rx,ry,rz
 
-	xc = -Cs[1]/Ks[1];	xr = -Rs[1]/Ks[1];	xz = -Zs[1]/Ks[1]
-	yc = -Cs[2]/Ks[2];	yr = -Rs[2]/Ks[2];	yz = -Zs[2]/Ks[2]
-	qc = -Cs[3]/Ks[3];	qr = -Rs[3]/Ks[3];	qz = -Zs[3]/Ks[3]
-	ac = -Cs[4]/Ks[4];	ar = -Rs[4]/Ks[4];	az = -Zs[4]/Ks[4]
-	bc = -Cs[5]/Ks[5];	br = -Rs[5]/Ks[5];	bz = -Zs[5]/Ks[5]
-	pc = -Cs[6]/Ks[6];	pr = -Rs[6]/Ks[6];	pz = -Zs[6]/Ks[6]
-	-- now we have x,y,a,b,p,q to c r z
+	px = -Xs[1]/Ks[1];	py = -Ys[1]/Ks[1];	pz = -Zs[1]/Ks[1]
+	qx = -Xs[2]/Ks[2];	qy = -Ys[2]/Ks[2];	qz = -Zs[2]/Ks[2]
+	rx = -Xs[3]/Ks[3];	ry = -Ys[3]/Ks[3];	rz = -Zs[3]/Ks[3]
+	ax = -Xs[4]/Ks[4];	ay = -Ys[4]/Ks[4];	az = -Zs[4]/Ks[4]
+	bx = -Xs[5]/Ks[5];	by = -Ys[5]/Ks[5];	bz = -Zs[5]/Ks[5]
+	cx = -Xs[6]/Ks[6];	cy = -Ys[6]/Ks[6];	cz = -Zs[6]/Ks[6]
+	-- now we have a,b,c,p,q,r to x y z
 	--------- solve linar equation end ---------------------------------------
-
-	--------- solve double quadric equation ----
-		-- we have two constrains:
-		-- 		ap + bq + cr == 0 and
-		--		a^2 + b^2 + c^2 == p^2 + q^2 + r^2 == hL^2
-		-- expressed by c r z, we have two equations like:
-		-- 		Ac^2 + Br^2 + Ccr + Dcz + Erz + Fz^2 == 0
-		-- have c = cz * z,  r = rz * z, and eliminate z
-		-- we have two:
-		-- 		A1c^2 + B1r^2 + C1cr + D1c + E1r + F1 == 0
-		-- 		A2c^2 + B2r^2 + C2cr + D2c + E2r + F2 == 0
 
 	local a1,b1,c1,d1,e1,f1
 	local a2,b2,c2,d2,e2,f2
 
-	--c^2	ap			bq				cr
-	a1 = ac*pc			+bc*qc			
-	--r^2
-	b1 = ar*pr			+br*qr			
-	--cr
-	c1 = ac*pr+ar*pc	+bc*qr+br*qc	+1
-	--cz
-	d1 = ac*pz+az*pc	+bc*qz+bz*qc	
-	--rz
-	e1 = ar*pz+az*pr	+br*qz+bz*qr 	
+	--x^2	ap			bq				cr
+	a1 = ax*px			+bx*qx			+cx*rx;
+	--y^2
+	b1 = ay*py			+by*qy			+cy*ry;
+	--xy
+	c1 = ax*py+ay*px	+bx*qy+by*qx	+cx*ry+cy*rx	
+	--xz
+	d1 = ax*pz+az*px	+bx*qz+bz*qx	+cx*rz+cz*rx
+	--yz
+	e1 = ay*pz+az*py	+by*qz+bz*qy 	+cy*rz+cz*ry
 	--z^2
-	f1 = az*pz			+bz*qz			
+	f1 = az*pz			+bz*qz			+cz*rz
 
 	local a3,b3,c3,d3,e3,f3
 	local a4,b4,c4,d4,e4,f4
-	--c^2	aa			bb				cc
-	a3 = ac*ac			+bc*bc			+1;
-	--r^2
-	b3 = ar*ar			+br*br			
-	--cr
-	c3 = ac*ar+ar*ac	+bc*br+br*bc		
-	--cz
-	d3 = ac*az+az*ac	+bc*bz+bz*bc	
-	--rz
-	e3 = ar*az+az*ar	+br*bz+bz*br 	
+	--x^2	aa			bb				cc
+	a3 = ax*ax			+bx*bx			+cx*cx;
+	--y^2
+	b3 = ay*ay			+by*by			+cy*cy;
+	--xy
+	c3 = ax*ay+ay*ax	+bx*by+by*bx	+cx*cy+cy*cx	
+	--xz
+	d3 = ax*az+az*ax	+bx*bz+bz*bx	+cx*cz+cz*cx
+	--yz
+	e3 = ay*az+az*ay	+by*bz+bz*by 	+cy*cz+cz*cy
 	--z^2
-	f3 = az*az			+bz*bz			
+	f3 = az*az			+bz*bz			+cz*cz
 
-	--c^2	pp			qq				rr
-	a4 = pc*pc			+qc*qc			;
-	--r^2
-	b4 = pr*pr			+qr*qr			+1;
-	--cr
-	c4 = pc*pr+pr*pc	+qc*qr+qr*qc		
-	--cz
-	d4 = pc*pz+pz*pc	+qc*qz+qz*qc	
-	--rz
-	e4 = pr*pz+pz*pr	+qr*qz+qz*qr 	
+	--x^2	pp			qq				rr
+	a4 = px*px			+qx*qx			+rx*rx;
+	--y^2
+	b4 = py*py			+qy*qy			+ry*ry;
+	--xy
+	c4 = px*py+py*px	+qx*qy+qy*qx	+rx*ry+ry*rx	
+	--xz
+	d4 = px*pz+pz*px	+qx*qz+qz*qx	+rx*rz+rz*rx
+	--yz
+	e4 = py*pz+pz*py	+qy*qz+qz*qy 	+ry*rz+rz*ry
 	--z^2
-	f4 = pz*pz			+qz*qz			
+	f4 = pz*pz			+qz*qz			+rz*rz
 
 	a2 = a3-a4
 	b2 = b3-b4
@@ -270,45 +320,30 @@ function solveSquare(_uv,_L,camera,distort)
 	e2 = e3-e4
 	f2 = f3-f4
 
-	local cz,rz
-	cz,rz = solveQuad(	a1,b1,c1,d1,e1,f1,
+	local xz,yz
+	xz,yz = solveQuad(	a1,b1,c1,d1,e1,f1,
 						a2,b2,c2,d2,e2,f2,
-						0.0000000001,c0,r0)
+						0.00001,x0,y0)
 
+	print("xz,yz : ",xz,yz)
 	local a5,b5,c5,d5,e5,f5
-	--c^2
-	a5 = a3 * cz * cz
-	--r^2
-	b5 = b3 * rz * rz
-	--cr
-	c5 = c3 * cz * rz
-	--cz
-	d5 = d3 * cz
-	--rz
-	e5 = e3 * rz
+	--x^2
+	a5 = a3 * xz * xz
+	--y^2
+	b5 = b3 * yz * yz
+	--xy
+	c5 = c3 * xz * yz
+	--xz
+	d5 = d3 * xz
+	--yz
+	e5 = e3 * yz
 	--z^2
 	f5 = f3 
 
 	local x,y,z,a,b,c,p,q,r
 	z = math.sqrt(hL^2/(a5+b5+c5+d5+e5+f5))
+	x = xz * z
+	y = yz * z
 
-	c = cz * z
-	r = rz * z
-	x = xc * c + xr * r + xz * z
-	y = yc * c + yr * r + yz * z
-	a = ac * c + ar * r + az * z
-	b = bc * c + br * r + bz * z
-	p = pc * c + pr * r + pz * z
-	q = qc * c + qr * r + qz * z
-
-	-- got x y z a b c p q r
-	-- left hand before
-	--------------------------------------
-	-- right hand below
-	local loc = Vec3:create(-x,y,z)
-	local abc = Vec3:create(-a,b,c)
-	local pqr = Vec3:create(-p,q,r)
-	local dir = abc * pqr
-
-	return {translation = loc, rotation = dir, quaternion = Qua:create()}
+	return {translation = Vec3:create(-x,y,z), rotation = Vec3:create(), quaternion = Qua:create()}
 end
