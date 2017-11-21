@@ -139,8 +139,9 @@ function solveSquare(_uv,_L,camera,distort)
 	----------------------------------------------------------
 	-- trick starts
 
-	-------------------------------------------------------------------------------
-	-- solve equation dymatically--------------------------------------------------
+	-------------------------------------------------------------------------------------
+	-- solve linar equation dymatically--------------------------------------------------
+		-- to express all in c r z
 	local A = Mat:create(8,9,
 		-- 	x		y 		z		a		b		c		p		q		r
 		{ {	-ku,	0,		u1-u0,	-ku,	0,		u1-u0,	-ku,	0,		u1-u0	},
@@ -160,6 +161,7 @@ function solveSquare(_uv,_L,camera,distort)
 	B = B:dia()
 	local c0 = -B[6][9]/B[6][6]
 	local r0 = -B[3][9]/B[3][3]
+		-- got a c/z and r/z proximately, for quadric solving later
 
 	-- drop the last two rows
 	A.n = 6; A[7] = nil; A[9] = nil;
@@ -168,30 +170,31 @@ function solveSquare(_uv,_L,camera,distort)
 	A = A:exc(3,8,'col')
 	A = A:exc(6,7,'col')
 	--  x y q a b p c r z
+	--	6 rows left
 
-	-- make A into diagonal matrix
+	-- make A into diagonal matrix (6*6 diag and cols of c,r,z)
 	local res,exc,success = A:dia()
 	local Ks = res:takeDia()
 	local Cs = res:takeVec(7,"col")
 	local Rs = res:takeVec(8,"col")
 	local Zs = res:takeVec(9,"col")
 	
-	--[[ print check A and B
-	print("A=",A)
-	print("res1=",res1)
-	print("res=",res)
-	print("exc=",exc)
-	print("success=",success)
-	print("Ks = ",Ks)
-	print("Cs = ",Cs)
-	print("Rs = ",Rs)
-	print("Zs = ",Zs)
-	--]]
-	---[[
+											--[[ print check A and B
+												print("A=",A)
+												print("res1=",res1)
+												print("res=",res)
+												print("exc=",exc)
+												print("success=",success)
+												print("Ks = ",Ks)
+												print("Cs = ",Cs)
+												print("Rs = ",Rs)
+												print("Zs = ",Zs)
+											--]]
 
 	------------linar equation no solution --------------------
 	if success == false then
 		-- to be filled
+		print("solve linar equations failed")
 		return nil -- ?
 	end
 	---------------------------------------------
@@ -275,6 +278,12 @@ function solveSquare(_uv,_L,camera,distort)
 						a2,b2,c2,d2,e2,f2,
 						0.0000000001,c0,r0)
 
+	--- if failed
+	if cz == nil or rz == nil then
+		print("solve quad equations failed")
+		return nil
+	end
+
 	local a5,b5,c5,d5,e5,f5
 	--c^2
 	a5 = a3 * cz * cz
@@ -308,7 +317,38 @@ function solveSquare(_uv,_L,camera,distort)
 	local loc = Vec3:create(-x,y,z)
 	local abc = Vec3:create(-a,b,c)
 	local pqr = Vec3:create(-p,q,r)
-	local dir = abc * pqr
+	local dir = abc * pqr		
 
-	return {translation = loc, rotation = dir, quaternion = Qua:create()}
+	--[[ some thing wrong
+		-- dir is supposed to point outside the tags/boxes
+	if dir.z > 0 then
+		local temp = abc
+		abc = pqr
+		pqr = temp
+	end
+	dir = abc * pqr
+	--]]
+	dir = dir:nor()
+
+	--- Calc Quaternion
+	abc = abc:nor()
+	pqr = pqr:nor()
+	local abc_o = Vec3:create(0,-1,0)
+	local pqr_o = Vec3:create(1,0,0)
+	local axis = (abc - abc_o) * (pqr - pqr_o)
+	axis = axis:nor()
+
+	local rot_o = abc_o - axis ^ abc * axis
+	local rot_d = abc - axis ^ abc * axis
+	rot_o = rot_o:len()
+	rot_d = rot_d:len()
+	local cos = rot_o ^ rot_d
+	local th = math.acos(cos)
+	th = math.pi - th
+
+	local quater = Qua:createFromRotation(axis,th)
+	--- quaternion got ----------------
+	-----------------------------------
+	
+	return {translation = loc, rotation = dir, quaternion = quater}
 end

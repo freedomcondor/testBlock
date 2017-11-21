@@ -28,6 +28,7 @@ function calTagPos(tag)
 							{0.018433,0.16727,0,0,-1.548088})			-- distort para
 
 		--[[
+			for libsolvepnp
 			res has: 	translation x,y,z
 						rotation x,y,z which is solvepnp returns
 
@@ -36,6 +37,12 @@ function calTagPos(tag)
 
 			-- expecting right hand (from z look down, x to y is counter-clock)
 				-- but opencv is left hand, left to right should be converted in lua libsolvepnp
+		--]]
+		--[[
+			for solveSqu
+			res has: 	translation = <a vector>
+						rotation = <a vector>means: the direction of the tag
+						quaternion = <a quaternion>
 		--]]
 
 	--  transform res_cv.xyz into resCV.translation<a vector>
@@ -58,12 +65,25 @@ function calTagPos(tag)
 	z = res_cv.rotation.z
 	local th = math.sqrt(x * x + y * y + z * z)
 	local rotqq = Qua:createFromRotation(x,y,z,th)
-
-									--print("CV's rotation axis",x/th,y/th,z/th)
-									--print("Squ's rotation axis",resSqu.rotation)
-
 	resCV.quaternion = rotqq
-	-- because quaternion has q.v.x q.v.y q.v.z and q.w, need to generate q.x q.y q.z
+
+									--[[ check quaternion   rotation axis
+										--print("CV's axis",Vec3:create(x,y,z):nor())
+											-- in solveSqu.lua, give rotation the axis
+										--print("Squ's axis v",resSqu.rotation)
+
+										--print("CV's quaternion v",rotqq.v:nor())
+										--print("Squ's quaternion v",resSqu.quaternion.v:nor())
+
+										print("CV's  quaternion",rotqq)
+										print("Squ's quaternion",resSqu.quaternion)
+
+										--print("opencv th",th)
+									--]]
+
+	-- for testbench asks q.x, q.y, q.z, q.w
+		-- but quaternion has q.v.x q.v.y q.v.z and q.w, 
+		--need to generate q.x q.y q.z 
 	resCV.quaternion.x = rotqq.v.x
 	resCV.quaternion.y = rotqq.v.y
 	resCV.quaternion.z = rotqq.v.z
@@ -72,16 +92,19 @@ function calTagPos(tag)
 	resSqu.quaternion.y = resSqu.quaternion.v.y
 	resSqu.quaternion.z = resSqu.quaternion.v.z
 
-	-- generate rotation direct
+	-- generate opencv's rotation direct
 	local dir = Vec3:create(0,0,1)
 	local dirCV = dir:rotatedby(resCV.quaternion)
-	--local dirSqu = dir:rotatedby(resSqu.quaternion)
-		-- dir is a vector
-
 	resCV.rotation = dirCV
-	--resSqu.rotation = dirSqu
+
+	--resSqu.rotation = dir:rotatedby(resSqu.quaternion)
+
 
 									---[[ print check the location
+										print("CV's  dir",resCV.rotation)
+											-- in solveSqu.lua, give rotation the axis
+										print("Squ's dir",resSqu.rotation)
+
 										print("solvepnp res loc:",resCV.translation)
 										print("solveSqu res loc:",resSqu.translation)
 										print("------")
