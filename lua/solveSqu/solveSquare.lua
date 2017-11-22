@@ -142,6 +142,7 @@ function solveSquare(_uv,_L,camera,distort)
 	-------------------------------------------------------------------------------------
 	-- solve linar equation dymatically--------------------------------------------------
 		-- to express all in c r z
+		-- all left hand
 	local A = Mat:create(8,9,
 		-- 	x		y 		z		a		b		c		p		q		r
 		{ {	-ku,	0,		u1-u0,	-ku,	0,		u1-u0,	-ku,	0,		u1-u0	},
@@ -328,6 +329,7 @@ function solveSquare(_uv,_L,camera,distort)
 	end
 	dir = abc * pqr
 	--]]
+
 	dir = dir:nor()
 
 	--- Calc Quaternion
@@ -340,11 +342,11 @@ function solveSquare(_uv,_L,camera,distort)
 
 	local rot_o = abc_o - axis ^ abc * axis
 	local rot_d = abc - axis ^ abc * axis
-	rot_o = rot_o:len()
-	rot_d = rot_d:len()
+	rot_o = rot_o:nor()
+	rot_d = rot_d:nor()
 	local cos = rot_o ^ rot_d
+	axis = rot_o * rot_d
 	local th = math.acos(cos)
-	th = math.pi - th
 
 	local quater = Qua:createFromRotation(axis,th)
 	--- quaternion got ----------------

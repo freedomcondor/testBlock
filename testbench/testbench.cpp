@@ -169,6 +169,7 @@ int testbench_step(char charFileName[])
 						//printf("tags: %d\n: ",zarray_size(psDetections));
 	for (j = 0; j < zarray_size(psDetections); j++)
 	{
+		// for every tag : 
 		apriltag_detection_t *psDetection;
 		zarray_get(psDetections, j, &psDetection);
 
@@ -469,7 +470,14 @@ int testbench_step(char charFileName[])
 			x_temp = psDetection->p[k][1];
 			y_temp = psDetection->p[k][0];
 			//drawCross(imageRGB,x_temp,y_temp,"blue");
-			drawCross(imageRGB,x_temp,y_temp,"red");
+			if (k == 0)
+				drawCross(imageRGB,x_temp,y_temp,"red");
+			if (k == 1)
+				drawCross(imageRGB,x_temp,y_temp,"blue");
+			if (k == 2)
+				drawCross(imageRGB,x_temp,y_temp,"green");
+			if (k == 3)
+				drawCross(imageRGB,x_temp,y_temp,"red");
 		}
 
 		// draw 3D point, using boxes_pos and tags_pos

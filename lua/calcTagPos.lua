@@ -93,14 +93,28 @@ function calTagPos(tag)
 	resSqu.quaternion.z = resSqu.quaternion.v.z
 
 	-- generate opencv's rotation direct
-	local dir = Vec3:create(0,0,1)
-	local dirCV = dir:rotatedby(resCV.quaternion)
+	local znor = Vec3:create(0,0,1)
+	local dirCV = znor:rotatedby(resCV.quaternion)
 	resCV.rotation = dirCV
 
-	--resSqu.rotation = dir:rotatedby(resSqu.quaternion)
+	resSqu.rotation = znor:rotatedby(resSqu.quaternion)
+		-- use qua to calc rotation again, 
+		--so that if quaternion is wrong, we can see that explicitly
 
 
-									---[[ print check the location
+									--[[
+										if resCV.rotation.z < 0 then
+											print("rescv .rotation", resCV.rotation)
+										else
+											print("rescv .rotation", resCV.rotation,"============")
+										end
+										if resCV.rotation.z < 0 then
+											print("ressqu.rotation", resSqu.rotation)
+										else
+											print("ressqu.rotation", resSqu.rotation,"============")
+										end
+									--]]
+									--[[ print check the location
 										print("CV's  dir",resCV.rotation)
 											-- in solveSqu.lua, give rotation the axis
 										print("Squ's dir",resSqu.rotation)
@@ -110,12 +124,17 @@ function calTagPos(tag)
 										print("------")
 									--]]
 
-									--[[ print check the quaternion
+									---[[ print check the quaternion
 										print("solvepnp res qua:",resCV.quaternion)
 										print("solveSqu res qua:",resSqu.quaternion)
 
 										print("solvepnp res dire:",resCV.rotation)
 										print("solveSqu res dire:",resSqu.rotation)
+
+										print("solvepnp res loc:",resCV.translation)
+										print("solveSqu res loc:",resSqu.translation)
+
+										print("------")
 									--]]
 
 									--[[
@@ -126,7 +145,7 @@ function calTagPos(tag)
 										print("\t\tin lua result: ",res.translation.y)
 										print("\t\tin lua result: ",res.translation.z)
 									--]]
-	resSqu.quaternion = resCV.quaternion
+									--resSqu.quaternion = resCV.quaternion
 	return resSqu
 	--return resCV
 end
