@@ -17,6 +17,8 @@ std::string strFileExtension(".png");
 int nTimestamp;
 
 Mat imageRGB, image;
+VideoCapture video1_testbench;
+int camera_flag;
 
 //double rx,ry,rz,tx,ty,tz;
 /*
@@ -64,6 +66,18 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	m_psTagFamily->black_border = 1;
 	apriltag_detector_add_family(m_psTagDetector, m_psTagFamily);
 
+	if (camera_flag == 1)
+	{
+		video1_testbench.open(0);
+		if (video1_testbench.isOpened())
+			printf("video1 open successful\n");
+		else
+		{
+			printf("video1 open failed\n");
+			camera_flag = 0;
+		}
+	}
+
 	namedWindow("output",WINDOW_NORMAL);
 	moveWindow("output",SystemWeight/2,0);
 	resizeWindow("output",SystemWeight/2,SystemHeight/2);
@@ -78,11 +92,17 @@ int testbench_step(char charFileName[])
 	char c;
 
 	//printf("%s\n",charFileName);
-	imageRGB = cv::imread(charFileName, 1);
-	if (!imageRGB.data)
+	//if (strcmp(charFileName,"camera") == 0)
+	if (camera_flag == 1)
+		video1_testbench >> imageRGB;
+	else
 	{
-		printf("load image failed\n");
-		return -1;
+		imageRGB = cv::imread(charFileName, 1);
+		if (!imageRGB.data)
+		{
+			printf("load image failed\n");
+			return -1;
+		}
 	}
 
 	//printf("step\n");
@@ -431,15 +451,30 @@ int testbench_step(char charFileName[])
 	std::vector<cv::Point3d> m_vecOriginPts;
 	m_vecOriginPts.push_back(cv::Point3d(0.0f,0.0f, 0.0f));
 
+	/*  for robot
 	const double m_fFx = 8.8396142504070610e+02;
 	const double m_fFy = 8.8396142504070610e+02;
-	/* camera principal point */
+	// camera principal point 
 	const double m_fPx = 3.1950000000000000e+02;
 	const double m_fPy = 1.7950000000000000e+02;
-	/* camera distortion coefficients */
+	// camera distortion coefficients
 	const double m_fK1 = 1.8433447851104852e-02;
 	const double m_fK2 = 1.6727474183089033e-01;
 	const double m_fK3 = -1.5480889084966631e+00;
+	*/
+
+	//* for camera
+	const double m_fFx = 939.001439;
+	const double m_fFy = 939.001439;
+	// camera principal point
+	const double m_fPx = 320;
+	const double m_fPy = 240;
+	// camera distortion coefficients
+	const double m_fK1 = -0.4117914;
+	const double m_fK2 = 5.17498964;
+	const double m_fK3 = -17.7026842;
+	//*/
+
 	/* camera matrix */
 	const cv::Matx<double, 3, 3> cCameraMatrix =
 			cv::Matx<double, 3, 3>(	m_fFx, 0.0f, m_fPx,

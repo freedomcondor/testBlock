@@ -90,26 +90,25 @@ solvepnp_EXTERNAL_OBJECTS =
 
 libsolvepnp.so: CMakeFiles/solvepnp.dir/solvepnp.cpp.o
 libsolvepnp.so: CMakeFiles/solvepnp.dir/build.make
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_ts.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_superres.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_ocl.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_gpu.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_contrib.so.2.4.9
+libsolvepnp.so: /usr/local/lib/libopencv_dnn.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_ml.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_objdetect.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_shape.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_stitching.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_superres.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_videostab.so.3.3.1
 libsolvepnp.so: /usr/lib/x86_64-linux-gnu/liblua5.2.so
 libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libm.so
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.9
-libsolvepnp.so: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.9
+libsolvepnp.so: /usr/local/lib/libopencv_calib3d.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_features2d.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_flann.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_highgui.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_photo.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_video.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_videoio.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_imgcodecs.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_imgproc.so.3.3.1
+libsolvepnp.so: /usr/local/lib/libopencv_core.so.3.3.1
 libsolvepnp.so: CMakeFiles/solvepnp.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/harry/testBlock/lua/solvepnp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared library libsolvepnp.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/solvepnp.dir/link.txt --verbose=$(VERBOSE)

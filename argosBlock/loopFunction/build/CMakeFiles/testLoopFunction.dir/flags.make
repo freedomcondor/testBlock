@@ -6,5 +6,5 @@ CXX_FLAGS = -fPIC
 
 CXX_DEFINES = -DtestLoopFunction_EXPORTS
 
-CXX_INCLUDES = -I/usr/include/opencv -I/usr/local/include/apriltag -I/usr/include/lua5.2 
+CXX_INCLUDES = -isystem /usr/local/include -isystem /usr/local/include/opencv -I/usr/local/include/apriltag -I/usr/include/lua5.2 
 

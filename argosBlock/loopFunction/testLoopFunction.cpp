@@ -177,6 +177,7 @@ void testLoopFunction::Init(TConfigurationNode& t_tree)
 	{
 		printf("open file namelist failed\n");
 	}
+	camera_flag = 1;
 	testbench_init(1920,1200);
 	/*
 	flag = 0;

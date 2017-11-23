@@ -27,6 +27,27 @@ function Quaternion:create(x,y,z,w)
 	return instance;
 end
 
+function Quaternion:createFrom4Vecs(_abc_o,_pqr_o,_abc,_pqr)
+	-- give 4 vectors, rotation from the from the first two to last two
+	local abc = _abc
+	local pqr = _pqr
+	local abc_o = _abc_o
+	local pqr_o = _pqr_o
+	local axis = (abc-abc_o) * (pqr - pqr_o)
+	axis = axis:nor()
+
+	local rot_o = abc_o - axis ^ abc * axis
+	local rot_d = abc - axis ^ abc * axis
+	rot_o = rot_o:nor()
+	rot_d = rot_d:nor()
+	local cos = rot_o ^ rot_d
+	axis = rot_o * rot_d
+	local th = math.acos(cos)
+
+	local quater = self:createFromRotation(axis,th)
+	return quater
+end
+
 function Quaternion:createFromRotation(x,y,z,th)
 	local halfth
 	local v

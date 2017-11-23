@@ -6,5 +6,5 @@ CXX_FLAGS = -fPIC
 
 CXX_DEFINES = -Dsolvepnp_EXPORTS
 
-CXX_INCLUDES = -I/usr/include/opencv -I/usr/include/lua5.2 
+CXX_INCLUDES = -isystem /usr/local/include -isystem /usr/local/include/opencv -I/usr/include/lua5.2 
 

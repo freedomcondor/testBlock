@@ -337,6 +337,8 @@ function solveSquare(_uv,_L,camera,distort)
 	pqr = pqr:nor()
 	local abc_o = Vec3:create(0,-1,0)
 	local pqr_o = Vec3:create(1,0,0)
+
+	--[[
 	local axis = (abc - abc_o) * (pqr - pqr_o)
 	axis = axis:nor()
 
@@ -347,8 +349,10 @@ function solveSquare(_uv,_L,camera,distort)
 	local cos = rot_o ^ rot_d
 	axis = rot_o * rot_d
 	local th = math.acos(cos)
+	--]]
 
-	local quater = Qua:createFromRotation(axis,th)
+	--local quater = Qua:createFromRotation(axis,th)
+	local quater = Qua:createFrom4Vecs(abc_o,pqr_o,abc,pqr)
 	--- quaternion got ----------------
 	-----------------------------------
 	

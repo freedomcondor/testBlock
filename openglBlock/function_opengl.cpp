@@ -26,6 +26,7 @@ int function_exit()
 }
 int function_init(int SystemWeight, int SystemHeight)
 {
+	camera_flag = 1;
 	testbench_init( SystemWeight, SystemHeight);
 	/*
 	herd.msg_ControltoHerd.n_dime = 2;

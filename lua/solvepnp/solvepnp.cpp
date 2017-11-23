@@ -11,15 +11,30 @@ extern "C"{
 using namespace cv;
 using namespace std;
 
+/*		robot
 const double m_fFx = 8.8396142504070610e+02;
 const double m_fFy = 8.8396142504070610e+02;
-/* camera principal point */
+// camera principal point
 const double m_fPx = 3.1950000000000000e+02;
 const double m_fPy = 1.7950000000000000e+02;
-/* camera distortion coefficients */
+// camera distortion coefficients
 const double m_fK1 = 1.8433447851104852e-02;
 const double m_fK2 = 1.6727474183089033e-01;
 const double m_fK3 = -1.5480889084966631e+00;
+*/
+
+//*		camera
+const double m_fFx = 939.001439;
+const double m_fFy = 939.001439;
+// camera principal point
+const double m_fPx = 320;
+const double m_fPy = 240;
+// camera distortion coefficients
+const double m_fK1 = -0.4117914;
+const double m_fK2 = 5.17498964;
+const double m_fK3 = -17.7026842;
+//*/
+
 /* camera matrix */
 const cv::Matx<double, 3, 3> cCameraMatrix =
       cv::Matx<double, 3, 3>(m_fFx, 0.0f, m_fPx,

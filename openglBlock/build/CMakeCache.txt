@@ -213,7 +213,7 @@ OpenCV_3RDPARTY_LIB_DIR_OPT:PATH=
 OpenCV_CONFIG_PATH:FILEPATH=/usr/share/OpenCV
 
 //The directory containing a CMake configuration file for OpenCV.
-OpenCV_DIR:PATH=/usr/share/OpenCV
+OpenCV_DIR:PATH=/usr/local/share/OpenCV
 
 //Path where debug OpenCV libraries are located
 OpenCV_LIB_DIR_DBG:PATH=
@@ -363,6 +363,8 @@ FIND_PACKAGE_MESSAGE_DETAILS_AprilTag:INTERNAL=[/usr/local/lib/libapriltag.so][/
 FIND_PACKAGE_MESSAGE_DETAILS_GLUT:INTERNAL=[/usr/lib/x86_64-linux-gnu/libglut.so][/usr/include][v()]
 //Details about finding Lua
 FIND_PACKAGE_MESSAGE_DETAILS_Lua:INTERNAL=[/usr/lib/x86_64-linux-gnu/liblua5.2.so;/usr/lib/x86_64-linux-gnu/libm.so][/usr/include/lua5.2][v5.2.4()]
+//Details about finding OpenCV
+FIND_PACKAGE_MESSAGE_DETAILS_OpenCV:INTERNAL=[/usr/local][v3.3.1()]
 //Details about finding OpenGL
 FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[/usr/lib/x86_64-linux-gnu/libGL.so][/usr/include][v()]
 //ADVANCED property for variable: GLUT_INCLUDE_DIR
