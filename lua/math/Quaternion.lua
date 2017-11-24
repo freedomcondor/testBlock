@@ -29,10 +29,11 @@ end
 
 function Quaternion:createFrom4Vecs(_abc_o,_pqr_o,_abc,_pqr)
 	-- give 4 vectors, rotation from the from the first two to last two
-	local abc = _abc
-	local pqr = _pqr
-	local abc_o = _abc_o
-	local pqr_o = _pqr_o
+	local abc = _abc:nor()
+	local pqr = _pqr:nor()
+	local abc_o = _abc_o:nor()
+	local pqr_o = _pqr_o:nor()
+
 	local axis = (abc-abc_o) * (pqr - pqr_o)
 	axis = axis:nor()
 

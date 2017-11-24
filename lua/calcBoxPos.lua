@@ -36,12 +36,13 @@ function calcBoxPos(pos)
 	--[[
 		boxes is supposed to have 
 			= {	n
-					1 = {	nTags = x
-							average = <vector>
+					1 = {	average = <vector>
 							rotation = <vector>
 							quaternion = <quaternion>
-							1 = tag No. x
-							2 = tag No. x
+
+							nTags = x
+							1 = tag = {translation, rotation, qua}
+							2 = tag
 						}
 				}
 	--]]
@@ -58,7 +59,7 @@ function calcBoxPos(pos)
 				boxes[j].average = 	(boxes[j].average * boxes[j].nTags + boxcenters[i]) / 
 									(boxes[j].nTags + 1)
 				boxes[j].nTags = boxes[j].nTags + 1
-				boxes[j][boxes[j].nTags] = i 
+				boxes[j][boxes[j].nTags] = pos[i]
 
 				flag = 1
 				break
@@ -70,11 +71,11 @@ function calcBoxPos(pos)
 			boxes.n = boxes.n + 1
 			boxes[boxes.n] = {	nTags = 1, 
 								average = boxcenters[i],
-								rotation = pos[i].rotation,
-								quaternion = pos[i].quaternion,
-								translation = boxcenters[i] * 2 - pos[i].translation,
+								--rotation = pos[i].rotation,
+								--quaternion = pos[i].quaternion,
+								--translation = boxcenters[i] * 2 - pos[i].translation,
 							 }
-			boxes[boxes.n][1] = i
+			boxes[boxes.n][1] = pos[i]
 		end
 	end
 
@@ -82,6 +83,8 @@ function calcBoxPos(pos)
 	for i = 1, boxes.n do
 		-- go through all the boxes, calc rotation and quaternion
 		calcRotation(boxes[i],pos,halfBox)
+		--print("rotation, = ",boxes[i].rotation)
+		--print("quaternion = ",boxes[i].quaternion)
 	end
 	--]]
 
@@ -98,23 +101,36 @@ function calcRotation(box,tags,halfBox)
 		2 = tag No. x
 	--]]
 	--tags is all the tags
-	if (box.nTags == 1) then
-		box.rotation = tags[box[1]].rotation
-		box.quaternion = tags[box[1]].quaternion
-		box.translation = box.average
-	elseif (box.nTags == 2) then
-		local vec1 = halfBox * (tags[box[1]].rotation:nor())
-		local vec2 = halfBox * (tags[box[2]].rotation:nor())
-		local vec = vec1 + vec2
-		local side = halfBox * (vec1 * vec2):nor()
+	box.translation = box.average
 
-		box.quaternion = Qua:createFrom4Vecs(Vec3:create(halfBox,0,halfBox),Vec3:create(0,1,0),
+	--if (box.nTags == 1) then
+	if (box.nTags == 1) or (box.nTags == 2) or (box.nTags == 3)then
+		print("tags = 1")
+		box.rotation = box[1].rotation
+		box.quaternion = box[1].quaternion
+	elseif (box.nTags == 2) then
+		print("tags = 2")
+		local vec1 = box[1].rotation:nor()
+		local vec2 = box[2].rotation:nor()
+		local vec = (vec1 + vec2):nor()
+		local side = (vec1 * vec2):nor()
+
+		print("middle, check",vec ^ side)
+		voc_o = Vec3:create(1,1,0)
+		side_o = Vec3:create(0,0,1)
+		box.quaternion = Qua:createFrom4Vecs(voc_o,side_o,vec,side)
+		print("quaternion",box.quaternion)
+		box.rotation = Vec3:create(0,0,1):rotatedby(box.quaternion)
+		print("tags = 2 end")
+	elseif (box.nTags == 3) then
+		local vec1 = box[1].rotation:nor()
+		local vec2 = box[2].rotation:nor()
+		local vec3 = box[3].rotation:nor()
+		local vec = (vec1 + vec2 + vec3):nor()
+		local side = (vec1 * vec2):nor()
+		box.quaternion = Qua:createFrom4Vecs(Vec3:create(1,1,1),Vec3:create(0,0,1),
 											 vec,				side)
 		box.rotation = Vec3:create(0,0,1):rotatedby(box.quaternion)
-	elseif (box.nTags == 3) then
-		local vec1 = halfBox * (tags[box[1]].rotation:nor())
-		local vec2 = halfBox * (tags[box[2]].rotation:nor())
-		local vec3 = halfBox * (tags[box[3]].rotation:nor())
 	else
 		print("that is incredible! you can see more than 3 dimension!")
 	end

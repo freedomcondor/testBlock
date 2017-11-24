@@ -24,8 +24,11 @@ int lastboxn = 0;
 int flagdrawtag = 0;
 int flagdrawbox = 1;
 
+double boxsize = 0.05;
+
 CVector3 cv3 = CVector3(0.4,0.4,0);
-CVector3 size3 = CVector3(0.05,0.05,0.05);
+//CVector3 size3 = CVector3(0.05,0.05,0.05);
+CVector3 size3 = CVector3(boxsize,boxsize,boxsize);
 CVector3 size3tag = CVector3(0.05,0.05,0.005);
 CQuaternion cq = CQuaternion(1,0,0,0);
 
@@ -140,9 +143,13 @@ void testLoopFunction::PreStep()
 		cv3.SetY(tags_pos[i][4]/100);
 		cv3.SetZ(tags_pos[i][5]/100);
 		*/
-		cv3.SetX(boxes_pos[i][3]);
-		cv3.SetY(boxes_pos[i][4]);
-		cv3.SetZ(boxes_pos[i][5]);
+		cv3.SetX(boxes_pos[i][3] - boxes_pos[i][0] * boxsize/2);
+		cv3.SetY(boxes_pos[i][4] - boxes_pos[i][1] * boxsize/2);
+		cv3.SetZ(boxes_pos[i][5] - boxes_pos[i][2] * boxsize/2);
+
+		//cv3.SetX(boxes_pos[i][3]);
+		//cv3.SetY(boxes_pos[i][4]);
+		//cv3.SetZ(boxes_pos[i][5]);
 
 		///*
 		cq = CQuaternion(	boxes_pos[i][9],

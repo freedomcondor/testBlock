@@ -47,7 +47,8 @@ function solveQuad(a1,b1,c1,d1,e1,f1,
 	x = x + (0-F1)/F1_del * F1_x_nor + (0-F2)/F2_del * F2_x_nor
 	y = y + (0-F1)/F1_del * F1_y_nor + (0-F2)/F2_del * F2_y_nor
 
-	if (count > 1000000) then return nil,nil end
+	--if (count > 1000000) then return nil,nil end
+	if (count > 100000) then return x,y end
 
 	return solveQuad(	a1,b1,c1,d1,e1,f1,
 				   		a2,b2,c2,d2,e2,f2,

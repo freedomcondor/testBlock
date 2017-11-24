@@ -56,6 +56,7 @@ int function_draw()
 	}
 	*/
 	double scale = 0.2;
+	if (0 == 1)
 	for (i = 0; i < tags_n; i++)
 	{
 		rx = tags_pos[i][0]/scale;
@@ -68,6 +69,28 @@ int function_draw()
 		qy = tags_pos[i][7]/scale;
 		qz = tags_pos[i][8]/scale;
 		qw = tags_pos[i][9];
+
+		//drawSphere(rx,ry,rz,0.02);
+		drawCylinder(	0.005, 0.005, 0.05,
+						tx,	ty, tz,
+						-rx,	-ry, -rz);
+		drawSphere(tx,ty,tz,0.02);
+		//drawSphere(tx+rx*0.05,ty+ry*0.05,tz+rz*0.05,0.02);
+	}
+
+	if (0 == 0)
+	for (i = 0; i < boxes_n; i++)
+	{
+		rx = boxes_pos[i][0]/scale;
+		ry = boxes_pos[i][1]/scale;
+		rz = boxes_pos[i][2]/scale;
+		tx = boxes_pos[i][3]/scale;
+		ty = boxes_pos[i][4]/scale;
+		tz = boxes_pos[i][5]/scale;
+		qx = boxes_pos[i][6]/scale;
+		qy = boxes_pos[i][7]/scale;
+		qz = boxes_pos[i][8]/scale;
+		qw = boxes_pos[i][9];
 
 		///*
 

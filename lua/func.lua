@@ -22,7 +22,7 @@ Vec3 = require("Vector3")
 
 --[[
 for every frame, build a taglist, which is a table, to lua
-taglist
+taglist, as the para of func
 {
 	timestamp = xxx
 	n = <a number> the number of tags
