@@ -18,6 +18,7 @@ package.path = package.path .. luaPath_ar .. mathPath
 
 require("calcTagPos")
 require("calcBoxPos")
+require("calcStructure")
 Vec3 = require("Vector3")
 
 --[[
@@ -99,19 +100,38 @@ function func(tagList)
 									--print("translation:",pos[i].translation)
 									--print("rotation:",pos[i].rotation)
 	end
-
-	-- Calc postion of boxes ----------------------------------
-	pos.halfBox = halfBox
-	boxes = calcBoxPos(pos)
-
-	-- Calc structure ?
-	-- to be filled
-
-	return {tags = pos,boxes = boxes}
-	--return pos
 	--[[
 		-- pos have
 		pos.n
 		pos[1] = {rotation.x/y/z, translation.x/y/z, quaternion x,y,z,w}
 	--]]
+
+	-- Calc postion of boxes ----------------------------------
+	pos.halfBox = halfBox
+	boxes = calcBoxPos(pos)
+									--print("boxes n : ",boxes.n)
+	--[[
+		boxes has
+		{
+			n
+			1 = {
+					translation
+					rotation
+					quaternion
+					average
+
+					nTags
+					1 = <atag> {translation, rotation, quaternion}
+					2
+				}
+		}
+	--]]
+
+	-- Calc structure ?
+	boxes.halfBox = halfBox
+	structures = calcStructure(boxes)
+
+									print("structures n : ",structures.n)
+
+	return {tags = pos,boxes = boxes}
 end

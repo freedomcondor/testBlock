@@ -50,6 +50,7 @@ function calcBoxPos(pos)
 	local flag
 	for i = 1, pos.n do
 		-- go through all the tags, focal tag is boxcenters[i]
+		-- j should have a local?
 		j = 1; flag = 0 
 		while j <= boxes.n do
 			-- go through all the known boxes
@@ -105,23 +106,23 @@ function calcRotation(box,tags,halfBox)
 
 	--if (box.nTags == 1) then
 	if (box.nTags == 1) or (box.nTags == 2) or (box.nTags == 3)then
-		print("tags = 1")
+													--print("tags = 1")
 		box.rotation = box[1].rotation
 		box.quaternion = box[1].quaternion
 	elseif (box.nTags == 2) then
-		print("tags = 2")
+													--print("tags = 2")
 		local vec1 = box[1].rotation:nor()
 		local vec2 = box[2].rotation:nor()
 		local vec = (vec1 + vec2):nor()
 		local side = (vec1 * vec2):nor()
 
-		print("middle, check",vec ^ side)
+										--print("middle, check",vec ^ side)
 		voc_o = Vec3:create(1,1,0)
 		side_o = Vec3:create(0,0,1)
 		box.quaternion = Qua:createFrom4Vecs(voc_o,side_o,vec,side)
-		print("quaternion",box.quaternion)
+										--print("quaternion",box.quaternion)
 		box.rotation = Vec3:create(0,0,1):rotatedby(box.quaternion)
-		print("tags = 2 end")
+													--print("tags = 2 end")
 	elseif (box.nTags == 3) then
 		local vec1 = box[1].rotation:nor()
 		local vec2 = box[2].rotation:nor()
