@@ -16,9 +16,11 @@ package.cpath = package.cpath .. luaPath_ar .. solvepnpPath
 package.path = package.path .. luaPath_ar .. solveSquPath
 package.path = package.path .. luaPath_ar .. mathPath
 
-require("calcTagPos")
-require("calcBoxPos")
-require("calcStructure")
+--require("calcTagPos")
+--require("calcBoxPos")
+--require("calcStructure")
+require("calcPos")
+require("tracking")
 Vec3 = require("Vector3")
 
 --[[
@@ -30,7 +32,7 @@ taglist, as the para of func
 	1 = <a table> which is a tag
 	    {
    			center = {x = **, y = **}
-			corner = <a table>
+			corners = <a table>
 					{
 						1 = {x = **, y = **}
 						2
@@ -45,7 +47,21 @@ taglist, as the para of func
 }
 --]]
 
-function func(tagList)
+local halfTag = 0.012
+local halfBox = 0.0275
+local tags = {n = 0,label = {}}
+local boxes = {n = 0}
+local structures = {n = 0}
+--[[
+	for every tag or box, should have 
+		location and rotation
+		last step location and rotation
+		a velocity
+		a tracking status = tracking/lost/new
+		label
+--]]
+
+function func(tags_seeing)
 	--[[
 	-- tagList has:
 		{
@@ -62,6 +78,8 @@ function func(tagList)
 		}
 	--]]
 
+	trackingTags(tags,tags_seeing)
+
 									--[[ -- for testing tagList
 										print(a.timestamp)
 										print(a.n)
@@ -76,20 +94,16 @@ function func(tagList)
 											end
 										end
 									--]]
-
-	local halfTag = 0.012
-	local halfBox = 0.0275
 		-- expected unit is meter
 
 	-- Calc position of tags ------------------------------------
 	--print("tagList got:",tagList.n,"tags")
 
-	local pos = {n = tagList.n}
-	for i = 1, tagList.n do
+	for i = 1, tags.n do
 									--print("\tfor the",i,"tag")
 
-		tagList[i].halfL = halfTag
-		pos[i] = calTagPos(tagList[i])
+		tags[i].halfL = halfTag
+		local pos = calTagPos(tags[i])
 			-- calTagPos returns a table (for each tag)
 				-- {rotation = {x=,y=,z=}  <a vector> the direction vector of the tag, 
 					-- seems to point outside the box
@@ -99,6 +113,32 @@ function func(tagList)
 									--print("length",pos[i].translation:len())
 									--print("translation:",pos[i].translation)
 									--print("rotation:",pos[i].rotation)
+		if tags[i].tracking == "new" or
+		   (tags[i].translation - pos.translation):len() < 0.05 then
+			tags[i].rotation = pos.rotation
+			tags[i].translation = pos.translation
+			tags[i].quaternion = pos.quaternion
+		end
+		if (tags[i].translation - pos.translation):len() > 0.05 then
+			if tags[i].tracking == "found" then
+				print("somelost found")
+				tags[i].rotation = pos.rotation
+				tags[i].translation = pos.translation
+				tags[i].quaternion = pos.quaternion
+			else
+				print("someone jumped")
+				if (tags[i].tracking ~= "jumping") then
+					tags[i].tracking = "jumping"
+					tags[i].jumpcount = 0
+				else
+					tags[i].jumpcount = tags[i].jumpcount + 1
+					if tags[i].jumpcount >= 5 then
+						tags[i].tracking = "lost"
+						tags[i].lostcount = 0
+					end
+				end
+			end
+		end
 	end
 	--[[
 		-- pos have
@@ -107,8 +147,8 @@ function func(tagList)
 	--]]
 
 	-- Calc postion of boxes ----------------------------------
-	pos.halfBox = halfBox
-	boxes = calcBoxPos(pos)
+	tags.halfBox = halfBox
+	local boxes_seeing = calcBoxPos(tags)
 									--print("boxes n : ",boxes.n)
 	--[[
 		boxes has
@@ -128,11 +168,11 @@ function func(tagList)
 	--]]
 
 	-- Calc structure ?
-	boxes.halfBox = halfBox
-	structures = calcStructure(boxes)
-
-									print("structures n : ",structures.n)
+	boxes_seeing.halfBox = halfBox
+	local structures_seeing = calcStructure(boxes_seeing) 
+									print("structures n : ",structures_seeing.n)
 									print("-----------------------------")
 
-	return {tags = pos,boxes = boxes}
+	--return {tags = tags_seeing,boxes = boxes_seeing}
+	return {tags = tags,boxes = boxes_seeing}
 end

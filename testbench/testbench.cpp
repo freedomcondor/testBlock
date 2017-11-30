@@ -262,7 +262,7 @@ int testbench_step(char charFileName[])
 
 	/////////////// lua take lua function result ///////////////////////
 		// the result should be the structure of the blocks
-	int n;
+	int n,label[50];
 	double rx,ry,rz,tx,ty,tz,qx,qy,qz,qw;	// made global
 	//printf("in C\n");
 	if (lua_istable(L,1))
@@ -340,6 +340,11 @@ int testbench_step(char charFileName[])
 					lua_gettable(L,-2);			//stack 4 now is the value
 					qw = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
+				lua_pop(L,1);			// here goes stack 3
+
+				lua_pushstring(L,"label");	
+				lua_gettable(L,-2);	
+				label[i] = lua_tonumber(L,-1);
 				lua_pop(L,1);			// here goes stack 3
 			lua_pop(L,1);				// goes stack 2
 
@@ -496,8 +501,10 @@ int testbench_step(char charFileName[])
 		cv::Matx<double, 5, 1>(m_fK1, m_fK2, 0.0f, 0.0f, m_fK3);
 	std::vector<cv::Point2d> vecBlockCentrePixel;
 
+	char colour[10];
 
 	for (j = 0; j < zarray_size(psDetections); j++)
+	//for (j = 0; j < tags_n; j++)
 	{
 		// draw 2D point detected, using psDetections
 		apriltag_detection_t *psDetection;
@@ -508,6 +515,7 @@ int testbench_step(char charFileName[])
 		y_temp = psDetection->c[0];
 		//printf("%d %d\n",x_temp, y_temp);
 		//drawCross(imageRGB,x_temp,y_temp,"green");
+
 		drawCross(imageRGB,x_temp,y_temp,"red");
 
 		////////// draw corners /////////
@@ -525,7 +533,14 @@ int testbench_step(char charFileName[])
 			if (k == 3)
 				drawCross(imageRGB,x_temp,y_temp,"red");
 		}
+	}
 
+	for (j = 0; j < tags_n; j++)
+	{
+		//printf("label[%d] = %d\n",j,label[j]);
+		if (label[j] % 3 == 0) strcpy(colour,"red");
+		if (label[j] % 3 == 1) strcpy(colour,"green");
+		if (label[j] % 3 == 2) strcpy(colour,"blue");
 		// draw 3D point, using boxes_pos and tags_pos
 		// left and right hand using opencv
 		TranslationVector = cv::Matx31d( -tags_pos[j][3], tags_pos[j][4], tags_pos[j][5]);
@@ -547,7 +562,11 @@ int testbench_step(char charFileName[])
 							vecBlockCentrePixel);
 		//printf("%lf %lf\n",vecBlockCentrePixel[0].x, vecBlockCentrePixel[0].y);
 		
-		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"green");
+		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,colour);
+		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x+1,(int)vecBlockCentrePixel[0].y,colour);
+		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x-1,(int)vecBlockCentrePixel[0].y,colour);
+		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y+1,colour);
+		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y-1,colour);
 	}
 
 	////////////// show image and next frame //////////////////
