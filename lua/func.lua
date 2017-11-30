@@ -132,6 +132,7 @@ function func(tagList)
 	structures = calcStructure(boxes)
 
 									print("structures n : ",structures.n)
+									print("-----------------------------")
 
 	return {tags = pos,boxes = boxes}
 end

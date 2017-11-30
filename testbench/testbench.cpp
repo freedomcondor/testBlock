@@ -318,19 +318,24 @@ int testbench_step(char charFileName[])
 				lua_pop(L,1);			// here goes stack 3
 
 				lua_pushstring(L,"quaternion");		//stack 3
-				lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
-					lua_pushstring(L,"x");		//stack 4
-					lua_gettable(L,-2);			//stack 4 now is the value
-					qx = lua_tonumber(L,-1);
+				lua_gettable(L,-2);			//stack 3 now is the table{v,w}
+					lua_pushstring(L,"v");		//stack 3
+					lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
+
+						lua_pushstring(L,"x");		//stack 4
+						lua_gettable(L,-2);			//stack 4 now is the value
+						qx = lua_tonumber(L,-1);
+						lua_pop(L,1);			// here goes stack 4
+						lua_pushstring(L,"y");		//stack 4
+						lua_gettable(L,-2);			//stack 4 now is the value
+						qy = lua_tonumber(L,-1);
+						lua_pop(L,1);			// here goes stack 4
+						lua_pushstring(L,"z");		//stack 4
+						lua_gettable(L,-2);			//stack 4 now is the value
+						qz = lua_tonumber(L,-1);
+						lua_pop(L,1);			// here goes stack 4
 					lua_pop(L,1);			// here goes stack 4
-					lua_pushstring(L,"y");		//stack 4
-					lua_gettable(L,-2);			//stack 4 now is the value
-					qy = lua_tonumber(L,-1);
-					lua_pop(L,1);			// here goes stack 4
-					lua_pushstring(L,"z");		//stack 4
-					lua_gettable(L,-2);			//stack 4 now is the value
-					qz = lua_tonumber(L,-1);
-					lua_pop(L,1);			// here goes stack 4
+
 					lua_pushstring(L,"w");		//stack 4
 					lua_gettable(L,-2);			//stack 4 now is the value
 					qw = lua_tonumber(L,-1);
@@ -410,18 +415,24 @@ int testbench_step(char charFileName[])
 
 				lua_pushstring(L,"quaternion");		//stack 3
 				lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
-					lua_pushstring(L,"x");		//stack 4
-					lua_gettable(L,-2);			//stack 4 now is the value
-					qx = lua_tonumber(L,-1);
+					lua_pushstring(L,"v");		//stack 3
+					lua_gettable(L,-2);			//stack 3 now is the table{x,y,z}
+
+						lua_pushstring(L,"x");		//stack 4
+						lua_gettable(L,-2);			//stack 4 now is the value
+						qx = lua_tonumber(L,-1);
+						lua_pop(L,1);			// here goes stack 4
+						lua_pushstring(L,"y");		//stack 4
+						lua_gettable(L,-2);			//stack 4 now is the value
+						qy = lua_tonumber(L,-1);
+						lua_pop(L,1);			// here goes stack 4
+						lua_pushstring(L,"z");		//stack 4
+						lua_gettable(L,-2);			//stack 4 now is the value
+						qz = lua_tonumber(L,-1);
+						lua_pop(L,1);			// here goes stack 4
+
 					lua_pop(L,1);			// here goes stack 4
-					lua_pushstring(L,"y");		//stack 4
-					lua_gettable(L,-2);			//stack 4 now is the value
-					qy = lua_tonumber(L,-1);
-					lua_pop(L,1);			// here goes stack 4
-					lua_pushstring(L,"z");		//stack 4
-					lua_gettable(L,-2);			//stack 4 now is the value
-					qz = lua_tonumber(L,-1);
-					lua_pop(L,1);			// here goes stack 4
+
 					lua_pushstring(L,"w");		//stack 4
 					lua_gettable(L,-2);			//stack 4 now is the value
 					qw = lua_tonumber(L,-1);

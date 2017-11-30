@@ -37,8 +37,8 @@ void testLoopFunction::PreStep()
 	int i;
 
 	//// clear Entity
-	printf("start of frame");
-	printf("clock : %d\n",GetSpace().GetSimulationClock());
+	//printf("start of frame");
+	//printf("clock : %d\n",GetSpace().GetSimulationClock());
 	//if (tags_n != 0)
 	if (flagdrawtag == 1)
 	for (i = 0; i < lasttagn; i++)
@@ -170,7 +170,7 @@ void testLoopFunction::PreStep()
 		//printf("%lf, %lf, %lf\n",cv3.GetX(),cv3.GetY(),cv3.GetZ());
 	}
 	lastboxn = boxes_n;
-	printf("end of step\n\n");
+	//printf("end of step\n\n");
 }
 
 void testLoopFunction::Init(TConfigurationNode& t_tree)

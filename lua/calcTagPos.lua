@@ -21,7 +21,7 @@ function calTagPos(tag)
 									--]]
 
 	tag.corners.halfL = tag.halfL;
-	--res_cv = libsolvepnp.solvepnp(tag.corners)
+	res_cv = libsolvepnp.solvepnp(tag.corners)
 	resSqu = solveSquare(	tag.corners,
 							tag.halfL * 2,
 							--{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
@@ -49,7 +49,7 @@ function calTagPos(tag)
 		--]]
 
 	--  transform res_cv.xyz into resCV.translation<a vector>
-	--[[
+	---[[
 	local x = res_cv.translation.x
 	local y = res_cv.translation.y
 	local z = res_cv.translation.z
@@ -60,12 +60,12 @@ function calTagPos(tag)
 
 	-- scale , not needed
 	scale = 1
-	--resCV.translation = resCV.translation * scale
+	resCV.translation = resCV.translation * scale
 	resSqu.translation = resSqu.translation * scale
 
 
 	--  transform res_cv.rotation.xyz into resCV.rotation and quaternion <a vector><a quaternion>
-	--[[
+	---[[
 	x = res_cv.rotation.x
 	y = res_cv.rotation.y
 	z = res_cv.rotation.z
@@ -88,24 +88,12 @@ function calTagPos(tag)
 										--print("opencv th",th)
 									--]]
 
-	-- for testbench asks q.x, q.y, q.z, q.w
-		-- but quaternion has q.v.x q.v.y q.v.z and q.w, 
-		--need to generate q.x q.y q.z 
-	--[[
-	resCV.quaternion.x = rotqq.v.x
-	resCV.quaternion.y = rotqq.v.y
-	resCV.quaternion.z = rotqq.v.z
-	--]]
-
-	resSqu.quaternion.x = resSqu.quaternion.v.x
-	resSqu.quaternion.y = resSqu.quaternion.v.y
-	resSqu.quaternion.z = resSqu.quaternion.v.z
 
 	-- generate opencv's rotation direct
 	local znor = Vec3:create(0,0,1)
 
-	--local dirCV = znor:rotatedby(resCV.quaternion)
-	--resCV.rotation = dirCV
+	local dirCV = znor:rotatedby(resCV.quaternion)
+	resCV.rotation = dirCV
 
 	resSqu.rotation = znor:rotatedby(resSqu.quaternion)
 		-- use qua to calc rotation again, 
