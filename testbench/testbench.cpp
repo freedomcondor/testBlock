@@ -562,11 +562,8 @@ int testbench_step(char charFileName[])
 							vecBlockCentrePixel);
 		//printf("%lf %lf\n",vecBlockCentrePixel[0].x, vecBlockCentrePixel[0].y);
 		
-		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,colour);
-		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x+1,(int)vecBlockCentrePixel[0].y,colour);
-		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x-1,(int)vecBlockCentrePixel[0].y,colour);
-		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y+1,colour);
-		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y-1,colour);
+		//drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,colour,label[j]);
+		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"green",label[j]);
 	}
 
 	////////////// show image and next frame //////////////////
@@ -586,6 +583,71 @@ int testbench_close()
 }
 
 ///////  OpenCV draw  ////////////////////////////////////////////////
+
+int drawCross(Mat img, int x, int y, const char colour[],int label)
+{
+	label = label % 6;
+	if (label == 0) label = 6;
+	if (label == 1)
+		drawCross(imageRGB,x,y,colour);
+	else if (label == 2)
+	{
+		drawCross(imageRGB,x,y-2,colour);
+		drawCross(imageRGB,x,y+2,colour);
+	}
+	else if (label == 3)
+	{
+		drawCross(imageRGB,x-2,y-2,colour);
+		drawCross(imageRGB,x-2,y+2,colour);
+		drawCross(imageRGB,x+2,y,colour);
+	}
+	else if (label == 4)
+	{
+		drawCross(imageRGB,x-2,y-2,colour);
+		drawCross(imageRGB,x-2,y+2,colour);
+		drawCross(imageRGB,x+2,y-2,colour);
+		drawCross(imageRGB,x+2,y+2,colour);
+	}
+	else if (label == 5)
+	{
+		drawCross(imageRGB,x-6,y-2,colour);
+		drawCross(imageRGB,x-2,y-2,colour);
+		drawCross(imageRGB,x-2,y+2,colour);
+		drawCross(imageRGB,x+2,y-2,colour);
+		drawCross(imageRGB,x+2,y+2,colour);
+	}
+	else if (label == 6)
+	{
+		drawCross(imageRGB,x-6,y-2,colour);
+		drawCross(imageRGB,x-6,y+2,colour);
+		drawCross(imageRGB,x-2,y-2,colour);
+		drawCross(imageRGB,x-2,y+2,colour);
+		drawCross(imageRGB,x+2,y-2,colour);
+		drawCross(imageRGB,x+2,y+2,colour);
+	}
+	else if (label == 7)
+	{
+		drawCross(imageRGB,x-6,y-2,colour);
+		drawCross(imageRGB,x-6,y+2,colour);
+		drawCross(imageRGB,x-2,y-2,colour);
+		drawCross(imageRGB,x-2,y+2,colour);
+		drawCross(imageRGB,x+2,y-2,colour);
+		drawCross(imageRGB,x+2,y+2,colour);
+		drawCross(imageRGB,x+6,y-2,colour);
+	}
+	else if (label == 8)
+	{
+		drawCross(imageRGB,x-6,y-2,colour);
+		drawCross(imageRGB,x-6,y+2,colour);
+		drawCross(imageRGB,x-2,y-2,colour);
+		drawCross(imageRGB,x-2,y+2,colour);
+		drawCross(imageRGB,x+2,y-2,colour);
+		drawCross(imageRGB,x+2,y+2,colour);
+		drawCross(imageRGB,x+6,y-2,colour);
+		drawCross(imageRGB,x+6,y+2,colour);
+	}
+	return 0;
+}
 
 int drawCross(Mat img, int x, int y, const char color[])
 {

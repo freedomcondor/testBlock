@@ -53,9 +53,11 @@ function trackingTags(tags,tags_seeing,_threshold)
 		end
 	end
 
+												print("before set hung")
 	local hun = Hungarian:create{costMat = C,MAXorMIN = "MIN"}
 	hun:aug()
-												--print(C)
+												print("after calc hung")
+												print(C)
 
 												--[[
 														print("match table X")
@@ -64,7 +66,9 @@ function trackingTags(tags,tags_seeing,_threshold)
 														end
 												--]]
 
-	for i = 1, tags.n do
+	local i = 1
+	while i <= tags.n do
+	--for i = 1, tags.n do
 		-- match existing tags
 		-- may have a match
 		-- may lost it
@@ -80,24 +84,28 @@ function trackingTags(tags,tags_seeing,_threshold)
 					tags[i] = tags[tags.n]
 					--tags[tags.n] = nil
 					tags.n = tags.n - 1
+					i = i - 1
 				end
 			else
 				tags[i].tracking = "lost"
 				tags[i].lostcount = 0
 			end
 		else
+			-- tracking
 			tags[i].center.x = tags_seeing[hun.match_of_X[i]].center.x
 			tags[i].center.y = tags_seeing[hun.match_of_X[i]].center.y
 			for j = 1,4 do
 				tags[i].corners[j].x = tags_seeing[hun.match_of_X[i]].corners[j].x
 				tags[i].corners[j].y = tags_seeing[hun.match_of_X[i]].corners[j].y
 			end
+			tags[i].trackcount = tags[i].trackcount + 1
 			if tags[i].tracking == "lost" then
 				tags[i].tracking = "found"
 			else
 				tags[i].tracking = "tracking"
 			end
 		end
+		i = i + 1
 	end
 
 	for j = 1, tags_seeing.n do
@@ -116,6 +124,7 @@ function trackingTags(tags,tags_seeing,_threshold)
 				tags[i].corners[k].y = tags_seeing[j].corners[k].y
 			end
 			tags[i].tracking = "new"
+			tags[i].trackcount = 0
 	
 			local k = 1; while tags.label[k] ~= nil do k = k + 1 end
 			tags[i].label = k
@@ -123,10 +132,17 @@ function trackingTags(tags,tags_seeing,_threshold)
 		end
 	end
 
-													--[[
+													---[[
 														print("tags.n",tags.n)
-														for i = 1, tags.n do
-															print(tags[i].tracking)
+														i = 1; local count = 1
+														while count <= tags.n do
+															for j = 1, tags.n do
+																if tags[j].label == i then
+														  print("tag:",tags[j].label,tags[j].tracking,tags[j].trackcount)
+														  		count = count + 1
+														  		end
+														    end
+															i = i + 1
 														end
 													--]]
 

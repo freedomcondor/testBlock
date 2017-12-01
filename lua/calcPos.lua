@@ -208,6 +208,7 @@ function calcBoxPos(pos)
 	local dis
 	local flag
 	for i = 1, pos.n do
+	if pos[i].tracking ~= "lost" then
 		-- go through all the tags, focal tag is boxcenters[i]
 		-- j should have a local?
 		j = 1; flag = 0 
@@ -237,6 +238,7 @@ function calcBoxPos(pos)
 							 }
 			boxes[boxes.n][1] = pos[i]
 		end
+	end
 	end
 
 	---[[

@@ -78,7 +78,9 @@ function func(tags_seeing)
 		}
 	--]]
 
+									print("before tracking")
 	trackingTags(tags,tags_seeing)
+									print("after tracking")
 
 									--[[ -- for testing tagList
 										print(a.timestamp)
@@ -118,6 +120,7 @@ function func(tags_seeing)
 			tags[i].rotation = pos.rotation
 			tags[i].translation = pos.translation
 			tags[i].quaternion = pos.quaternion
+	---[[
 		end
 		if (tags[i].translation - pos.translation):len() > 0.05 then
 			if tags[i].tracking == "found" then
@@ -133,12 +136,15 @@ function func(tags_seeing)
 				else
 					tags[i].jumpcount = tags[i].jumpcount + 1
 					if tags[i].jumpcount >= 5 then
-						tags[i].tracking = "lost"
-						tags[i].lostcount = 0
+						tags[i].rotation = pos.rotation
+						tags[i].translation = pos.translation
+						tags[i].quaternion = pos.quaternion
+						tags[i].tracking = "tracking"
 					end
 				end
 			end
 		end
+	--]]
 	end
 	--[[
 		-- pos have
@@ -170,8 +176,8 @@ function func(tags_seeing)
 	-- Calc structure ?
 	boxes_seeing.halfBox = halfBox
 	local structures_seeing = calcStructure(boxes_seeing) 
-									print("structures n : ",structures_seeing.n)
-									print("-----------------------------")
+	--								print("structures n : ",structures_seeing.n)
+	--								print("-----------------------------")
 
 	--return {tags = tags_seeing,boxes = boxes_seeing}
 	return {tags = tags,boxes = boxes_seeing}

@@ -66,4 +66,5 @@ char *numberToString5(int n, char str[]);
 //int setColor(uchar pix[],int R,int G, int B);
 int setColor(cv::Vec<unsigned char, 3> &pix,int R,int G, int B);
 int drawCross(Mat img, int x, int y, const char color[]);
-
+int drawCross(Mat img, int x, int y, const char colour[],int label);
+	
