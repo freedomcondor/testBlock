@@ -6,6 +6,7 @@ function Matrix:create(x,y,z)
 	local instance = {}
 	setmetatable(instance, self)
 	self.__index = self
+										print("create begin")
 
 		--the metatable of instance would be whoever owns this create
 			--so you can :  a = State:create();  b = a:create();  grandfather-father-son
@@ -22,6 +23,7 @@ function Matrix:create(x,y,z)
 
 	-- (<a matrix>)
 	if type(x) == "table" and x.CLASS == "Matrix" then
+										print("create in table copy")
 		instance.n = x.n	
 		instance.m = x.m
 		for i = 1,instance.n do
@@ -30,6 +32,7 @@ function Matrix:create(x,y,z)
 				instance[i][j] = x[i][j] or 0
 			end
 		end
+										print("create before return")
 		return instance
 	end
 
