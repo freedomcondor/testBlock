@@ -26,14 +26,16 @@ function calTagPos(tag)
 									--]]
 
 	tag.corners.halfL = tag.halfL;
-	res_cv = libsolvepnp.solvepnp(tag.corners)
+	--res_cv = libsolvepnp.solvepnp(tag.corners)
+									print("before solve")
 	resSqu = solveSquare(	tag.corners,
 							tag.halfL * 2,
-							--{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
-							--{0.018433,0.16727,0,0,-1.548088})			-- distort para
+							{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
+							{0.018433,0.16727,0,0,-1.548088})			-- distort para
+									print("after solve")
 
-							{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
-							{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
+							--{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
+							--{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
 
 		--[[
 			for libsolvepnp
@@ -54,7 +56,7 @@ function calTagPos(tag)
 		--]]
 
 	--  transform res_cv.xyz into resCV.translation<a vector>
-	---[[
+	--[[
 	local x = res_cv.translation.x
 	local y = res_cv.translation.y
 	local z = res_cv.translation.z
@@ -65,12 +67,12 @@ function calTagPos(tag)
 
 	-- scale , not needed
 	scale = 1
-	resCV.translation = resCV.translation * scale
+	--resCV.translation = resCV.translation * scale
 	resSqu.translation = resSqu.translation * scale
 
 
 	--  transform res_cv.rotation.xyz into resCV.rotation and quaternion <a vector><a quaternion>
-	---[[
+	--[[
 	x = res_cv.rotation.x
 	y = res_cv.rotation.y
 	z = res_cv.rotation.z
@@ -97,8 +99,10 @@ function calTagPos(tag)
 	-- generate opencv's rotation direct
 	local znor = Vec3:create(0,0,1)
 
+	--[[
 	local dirCV = znor:rotatedby(resCV.quaternion)
 	resCV.rotation = dirCV
+	--]]
 
 	resSqu.rotation = znor:rotatedby(resSqu.quaternion)
 		-- use qua to calc rotation again, 
@@ -208,7 +212,7 @@ function calcBoxPos(pos)
 	local dis
 	local flag
 	for i = 1, pos.n do
-	if pos[i].tracking ~= "lost" then
+	if pos[i].tracking ~= "lost" and pos[i].jumping ~= "jumping" then
 		-- go through all the tags, focal tag is boxcenters[i]
 		-- j should have a local?
 		j = 1; flag = 0 

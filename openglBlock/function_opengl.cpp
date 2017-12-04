@@ -26,7 +26,8 @@ int function_exit()
 }
 int function_init(int SystemWeight, int SystemHeight)
 {
-	camera_flag = 1;
+	//camera_flag = 1;
+	camera_flag = 0;
 	testbench_init( SystemWeight, SystemHeight);
 	/*
 	herd.msg_ControltoHerd.n_dime = 2;
@@ -142,15 +143,20 @@ int function_draw2()
 int function_step()
 {
 	string name;
+	int flag;
 	
 	cin >> name;
 	//return testbench_step(name.c_str());
-	return testbench_step((char*)name.c_str());
+	printf("---------------------\n");
+	printf("before calling testbench\n");
+	flag = testbench_step((char*)name.c_str());
+	printf("after calling testbench\n");
+	printf("---------------------\n");
 	/*
 	herd.run();
 	datalog[herd.time] = herd.value[herd.queue[0]];
 	*/
-	//return 0;
+	return flag;
 }
 
 

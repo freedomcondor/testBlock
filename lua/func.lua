@@ -105,7 +105,9 @@ function func(tags_seeing)
 									--print("\tfor the",i,"tag")
 
 		tags[i].halfL = halfTag
+									print("before calc")
 		local pos = calTagPos(tags[i])
+									print("after calc")
 			-- calTagPos returns a table (for each tag)
 				-- {rotation = {x=,y=,z=}  <a vector> the direction vector of the tag, 
 					-- seems to point outside the box
@@ -120,8 +122,8 @@ function func(tags_seeing)
 			tags[i].rotation = pos.rotation
 			tags[i].translation = pos.translation
 			tags[i].quaternion = pos.quaternion
-	---[[
 		end
+		-- jump test
 		if (tags[i].translation - pos.translation):len() > 0.05 then
 			if tags[i].tracking == "found" then
 				print("somelost found")
@@ -130,21 +132,22 @@ function func(tags_seeing)
 				tags[i].quaternion = pos.quaternion
 			else
 				print("someone jumped")
-				if (tags[i].tracking ~= "jumping") then
-					tags[i].tracking = "jumping"
+				if (tags[i].jumping ~= "jumping") then
+					print("first jumped",tags[i].jumping)
+					tags[i].jumping = "jumping"
 					tags[i].jumpcount = 0
 				else
+					print("not first jumped")
 					tags[i].jumpcount = tags[i].jumpcount + 1
 					if tags[i].jumpcount >= 5 then
 						tags[i].rotation = pos.rotation
 						tags[i].translation = pos.translation
 						tags[i].quaternion = pos.quaternion
-						tags[i].tracking = "tracking"
+						tags[i].jumping = nil
 					end
 				end
 			end
 		end
-	--]]
 	end
 	--[[
 		-- pos have
@@ -153,8 +156,10 @@ function func(tags_seeing)
 	--]]
 
 	-- Calc postion of boxes ----------------------------------
+									print("before boxes")
 	tags.halfBox = halfBox
 	local boxes_seeing = calcBoxPos(tags)
+									print("after boxes")
 									--print("boxes n : ",boxes.n)
 	--[[
 		boxes has
@@ -174,8 +179,10 @@ function func(tags_seeing)
 	--]]
 
 	-- Calc structure ?
+									print("before structures")
 	boxes_seeing.halfBox = halfBox
 	local structures_seeing = calcStructure(boxes_seeing) 
+									print("after structures")
 	--								print("structures n : ",structures_seeing.n)
 	--								print("-----------------------------")
 

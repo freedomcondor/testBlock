@@ -1,7 +1,7 @@
 Mat = require("Matrix")
 Hungarian = require("hungarian")
 function trackingTags(tags,tags_seeing,_threshold)
-	local threshold = _threshold or 200 -- the unit should be pixel
+	local threshold = _threshold or 100 -- the unit should be pixel
 	local inf = 999999999
 	--[[
 		{n, 1 2 3 4}

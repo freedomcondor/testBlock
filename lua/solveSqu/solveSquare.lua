@@ -158,8 +158,12 @@ function solveSquare(_uv,_L,camera,distort)
     	  {	0,		-kv,	v4-v0,	0,		kv,	  -(v4-v0),	0,		-kv,	v4-v0	},
 		})
 
+												print("before solving linar equations")
+
 	local B = A:exc(3,9,'col')
-	B = B:dia()
+												print("before B:dia()")
+	B,_,succB = B:dia()
+												print("after B:dia()",succB)
 	local c0 = -B[6][9]/B[6][6]
 	local r0 = -B[3][9]/B[3][3]
 		-- got a c/z and r/z proximately, for quadric solving later
@@ -174,11 +178,14 @@ function solveSquare(_uv,_L,camera,distort)
 	--	6 rows left
 
 	-- make A into diagonal matrix (6*6 diag and cols of c,r,z)
+												print("before A:dia()")
 	local res,exc,success = A:dia()
+												print("after A:dia()")
 	local Ks = res:takeDia()
 	local Cs = res:takeVec(7,"col")
 	local Rs = res:takeVec(8,"col")
 	local Zs = res:takeVec(9,"col")
+												print("after solving linar equations")
 	
 											--[[ print check A and B
 												print("A=",A)
@@ -275,9 +282,11 @@ function solveSquare(_uv,_L,camera,distort)
 	f2 = f3-f4
 
 	local cz,rz
+												print("before solving quad equations")
 	cz,rz = solveQuad(	a1,b1,c1,d1,e1,f1,
 						a2,b2,c2,d2,e2,f2,
 						0.0000000001,c0,r0)
+												print("after solving quad equations")
 
 	--- if failed
 	if cz == nil or rz == nil then

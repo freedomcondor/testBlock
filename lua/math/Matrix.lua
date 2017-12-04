@@ -250,12 +250,15 @@ end
 function Matrix:addVec(x,y,z)
 	if 	type(x) == "table" and x.CLASS == "Vector" and 
 		type(y) == "number" then
+										print("addvec before create")
 		local c = Matrix:create(self)
+										print("addvec after create")
 		if z == "column" or z == "col" then
 			c = c:T()
 			c = c:addVec(x,y)
 			c = c:T()
 		else
+										print("add vec not col")
 			if x.n == self.m and y <= self.n then
 				for i = 1, x.n do
 					c[y][i] = c[y][i] + x[i]
@@ -264,6 +267,7 @@ function Matrix:addVec(x,y,z)
 				print("Matrix addVec: makes no sense")
 				return nil
 			end
+										print("addvec after add")
 		end
 		return c
 	end
@@ -407,11 +411,13 @@ function Matrix:triangle()
 		-- stop at the min of m and n
 			--if n > m, we should still stop at row m, not row n
 	
+										print("tri before set exc")
 	local excMark = Mat:create(self.n,1)
 	for i = 1, self.n do excMark[i][1] = i end
 
 	local success = true
 
+										print("tri before for")
 	for i = 1, n do
 		local flag = 1
 		--if (c[i][i] == 0) then
@@ -428,10 +434,14 @@ function Matrix:triangle()
 				end
 			end
 		end
+										print("tri before takeVec")
 		v = c:takeVec(i)
+										print("tri after takeVec")
 		if (flag == 1) then
 			for j = i+1, c.n do
+										print("tri before addVec")
 				c = c:addVec(-v * (c[j][i] / c[i][i]),j)
+										print("tri after addVec")
 			end
 		else
 			success = false
@@ -439,7 +449,7 @@ function Matrix:triangle()
 		--print("tri check, step",i,":",c)
 	end
 
-	--print(success)
+										print("tri before return",success)
 	return c, excMark:takeVec(1,"col"), success
 end
 
@@ -463,12 +473,18 @@ function Matrix:diagonal()
 	-- should have a para to indicate threshold for almostZero 
 		--triangle(thres)
 		--	almostZero(xx,thres)
+									print("before triangle")
 	local c,excMark,success = self:triangle()
+									print("after triangle")
 	local v
 	local n
 
+									print("before set exc")
 	local exctemp = Mat:create(self.n,1)
 	excMark = exctemp:addVector(excMark,1,"col")
+
+									print("after set exc")
+
 
 	if c.m > c.n then n = c.n
 				 else n = c.m end
@@ -486,6 +502,7 @@ function Matrix:diagonal()
 			end
 		end
 	end
+									print("calc after return")
 	return c,excMark:takeVector(1,"col"),success
 end
 

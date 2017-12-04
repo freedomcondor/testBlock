@@ -257,8 +257,11 @@ int testbench_step(char charFileName[])
 	}
 
 	//////////////// call lua function  /////////////////////////////////
+	printf("before pcak lua");
 	if (lua_pcall(L,1,1,0) != 0)	// one para, one return
 		{printf("call func fail %s\n",lua_tostring(L,-1)); return -1;}
+
+	printf("after pcak lua");
 
 	/////////////// lua take lua function result ///////////////////////
 		// the result should be the structure of the blocks
@@ -369,6 +372,7 @@ int testbench_step(char charFileName[])
 		}	// end of for i for tags
 		lua_pop(L,1);			// here goes stack 2
 
+		printf("after retrieve box information");
 		//////////////////////////////// boxes ////////////////////////
 		lua_pushstring(L,"boxes");
 		lua_gettable(L,-2);			//stack 2 now is the string boxes
@@ -445,6 +449,7 @@ int testbench_step(char charFileName[])
 				lua_pop(L,1);			// here goes stack 3
 			lua_pop(L,1);				// goes stack 2
 
+
 			boxes_pos[i][0] = rx;
 			boxes_pos[i][1] = ry;
 			boxes_pos[i][2] = rz;
@@ -457,6 +462,8 @@ int testbench_step(char charFileName[])
 			boxes_pos[i][9] = qw;
 
 		}	// end of for i for boxes
+
+		printf("after retrieve tags information\n");
 	}
 
 	////////////// draw something on the image ////////////////
@@ -467,28 +474,40 @@ int testbench_step(char charFileName[])
 	std::vector<cv::Point3d> m_vecOriginPts;
 	m_vecOriginPts.push_back(cv::Point3d(0.0f,0.0f, 0.0f));
 
-	/*  for robot
-	const double m_fFx = 8.8396142504070610e+02;
-	const double m_fFy = 8.8396142504070610e+02;
+	double m_fFx = 8.8396142504070610e+02;
+	double m_fFy = 8.8396142504070610e+02;
 	// camera principal point 
-	const double m_fPx = 3.1950000000000000e+02;
-	const double m_fPy = 1.7950000000000000e+02;
+	double m_fPx = 3.1950000000000000e+02;
+	double m_fPy = 1.7950000000000000e+02;
 	// camera distortion coefficients
-	const double m_fK1 = 1.8433447851104852e-02;
-	const double m_fK2 = 1.6727474183089033e-01;
-	const double m_fK3 = -1.5480889084966631e+00;
-	*/
+	double m_fK1 = 1.8433447851104852e-02;
+	double m_fK2 = 1.6727474183089033e-01;
+	double m_fK3 = -1.5480889084966631e+00;
 
-	//* for camera
-	const double m_fFx = 939.001439;
-	const double m_fFy = 939.001439;
-	// camera principal point
-	const double m_fPx = 320;
-	const double m_fPy = 240;
-	// camera distortion coefficients
-	const double m_fK1 = -0.4117914;
-	const double m_fK2 = 5.17498964;
-	const double m_fK3 = -17.7026842;
+	if (camera_flag != 1)
+	{
+		m_fFx = 8.8396142504070610e+02;
+		m_fFy = 8.8396142504070610e+02;
+		// camera principal point 
+		m_fPx = 3.1950000000000000e+02;
+		m_fPy = 1.7950000000000000e+02;
+		// camera distortion coefficients
+		m_fK1 = 1.8433447851104852e-02;
+		m_fK2 = 1.6727474183089033e-01;
+		m_fK3 = -1.5480889084966631e+00;
+	}
+	else
+	{
+		m_fFx = 939.001439;
+		m_fFy = 939.001439;
+		// camera principal point
+		m_fPx = 320;
+		m_fPy = 240;
+		// camera distortion coefficients
+		m_fK1 = -0.4117914;
+		m_fK2 = 5.17498964;
+		m_fK3 = -17.7026842;
+	}
 	//*/
 
 	/* camera matrix */
@@ -535,6 +554,8 @@ int testbench_step(char charFileName[])
 		}
 	}
 
+	printf("before projection");
+
 	for (j = 0; j < tags_n; j++)
 	{
 		//printf("label[%d] = %d\n",j,label[j]);
@@ -566,8 +587,11 @@ int testbench_step(char charFileName[])
 		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"green",label[j]);
 	}
 
+	printf("after projection\n");
+
 	////////////// show image and next frame //////////////////
 	imshow("output", imageRGB);
+	printf("after imshow\n");
 	waitKey(30);
 	//c = waitKey(0);
 
@@ -586,8 +610,8 @@ int testbench_close()
 
 int drawCross(Mat img, int x, int y, const char colour[],int label)
 {
-	label = label % 6;
-	if (label == 0) label = 6;
+	label = label % 9;
+	if (label == 0) label = 9;
 	if (label == 1)
 		drawCross(imageRGB,x,y,colour);
 	else if (label == 2)
@@ -645,6 +669,20 @@ int drawCross(Mat img, int x, int y, const char colour[],int label)
 		drawCross(imageRGB,x+2,y+2,colour);
 		drawCross(imageRGB,x+6,y-2,colour);
 		drawCross(imageRGB,x+6,y+2,colour);
+	}
+	else if (label == 9)
+	{
+		drawCross(imageRGB,x,y,colour);
+		drawCross(imageRGB,x-4,y,colour);
+		drawCross(imageRGB,x+4,y,colour);
+
+		drawCross(imageRGB,x,  y-4,colour);
+		drawCross(imageRGB,x-4,y-4,colour);
+		drawCross(imageRGB,x+4,y-4,colour);
+
+		drawCross(imageRGB,x,  y+4,colour);
+		drawCross(imageRGB,x-4,y+4,colour);
+		drawCross(imageRGB,x+4,y+4,colour);
 	}
 	return 0;
 }
