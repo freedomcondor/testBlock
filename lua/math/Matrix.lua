@@ -442,7 +442,7 @@ function Matrix:triangle()
 										print("tri after takeVec")
 		if (flag == 1) then
 			for j = i+1, c.n do
-										print("tri before addVec")
+										print("tri before addVec",c[i][i],(c[j][i] / c[i][i]))
 				c = c:addVec(-v * (c[j][i] / c[i][i]),j)
 										print("tri after addVec")
 			end
