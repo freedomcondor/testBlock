@@ -1,4 +1,4 @@
-require("libsolvepnp")
+--require("libsolvepnp")
 require("solveSquare")
 
 local Vec3 = require("Vector3")
