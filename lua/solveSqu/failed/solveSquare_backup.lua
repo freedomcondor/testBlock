@@ -1,6 +1,6 @@
 Vec = require("Vector")
 Vec3 = require("Vector3")
---Mat = require("Matrix")
+Mat = require("Matrix")
 Qua = require("Quaternion")
 
 require("solveQuad")
@@ -140,43 +140,82 @@ function solveSquare(_uv,_L,camera,distort)
 	-- trick starts
 
 	-------------------------------------------------------------------------------------
-	-- solve linar equation statically--------------------------------------------------
+	-- solve linar equation dymatically--------------------------------------------------
 		-- to express all in c r z
 		-- all left hand
+	local A = Mat:create(8,9,
+		-- 	x		y 		z		a		b		c		p		q		r
+		{ {	-ku,	0,		u1-u0,	-ku,	0,		u1-u0,	-ku,	0,		u1-u0	},
+		  {	0,		-kv,	v1-v0,	0,		-kv,	v1-v0,	0,		-kv,	v1-v0	},
 
-	local c0 = -(u1*v2 - u2*v1 - u1*v3 + u3*v1 + u2*v4 - u4*v2 - u3*v4 + u4*v3)/
-		    (u1*v2 - u2*v1 - u1*v4 + u2*v3 - u3*v2 + u4*v1 + u3*v4 - u4*v3)
-	local r0 = -(	u1*v3 - u3*v1 - u1*v4 - u2*v3 + u3*v2 + u4*v1 + u2*v4 - u4*v2)/
-		    (	u1*v2 - u2*v1 - u1*v4 + u2*v3 - u3*v2 + u4*v1 + u3*v4 - u4*v3)
+		  {	-ku,	0,		u2-u0,	-ku,	0,		u2-u0,	ku,		0,	  -(u2-u0)	},
+		  {	0,		-kv,	v2-v0,	0,		-kv,	v2-v0,	0,		kv,	  -(v2-v0)	},
+
+	      {	-ku,	0,		u3-u0,	ku,		0,	  -(u3-u0),	ku,		0,	  -(u3-u0)	},
+	      {	0,		-kv,	v3-v0,	0,		kv,	  -(v3-v0),	0,		kv,	  -(v3-v0)	},
+
+		  {	-ku,	0,		u4-u0,	ku,		0,	  -(u4-u0),	-ku,	0,		u4-u0	},
+    	  {	0,		-kv,	v4-v0,	0,		kv,	  -(v4-v0),	0,		-kv,	v4-v0	},
+		})
+
+												print("before solving linar equations")
+
+	local B = A:exc(3,9,'col')
+												print("before B:dia()")
+	B,_,succB = B:dia()
+												print("after B:dia()",succB)
+	local c0 = -B[6][9]/B[6][6]
+	local r0 = -B[3][9]/B[3][3]
 		-- got a c/z and r/z proximately, for quadric solving later
-	
-	--  a b p q x y c r z
+
+	-- drop the last two rows
+	A.n = 6; A[7] = nil; A[9] = nil;
+	-- move c,r,z to the last three cols
+	A = A:exc(3,9,'col')
+	A = A:exc(3,8,'col')
+	A = A:exc(6,7,'col')
+	--  x y q a b p c r z
 	--	6 rows left
 
-	local Ks = Vec:create(6,{-2*ku,-2*kv,2*ku,2*kv,-2*ku,-2*kv})
-	local Cs = Vec:create(6,
-				{u3+u2-u0*2,v3+v2-v0*2,
-				u2-u1,v2-v1,
-				-u3+u1,-v3+v1})
-	local Rs = Vec:create(6,
-				{u3-u2,v3-v2,
-				-u2-u1+u0*2,-v2-v1+v0*2,
-				-u3+u1,-v3+v1})
-	local Zs = Vec:create(6,
-				{-u3+u2,-v3+v2,
-				u2-u1,v2-v1,
-				u3+u1-u0*2,v3+v1-v0*2})
+	-- make A into diagonal matrix (6*6 diag and cols of c,r,z)
+												print("before A:dia()")
+	local res,exc,success = A:dia()
+												print("after A:dia()")
+	local Ks = res:takeDia()
+	local Cs = res:takeVec(7,"col")
+	local Rs = res:takeVec(8,"col")
+	local Zs = res:takeVec(9,"col")
+												print("after solving linar equations")
+	
+											--[[ print check A and B
+												print("A=",A)
+												print("res1=",res1)
+												print("res=",res)
+												print("exc=",exc)
+												print("success=",success)
+												print("Ks = ",Ks)
+												print("Cs = ",Cs)
+												print("Rs = ",Rs)
+												print("Zs = ",Zs)
+											--]]
+
+	------------linar equation no solution --------------------
+	if success == false then
+		-- to be filled
+		print("solve linar equations failed")
+		return nil -- ?
+	end
+	---------------------------------------------
 
 	local ac,ar,az,bc,br,bz,xc,xr,xz
 	local pc,pr,pz,qc,qr,qz,yc,yr,yz
 
-	ac = -Cs[1]/Ks[1];	ar = -Rs[1]/Ks[1];	az = -Zs[1]/Ks[1]
-	bc = -Cs[2]/Ks[2];	br = -Rs[2]/Ks[2];	bz = -Zs[2]/Ks[2]
-	pc = -Cs[3]/Ks[3];	pr = -Rs[3]/Ks[3];	pz = -Zs[3]/Ks[3]
-	qc = -Cs[4]/Ks[4];	qr = -Rs[4]/Ks[4];	qz = -Zs[4]/Ks[4]
-	xc = -Cs[5]/Ks[5];	xr = -Rs[5]/Ks[5];	xz = -Zs[5]/Ks[5]
-	yc = -Cs[6]/Ks[6];	yr = -Rs[6]/Ks[6];	yz = -Zs[6]/Ks[6]
-
+	xc = -Cs[1]/Ks[1];	xr = -Rs[1]/Ks[1];	xz = -Zs[1]/Ks[1]
+	yc = -Cs[2]/Ks[2];	yr = -Rs[2]/Ks[2];	yz = -Zs[2]/Ks[2]
+	qc = -Cs[3]/Ks[3];	qr = -Rs[3]/Ks[3];	qz = -Zs[3]/Ks[3]
+	ac = -Cs[4]/Ks[4];	ar = -Rs[4]/Ks[4];	az = -Zs[4]/Ks[4]
+	bc = -Cs[5]/Ks[5];	br = -Rs[5]/Ks[5];	bz = -Zs[5]/Ks[5]
+	pc = -Cs[6]/Ks[6];	pr = -Rs[6]/Ks[6];	pz = -Zs[6]/Ks[6]
 	-- now we have x,y,a,b,p,q to c r z
 	--------- solve linar equation end ---------------------------------------
 

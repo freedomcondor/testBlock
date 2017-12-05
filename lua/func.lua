@@ -78,9 +78,6 @@ function func(tags_seeing)
 		}
 	--]]
 
-									print("before tracking")
-	trackingTags(tags,tags_seeing)
-									print("after tracking")
 
 									--[[ -- for testing tagList
 										print(a.timestamp)
@@ -101,12 +98,12 @@ function func(tags_seeing)
 	-- Calc position of tags ------------------------------------
 	--print("tagList got:",tagList.n,"tags")
 
-	for i = 1, tags.n do
+	for i = 1, tags_seeing.n do
 									--print("\tfor the",i,"tag")
 
-		tags[i].halfL = halfTag
+		tags_seeing[i].halfL = halfTag
 									print("before calc")
-		local pos = calTagPos(tags[i])
+		local pos = calTagPos(tags_seeing[i])
 									print("after calc")
 			-- calTagPos returns a table (for each tag)
 				-- {rotation = {x=,y=,z=}  <a vector> the direction vector of the tag, 
@@ -117,43 +114,13 @@ function func(tags_seeing)
 									--print("length",pos[i].translation:len())
 									--print("translation:",pos[i].translation)
 									--print("rotation:",pos[i].rotation)
-		if tags[i].tracking == "new" or
-		   (tags[i].translation - pos.translation):len() < 0.05 then
-			tags[i].rotation = pos.rotation
-			tags[i].translation = pos.translation
-			tags[i].quaternion = pos.quaternion
-		end
-		-- jump test
-		if (tags[i].translation - pos.translation):len() > 0.05 then
-			if tags[i].tracking == "found" then
-				print("somelost found")
-				tags[i].rotation = pos.rotation
-				tags[i].translation = pos.translation
-				tags[i].quaternion = pos.quaternion
-			else
-				print("someone jumped")
-				if (tags[i].jumping ~= "jumping") then
-					print("first jumped",tags[i].jumping)
-					tags[i].jumping = "jumping"
-					tags[i].jumpcount = 0
-				else
-					print("not first jumped")
-					tags[i].jumpcount = tags[i].jumpcount + 1
-					if tags[i].jumpcount >= 5 then
-						tags[i].rotation = pos.rotation
-						tags[i].translation = pos.translation
-						tags[i].quaternion = pos.quaternion
-						tags[i].jumping = nil
-					end
-				end
-			end
-		end
+		tags_seeing[i].rotation = pos.rotation
+		tags_seeing[i].translation = pos.translation
+		tags_seeing[i].quaternion = pos.quaternion
 	end
-	--[[
-		-- pos have
-		pos.n
-		pos[1] = {rotation.x/y/z, translation.x/y/z, quaternion x,y,z,w}
-	--]]
+									print("before tracking")
+	trackingTags(tags,tags_seeing)
+									print("after tracking")
 
 	-- Calc postion of boxes ----------------------------------
 									print("before boxes")

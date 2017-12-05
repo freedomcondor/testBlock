@@ -32,10 +32,11 @@ function calTagPos(tag)
 							tag.halfL * 2,
 							{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
 							{0.018433,0.16727,0,0,-1.548088})			-- distort para
-									print("after solve")
 
 							--{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
 							--{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
+
+									print("after solve")
 
 		--[[
 			for libsolvepnp

@@ -18,6 +18,7 @@ function trackingTags(tags,tags_seeing,_threshold)
 
 	--local C = Mat:create(tags.n,tags_seeing.n)
 	local C = Mat:create(maxN,maxN)
+		-- filled with 0s
 	--[[
 					tags_seeing.n
 		 		* * * * * * * * * * * 
@@ -44,6 +45,7 @@ function trackingTags(tags,tags_seeing,_threshold)
 				y2 = tags_seeing[j].corners[k].y
 				dis = dis + math.sqrt( (x1-x2)^2 + (y1-y2)^2 ) * 0.2
 					-- 0.25 is weight, center is considered more important than corners
+					-- 0.2 is weight, center is considered equally important as corners
 			end
 			if dis > threshold then
 				C[i][j] = inf
@@ -59,7 +61,7 @@ function trackingTags(tags,tags_seeing,_threshold)
 												print("after calc hung")
 												print(C)
 
-												--[[
+												---[[
 														print("match table X")
 														for x = 1,hun.N do
 															print("\t",hun.match_of_X[x])
@@ -77,14 +79,8 @@ function trackingTags(tags,tags_seeing,_threshold)
 			-- lost
 			if tags[i].tracking == "lost" then
 				tags[i].lostcount = tags[i].lostcount + 1
-				if tags[i].lostcount >= 5 then
-					-- abandon this
-					tags.label[tags[i].label] = nil
-					tags[i] = nil
-					tags[i] = tags[tags.n]
-					--tags[tags.n] = nil
-					tags.n = tags.n - 1
-					i = i - 1
+				if tags[i].lostcount >= 0 then
+					tags[i].tracking = "abandon"
 				end
 			else
 				tags[i].tracking = "lost"
@@ -98,6 +94,11 @@ function trackingTags(tags,tags_seeing,_threshold)
 				tags[i].corners[j].x = tags_seeing[hun.match_of_X[i]].corners[j].x
 				tags[i].corners[j].y = tags_seeing[hun.match_of_X[i]].corners[j].y
 			end
+
+			tags[i].translation = tags_seeing[hun.match_of_X[i]].translation
+			tags[i].rotation = tags_seeing[hun.match_of_X[i]].rotation
+			tags[i].quaternion = tags_seeing[hun.match_of_X[i]].quaternion
+
 			tags[i].trackcount = tags[i].trackcount + 1
 			if tags[i].tracking == "lost" then
 				tags[i].tracking = "found"
@@ -107,6 +108,22 @@ function trackingTags(tags,tags_seeing,_threshold)
 		end
 		i = i + 1
 	end
+
+	local i = 1
+	while i <= tags.n do
+		if tags[i].tracking == "abandon" then
+			-- abandon this
+			-- and move the last one here to fill the position
+			tags.label[tags[i].label] = nil
+			tags[i] = nil
+			tags[i] = tags[tags.n]
+			tags[tags.n] = nil
+			tags.n = tags.n - 1
+			i = i - 1
+		end
+		i = i + 1
+	end
+
 
 	for j = 1, tags_seeing.n do
 		if C[hun.match_of_Y[j]][j] > threshold or
@@ -123,6 +140,10 @@ function trackingTags(tags,tags_seeing,_threshold)
 				tags[i].corners[k].x = tags_seeing[j].corners[k].x
 				tags[i].corners[k].y = tags_seeing[j].corners[k].y
 			end
+			tags[i].translation = tags_seeing[j].translation
+			tags[i].rotation = tags_seeing[j].rotation
+			tags[i].quaternion = tags_seeing[j].quaternion
+
 			tags[i].tracking = "new"
 			tags[i].trackcount = 0
 	

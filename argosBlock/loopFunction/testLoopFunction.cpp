@@ -177,14 +177,15 @@ void testLoopFunction::Init(TConfigurationNode& t_tree)
 {
 	//namelist = fopen("loopFunction/data/exp-13-passed.txt","r");
 	//namelist = fopen("../data/exp-10-failed.txt","r");
-	//namelist = fopen("../data/exp-11-passed.txt","r");
+	namelist = fopen("../data/exp-11-passed.txt","r");
 	//namelist = fopen("../data/exp-13-passed.txt","r");
-	namelist = fopen("../data/exp-16-passed.txt","r");
+	//namelist = fopen("../data/exp-16-passed.txt","r");
 	if (namelist == NULL)
 	{
 		printf("open file namelist failed\n");
 	}
-	camera_flag = 1;
+	//camera_flag = 1;
+	camera_flag = 0;
 	testbench_init(1920,1200);
 	/*
 	flag = 0;
