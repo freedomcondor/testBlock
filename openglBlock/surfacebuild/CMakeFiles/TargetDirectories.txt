@@ -1,0 +1,3 @@
+/mnt/c/Users/freed/Desktop/testBlock/openglBlock/surfacebuild/CMakeFiles/edit_cache.dir
+/mnt/c/Users/freed/Desktop/testBlock/openglBlock/surfacebuild/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/freed/Desktop/testBlock/openglBlock/surfacebuild/CMakeFiles/luaBlock.dir
