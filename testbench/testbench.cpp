@@ -66,7 +66,7 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	m_psTagFamily->black_border = 1;
 	apriltag_detector_add_family(m_psTagDetector, m_psTagFamily);
 
-	camera_flag = 1;
+	camera_flag = 0;
 	if (camera_flag == 1)
 	{
 		video1_testbench.open(0);
