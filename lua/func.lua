@@ -50,8 +50,8 @@ taglist, as the para of func
 local halfTag = 0.012
 local halfBox = 0.0275
 local tags = {n = 0,label = {}}
-local boxes = {n = 0}
-local structures = {n = 0}
+local boxes = {n = 0,label = {}}
+local structures = {n = 0,label = {}}
 --[[
 	for every tag or box, should have 
 		location and rotation
@@ -126,7 +126,9 @@ function func(tags_seeing)
 									print("before boxes")
 	tags.halfBox = halfBox
 	local boxes_seeing = calcBoxPos(tags)
+	trackingBoxes(boxes,boxes_seeing)
 									print("after boxes")
+									print("after boxes, n = ",boxes.n)
 									--print("boxes n : ",boxes.n)
 	--[[
 		boxes has
@@ -150,9 +152,10 @@ function func(tags_seeing)
 	boxes_seeing.halfBox = halfBox
 	local structures_seeing = calcStructure(boxes_seeing) 
 									print("after structures")
-	--								print("structures n : ",structures_seeing.n)
-	--								print("-----------------------------")
+									print("structures n : ",structures_seeing.n)
+									print("-----------------------------")
 
 	--return {tags = tags_seeing,boxes = boxes_seeing}
-	return {tags = tags,boxes = boxes_seeing}
+	--return {tags = tags,boxes = boxes_seeing}
+	return {tags = tags,boxes = boxes}
 end

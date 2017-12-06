@@ -30,9 +30,9 @@ struct tagsinfo
 */
 
 int tags_n;
-double tags_pos[20][10];
+double tags_pos[50][10];
 int boxes_n;
-double boxes_pos[20][10];
+double boxes_pos[50][10];
 
 //////////////////////////////////////////////////////////////////////////////////
 int testbench_init(int SystemWeight, int SystemHeight)
@@ -66,7 +66,7 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	m_psTagFamily->black_border = 1;
 	apriltag_detector_add_family(m_psTagDetector, m_psTagFamily);
 
-	camera_flag = 0;
+	camera_flag = 1;
 	if (camera_flag == 1)
 	{
 		video1_testbench.open(0);
@@ -266,7 +266,7 @@ int testbench_step(char charFileName[])
 
 	/////////////// lua take lua function result ///////////////////////
 		// the result should be the structure of the blocks
-	int n,label[50];
+	int n,label[50],boxlabel[50];
 	double rx,ry,rz,tx,ty,tz,qx,qy,qz,qw;	// made global
 	//printf("in C\n");
 	if (lua_istable(L,1))
@@ -448,6 +448,12 @@ int testbench_step(char charFileName[])
 					qw = lua_tonumber(L,-1);
 					lua_pop(L,1);			// here goes stack 4
 				lua_pop(L,1);			// here goes stack 3
+
+				lua_pushstring(L,"label");	
+				lua_gettable(L,-2);	
+				boxlabel[i] = lua_tonumber(L,-1);
+				lua_pop(L,1);			// here goes stack 3
+
 			lua_pop(L,1);				// goes stack 2
 
 

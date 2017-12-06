@@ -30,11 +30,11 @@ function calTagPos(tag)
 									print("before solve")
 	resSqu = solveSquare(	tag.corners,
 							tag.halfL * 2,
-							{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
-							{0.018433,0.16727,0,0,-1.548088})			-- distort para
+							--{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
+							--{0.018433,0.16727,0,0,-1.548088})			-- distort para
 
-							--{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
-							--{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
+							{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
+							{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
 
 									print("after solve")
 
@@ -227,6 +227,9 @@ function calcBoxPos(pos)
 				boxes[j].nTags = boxes[j].nTags + 1
 				boxes[j][boxes[j].nTags] = pos[i]
 
+				pos[i].box = boxes[j]
+				pos[i].boxj = j
+
 				flag = 1
 				break
 			end
@@ -242,6 +245,9 @@ function calcBoxPos(pos)
 								--translation = boxcenters[i] * 2 - pos[i].translation,
 							 }
 			boxes[boxes.n][1] = pos[i]
+
+			pos[i].box = boxes[boxes.n]
+			pos[i].boxj = boxes.n
 		end
 	end
 	end

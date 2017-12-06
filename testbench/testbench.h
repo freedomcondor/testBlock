@@ -44,10 +44,10 @@ extern Mat imageRGB, image;
 */
 
 extern int tags_n;
-extern double tags_pos[20][10];
+extern double tags_pos[50][10];
 
 extern int boxes_n;
-extern double boxes_pos[20][10];
+extern double boxes_pos[50][10];
 extern VideoCapture video1_testbench;
 extern int camera_flag;
 

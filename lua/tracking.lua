@@ -1,7 +1,10 @@
 Mat = require("Matrix")
 Hungarian = require("hungarian")
+-----------------------------------------------------------------------------
+--  Tags
+-----------------------------------------------------------------------------
 function trackingTags(tags,tags_seeing,_threshold)
-	local threshold = _threshold or 100 -- the unit should be pixel
+	local threshold = _threshold or 50 -- the unit should be pixel
 	local inf = 999999999
 	--[[
 		{n, 1 2 3 4}
@@ -79,7 +82,7 @@ function trackingTags(tags,tags_seeing,_threshold)
 			-- lost
 			if tags[i].tracking == "lost" then
 				tags[i].lostcount = tags[i].lostcount + 1
-				if tags[i].lostcount >= 0 then
+				if tags[i].lostcount >= 1 then
 					tags[i].tracking = "abandon"
 				end
 			else
@@ -164,6 +167,150 @@ function trackingTags(tags,tags_seeing,_threshold)
 														  		end
 														    end
 															i = i + 1
+														end
+													--]]
+
+end
+
+-----------------------------------------------------------------------------
+--  Boxes
+-----------------------------------------------------------------------------
+
+function trackingBoxes(boxes,boxes_seeing)
+														---[[
+														print("entering bracking box boxes.n",boxes.n)
+														print("boxes_seeing.n",boxes_seeing.n)
+														for i = 1, boxes.n do
+															print("boxes.label",boxes[i].label)
+															print("boxes.tracking",boxes[i].tracking)
+															print("nTags",boxes[i].nTags)
+															for j = 1, boxes[i].nTags do
+																print(j,boxes[i][j].tracking)
+															end
+														end
+														--]]
+	i = 1
+	while i <= boxes.n do
+	--for i = 1, boxes.n do
+		-- abandon
+		j = 1
+		while j <= boxes[i].nTags do
+			if boxes[i][j].tracking == "abandon" then
+														print("abandoning")
+				boxes[i][j] = nil
+				boxes[i][j] = boxes[i][boxes[i].nTags]
+				boxes[i][boxes[i].nTags] = nil
+				boxes[i].nTags = boxes[i].nTags - 1
+				j = j - 1
+			end
+			j = j + 1
+		end
+
+		if boxes[i].nTags == 0 then
+			boxes[i].tracking = "abandon"
+		end
+
+		-- match
+		local flag = 0
+		for j = 1, boxes[i].nTags do
+			if boxes[i][j].tracking ~= "lost" then
+				if boxes[i][j].box.assigned == true then
+					boxes[i].tracking = "abandon"
+					break
+				end
+														print("a matching tag")
+				boxes[i][j].box.assigned = true
+				--boxes[i] = boxes_seeing[boxes[i][j].boxj]
+					-- maybe copy boxes[i][j].box to boxes[i]
+				boxes[i].translation = boxes[i][j].box.translation
+				boxes[i].rotation = boxes[i][j].box.rotation
+				boxes[i].quaternion = boxes[i][j].box.quaternion
+
+				boxes[i].nTags = boxes[i][j].box.nTags
+				local temp = boxes[i]
+				for k = 1, boxes[i].nTags do
+					boxes[i][k] = boxes[i][j].box[k]
+				end
+				for k = 1, temp.nTags do
+					if temp[k].tracking == "lost" then
+						boxes[i].nTags = boxes[i].nTags + 1
+						boxes[i][boxes[i].nTags] = temp[k]
+					end
+				end
+
+				flag = 1
+				boxes[i].tracking = "tracking"
+				boxes[i].trackcount = boxes[i].trackcount + 1
+				break
+			end
+		end
+		if flag == 0 and boxes[i].tracking ~= "abandon" then
+			-- means there are tags but all tags are lost
+			if boxes[i].tracking == "lost" then
+				boxes[i].lostcount = boxes[i].lostcount + 1
+				if boxes[i].lostcount >= 1 then
+					boxes[i].tracking = "abandon"
+				end
+			else
+				boxes[i].tracking = "lost"
+				boxes[i].lostcount = 0
+			end
+		end
+
+		if boxes[i].tracking == "abandon" then
+			boxes.label[boxes[i].label] = nil
+			boxes[i] = nil
+			boxes[i] = boxes[boxes.n]
+			boxes[boxes.n] = nil
+			boxes.n = boxes.n - 1
+			i = i - 1
+		end
+
+		i = i + 1
+	end
+
+	for i = 1, boxes_seeing.n do
+		if boxes_seeing[i].assigned == nil then
+			print("new")
+			-- new box
+			boxes.n = boxes.n + 1
+
+			-- copy too
+			--boxes[boxes.n] = boxes_seeing[i]
+			boxes[boxes.n] = {}
+			boxes[boxes.n].translation = boxes_seeing[i].translation
+			boxes[boxes.n].rotation = boxes_seeing[i].rotation
+			boxes[boxes.n].quaternion = boxes_seeing[i].quaternion
+
+			boxes[boxes.n].nTags = boxes_seeing[i].nTags
+			for k = 1, boxes_seeing[i].nTags do
+				boxes[boxes.n][k] = boxes_seeing[i][k]
+			end
+
+			boxes_seeing[i].assigned = true
+			boxes[boxes.n].tracking = "new"
+			boxes[boxes.n].trackcount = 0
+
+			local k = 1; while boxes.label[k] ~= nil do k = k + 1 end
+			boxes[boxes.n].label = k
+			boxes.label[k] = true
+		end
+	end
+													---[[
+														print("boxes.n",boxes.n)
+														i = 1; local count = 1
+														while count <= boxes.n do
+															for j = 1, boxes.n do
+																if boxes[j].label == i then
+														  print("boxes:",boxes[j].label,boxes[j].tracking,boxes[j].trackcount)
+														  		count = count + 1
+														  		end
+														    end
+															i = i + 1
+														end
+														print("label")
+														for i = 1, boxes.n + 3 do
+															print(i,boxes.label[i])
 														end
 													--]]
 
