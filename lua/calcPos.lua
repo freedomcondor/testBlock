@@ -27,16 +27,16 @@ function calTagPos(tag)
 
 	tag.corners.halfL = tag.halfL;
 	--res_cv = libsolvepnp.solvepnp(tag.corners)
-									print("before solve")
+									--print("before solve")
 	resSqu = solveSquare(	tag.corners,
 							tag.halfL * 2,
-							--{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
-							--{0.018433,0.16727,0,0,-1.548088})			-- distort para
+							{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
+							{0.018433,0.16727,0,0,-1.548088})			-- distort para
 
-							{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
-							{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
+							--{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
+							--{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
 
-									print("after solve")
+									--print("after solve")
 
 		--[[
 			for libsolvepnp
@@ -46,7 +46,7 @@ function calTagPos(tag)
 						rotation x,y,z means: x^2 + y^2 + z^2 = th
 						and the (x,y,z)/th is the normalization axis
 
-			-- expecting right hand (from z look down, x to y is counter-clock)
+			-- expecting right hand (from z look down, x to y is counter-clock--)
 				-- but opencv is left hand, left to right should be converted in lua libsolvepnp
 		--]]
 		--[[

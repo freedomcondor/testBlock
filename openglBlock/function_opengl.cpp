@@ -147,11 +147,11 @@ int function_step()
 	
 	cin >> name;
 	//return testbench_step(name.c_str());
-	printf("---------------------\n");
-	printf("before calling testbench\n");
+	//printf("---------------------\n");
+	//printf("before calling testbench\n");
 	flag = testbench_step((char*)name.c_str());
-	printf("after calling testbench\n");
-	printf("---------------------\n");
+	//printf("after calling testbench\n");
+	//printf("---------------------\n");
 	/*
 	herd.run();
 	datalog[herd.time] = herd.value[herd.queue[0]];

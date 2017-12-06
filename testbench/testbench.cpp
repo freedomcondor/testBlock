@@ -66,7 +66,7 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	m_psTagFamily->black_border = 1;
 	apriltag_detector_add_family(m_psTagDetector, m_psTagFamily);
 
-	camera_flag = 1;
+	camera_flag = 0;
 	if (camera_flag == 1)
 	{
 		video1_testbench.open(0);
@@ -258,11 +258,11 @@ int testbench_step(char charFileName[])
 	}
 
 	//////////////// call lua function  /////////////////////////////////
-	printf("before pcak lua");
+													//printf("before pcak lua");
 	if (lua_pcall(L,1,1,0) != 0)	// one para, one return
 		{printf("call func fail %s\n",lua_tostring(L,-1)); return -1;}
 
-	printf("after pcak lua");
+													//printf("after pcak lua");
 
 	/////////////// lua take lua function result ///////////////////////
 		// the result should be the structure of the blocks
@@ -373,7 +373,7 @@ int testbench_step(char charFileName[])
 		}	// end of for i for tags
 		lua_pop(L,1);			// here goes stack 2
 
-		printf("after retrieve box information");
+									//printf("after retrieve box information");
 		//////////////////////////////// boxes ////////////////////////
 		lua_pushstring(L,"boxes");
 		lua_gettable(L,-2);			//stack 2 now is the string boxes
@@ -470,7 +470,7 @@ int testbench_step(char charFileName[])
 
 		}	// end of for i for boxes
 
-		printf("after retrieve tags information\n");
+												//printf("after retrieve tags information\n");
 	}
 
 	////////////// draw something on the image ////////////////
@@ -561,7 +561,7 @@ int testbench_step(char charFileName[])
 		}
 	}
 
-	printf("before projection");
+											//printf("before projection");
 
 	for (j = 0; j < tags_n; j++)
 	{
@@ -594,11 +594,42 @@ int testbench_step(char charFileName[])
 		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"green",label[j]);
 	}
 
-	printf("after projection\n");
+	for (j = 0; j < boxes_n; j++)
+	{
+		//printf("label[%d] = %d\n",j,label[j]);
+		if (label[j] % 3 == 0) strcpy(colour,"red");
+		if (label[j] % 3 == 1) strcpy(colour,"green");
+		if (label[j] % 3 == 2) strcpy(colour,"blue");
+		// draw 3D point, using boxes_pos and boxes_pos
+		// left and right hand using opencv
+		TranslationVector = cv::Matx31d( -boxes_pos[j][3], boxes_pos[j][4], boxes_pos[j][5]);
+		qx = boxes_pos[j][6];
+		qy = boxes_pos[j][7];
+		qz = boxes_pos[j][8];
+		qw = boxes_pos[j][9];
+		rotationscale = sqrt(qx*qx+qy*qy+qz*qz) / qw;
+		qx = qx / rotationscale;
+		qy = qy / rotationscale;
+		qz = qz / rotationscale;
+		RotationVector = cv::Matx31d( qx, -qy, -qz);
+
+		cv::projectPoints(	m_vecOriginPts,
+							RotationVector,
+							TranslationVector,
+							cCameraMatrix,
+							cDistortionParameters,
+							vecBlockCentrePixel);
+		//printf("%lf %lf\n",vecBlockCentrePixel[0].x, vecBlockCentrePixel[0].y);
+		
+		//drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,colour,label[j]);
+		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"red",boxlabel[j]);
+	}
+
+													//printf("after projection\n");
 
 	////////////// show image and next frame //////////////////
 	imshow("output", imageRGB);
-	printf("after imshow\n");
+													//printf("after imshow\n");
 	waitKey(30);
 	//c = waitKey(0);
 

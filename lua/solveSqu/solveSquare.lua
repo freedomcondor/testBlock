@@ -243,11 +243,11 @@ function solveSquare(_uv,_L,camera,distort)
 	f2 = f3-f4
 
 	local cz,rz
-												print("before solving quad equations")
+												--print("before solving quad equations")
 	cz,rz = solveQuad(	a1,b1,c1,d1,e1,f1,
 						a2,b2,c2,d2,e2,f2,
 						0.0000000001,c0,r0)
-												print("after solving quad equations")
+												--print("after solving quad equations")
 
 	--- if failed
 	if cz == nil or rz == nil then

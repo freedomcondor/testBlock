@@ -58,10 +58,10 @@ function trackingTags(tags,tags_seeing,_threshold)
 		end
 	end
 
-												print("before set hung")
+												--print("before set hung")
 	local hun = Hungarian:create{costMat = C,MAXorMIN = "MIN"}
 	hun:aug()
-												print("after calc hung")
+												--print("after calc hung")
 												print(C)
 
 												---[[
@@ -219,7 +219,8 @@ function trackingBoxes(boxes,boxes_seeing)
 					break
 				end
 														print("a matching tag")
-				boxes[i][j].box.assigned = true
+				local tempbox = boxes[i][j].box
+				tempbox.assigned = true
 				--boxes[i] = boxes_seeing[boxes[i][j].boxj]
 					-- maybe copy boxes[i][j].box to boxes[i]
 				boxes[i].translation = boxes[i][j].box.translation
@@ -229,7 +230,8 @@ function trackingBoxes(boxes,boxes_seeing)
 				boxes[i].nTags = boxes[i][j].box.nTags
 				local temp = boxes[i]
 				for k = 1, boxes[i].nTags do
-					boxes[i][k] = boxes[i][j].box[k]
+					boxes[i][k] = tempbox[k]
+					tempbox[k].box = nil
 				end
 				for k = 1, temp.nTags do
 					if temp[k].tracking == "lost" then
@@ -285,6 +287,7 @@ function trackingBoxes(boxes,boxes_seeing)
 			boxes[boxes.n].nTags = boxes_seeing[i].nTags
 			for k = 1, boxes_seeing[i].nTags do
 				boxes[boxes.n][k] = boxes_seeing[i][k]
+				boxes_seeing[i][k].box = nil
 			end
 
 			boxes_seeing[i].assigned = true

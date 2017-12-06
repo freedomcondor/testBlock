@@ -102,9 +102,9 @@ function func(tags_seeing)
 									--print("\tfor the",i,"tag")
 
 		tags_seeing[i].halfL = halfTag
-									print("before calc")
+									--print("before calc")
 		local pos = calTagPos(tags_seeing[i])
-									print("after calc")
+									--print("after calc")
 			-- calTagPos returns a table (for each tag)
 				-- {rotation = {x=,y=,z=}  <a vector> the direction vector of the tag, 
 					-- seems to point outside the box
@@ -118,16 +118,15 @@ function func(tags_seeing)
 		tags_seeing[i].translation = pos.translation
 		tags_seeing[i].quaternion = pos.quaternion
 	end
-									print("before tracking")
+									--print("before tracking")
 	trackingTags(tags,tags_seeing)
-									print("after tracking")
+									--print("after tracking")
 
 	-- Calc postion of boxes ----------------------------------
-									print("before boxes")
+									--print("before boxes")
 	tags.halfBox = halfBox
 	local boxes_seeing = calcBoxPos(tags)
 	trackingBoxes(boxes,boxes_seeing)
-									print("after boxes")
 									print("after boxes, n = ",boxes.n)
 									--print("boxes n : ",boxes.n)
 	--[[
@@ -148,10 +147,10 @@ function func(tags_seeing)
 	--]]
 
 	-- Calc structure ?
-									print("before structures")
+									--print("before structures")
 	boxes_seeing.halfBox = halfBox
 	local structures_seeing = calcStructure(boxes_seeing) 
-									print("after structures")
+									--print("after structures")
 									print("structures n : ",structures_seeing.n)
 									print("-----------------------------")
 

@@ -3,11 +3,11 @@ local Matrix = {CLASS = "Matrix"}
 Matrix.__index = Matrix
 
 function Matrix:create(x,y,z)
-										print("create begin")
+										--print("create begin")
 	local instance = {}
 	setmetatable(instance, self)
 	self.__index = self
-										print("create after set")
+										--print("create after set")
 
 		--the metatable of instance would be whoever owns this create
 			--so you can :  a = State:create();  b = a:create();  grandfather-father-son
