@@ -82,7 +82,7 @@ function trackingTags(tags,tags_seeing,_threshold)
 			-- lost
 			if tags[i].tracking == "lost" then
 				tags[i].lostcount = tags[i].lostcount + 1
-				if tags[i].lostcount >= 30 then
+				if tags[i].lostcount >= 10 then
 					tags[i].tracking = "abandon"
 				end
 			else
@@ -188,6 +188,7 @@ function trackingBoxes(boxes,boxes_seeing)
 																print(j,boxes[i][j].tracking)
 															end
 														end
+														print("----------")
 														--]]
 	i = 1
 	while i <= boxes.n do
@@ -218,7 +219,7 @@ function trackingBoxes(boxes,boxes_seeing)
 					boxes[i].tracking = "abandon"
 					break
 				end
-														print("a matching tag")
+														--print("a matching tag")
 				local tempbox = boxes[i][j].box
 				tempbox.assigned = true
 				--boxes[i] = boxes_seeing[boxes[i][j].boxj]
@@ -322,10 +323,6 @@ function trackingBoxes(boxes,boxes_seeing)
 														  		end
 														    end
 															i = i + 1
-														end
-														print("label")
-														for i = 1, boxes.n + 3 do
-															print(i,boxes.label[i])
 														end
 													--]]
 

@@ -1,7 +1,12 @@
+to run this testbench, you should have 	1. apriltag
+										2. opencv
+										3. argos
+										4. opengl
+
 argosBlock   <----|  testbench  <----- lua
 openglBlock	 <----|
 
-you can use both argos or opengl to run the testbench,
+you can use either argos or opengl to run the testbench,
 
 the testbench loads an image, finds its tags, and call lua to calc the pos of the tags
 after calling lua, it stores the result in a array (in testbench.h), so that argos or opengl can see the results.

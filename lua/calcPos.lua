@@ -361,7 +361,7 @@ function calcStructure(boxes)
 				}
 		}
 	--]]
-	for i = 1, boxes.n do boxes[i].label = i end
+	--for i = 1, boxes.n do boxes[i].label = i end
 
 	linkBoxes(boxes)
 
@@ -387,9 +387,15 @@ function calcStructure(boxes)
 			end
 		end
 	end
-	for i = 1,boxes.n do boxes.counted = nil end
+	for i = 1,boxes.n do boxes[i].counted = nil end
 
-												--[[
+	for i = 1, structures.n do
+		for j = 1, structures[i].nBoxes do
+			structures[i][j].groupscale = structures[i].nBoxes
+		end
+	end
+
+											--[[
 												for i = 1, structures.n do
 													print("structure",i)
 													for j = 1, structures[i].nBoxes do

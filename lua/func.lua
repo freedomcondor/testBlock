@@ -124,6 +124,7 @@ function func(tags_seeing)
 
 	-- Calc postion of boxes ----------------------------------
 									--print("before boxes")
+									print("-----------------------------")
 	tags.halfBox = halfBox
 	local boxes_seeing = calcBoxPos(tags)
 	trackingBoxes(boxes,boxes_seeing)
@@ -148,10 +149,17 @@ function func(tags_seeing)
 
 	-- Calc structure ?
 									--print("before structures")
+									print("-----------------------------")
 	boxes_seeing.halfBox = halfBox
-	local structures_seeing = calcStructure(boxes_seeing) 
+	boxes.halfBox = halfBox
+	--local structures_seeing = calcStructure(boxes_seeing) 
+	local structures_seeing = calcStructure(boxes) 
 									--print("after structures")
 									print("structures n : ",structures_seeing.n)
+								for i = 1, boxes.n do
+									print("box",boxes[i].label,"its scale = ",boxes[i].groupscale)
+								end
+									print("-----------------------------")
 									print("-----------------------------")
 
 	--return {tags = tags_seeing,boxes = boxes_seeing}

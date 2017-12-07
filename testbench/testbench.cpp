@@ -1,6 +1,8 @@
 #include "testbench.h"
 
 int drawLine(Mat img, int x1, int y1, int x2, int y2, const char colour[]);
+int drawString(Mat img, int x1, int y1, char str[], const char colour[]);
+int Num2Str(int x, char str[]);
 
 ///////////////////////// vars ////////////////////////////////////////
 lua_State *L;
@@ -269,6 +271,7 @@ int testbench_step(char charFileName[])
 	/////////////// lua take lua function result ///////////////////////
 		// the result should be the structure of the blocks
 	int n,label[50],boxlabel[50];
+	int groupscale[50];
 	double rx,ry,rz,tx,ty,tz,qx,qy,qz,qw;	// made global
 	//printf("in C\n");
 	if (lua_istable(L,1))
@@ -456,6 +459,11 @@ int testbench_step(char charFileName[])
 				boxlabel[i] = lua_tonumber(L,-1);
 				lua_pop(L,1);			// here goes stack 3
 
+				lua_pushstring(L,"groupscale");	
+				lua_gettable(L,-2);	
+				groupscale[i] = lua_tonumber(L,-1);
+				lua_pop(L,1);			// here goes stack 3
+
 			lua_pop(L,1);				// goes stack 2
 
 
@@ -605,7 +613,8 @@ int testbench_step(char charFileName[])
 	}
 
 	double halfBox = 0.0275;
-	const char framecolor[20] = "blue";
+	char framecolor[20] = "blue";
+	char tempstr[20];
 	std::vector<cv::Point3d> m_vecOriginPts_box;
 	m_vecOriginPts_box.push_back(cv::Point3d(0.0f,0.0f, 0.0f));
 	m_vecOriginPts_box.push_back(cv::Point3d( halfBox, halfBox, halfBox));
@@ -655,6 +664,8 @@ int testbench_step(char charFileName[])
 		//printf("before draw box\n");
 		//for (i = 1; i <= 8; i++)
 		//	drawCross(imageRGB,(int)vecBlockCentrePixel[i].x,(int)vecBlockCentrePixel[i].y,"red");
+		if (groupscale[j] == 1) strcpy(framecolor,"green");
+						   else strcpy(framecolor,"blue");
 		for (i = 1; i <=3; i++)
 		{
 			drawLine(imageRGB,(int)vecBlockCentrePixel[i].x,(int)vecBlockCentrePixel[i].y,
@@ -672,7 +683,9 @@ int testbench_step(char charFileName[])
 			drawLine(imageRGB,(int)vecBlockCentrePixel[i].x,(int)vecBlockCentrePixel[i].y,
 							  (int)vecBlockCentrePixel[i+4].x,(int)vecBlockCentrePixel[i+4].y,framecolor);
 
-		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"red",boxlabel[j]);
+		//drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"red",boxlabel[j]);
+		Num2Str(boxlabel[j],tempstr);
+		drawString(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,tempstr,"red");
 	}
 
 													//printf("after projection\n");
@@ -694,7 +707,37 @@ int testbench_close()
 	return 0;
 }
 
+//////////////////////////////////////////////////////////////////////
+
+int Num2Str(int x, char str[])
+{
+	str[0] = x + '0';
+	str[1] = '\0';
+	return 0;
+}
+
+
 ///////  OpenCV draw  ////////////////////////////////////////////////
+
+int drawString(Mat img, int x, int y, char str[], const char color[])
+{
+	int R,G,B;
+	if (strcmp(color,"blue") == 0)
+	{ R = 0; G = 0; B = 255; }
+	else if (strcmp(color,"green") == 0)
+	{ R = 0; G = 255; B = 0; }
+	else if (strcmp(color,"red") == 0)
+	{ R = 255; G = 0; B = 0; }
+
+	CvFont font;    
+    double hScale=1;   
+    double vScale=1;    
+    int lineWidth=2;
+
+	//cvInitFont(&font,CV_FONT_HERSHEY_SIMPLEX|CV_FONT_ITALIC, hScale,vScale,0,lineWidth);
+	putText(img,str,Point(y,x),CV_FONT_HERSHEY_SIMPLEX,0.6,CV_RGB(R,G,B));
+	return 0;
+}
 
 int drawLine(Mat img, int x1, int y1, int x2, int y2, const char colour[])
 {

@@ -68,7 +68,7 @@ end
 
 function CubeDir.__eq(a,b)
 	-- here == means closeto, within a certain threshold is considered equal
-	threshold = math.sin(math.pi/180*30)
+	threshold = math.sin(math.pi/180*10)
 	if type(a) == "table" and a.CLASS == "CubeDir" and
 	   type(b) == "table" and b.CLASS == "CubeDir" then
 	   	local max,dis
