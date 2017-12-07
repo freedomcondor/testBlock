@@ -30,11 +30,11 @@ function calTagPos(tag)
 									--print("before solve")
 	resSqu = solveSquare(	tag.corners,
 							tag.halfL * 2,
-							{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
-							{0.018433,0.16727,0,0,-1.548088})			-- distort para
+							--{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
+							--{0.018433,0.16727,0,0,-1.548088})			-- distort para
 
-							--{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
-							--{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
+							{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
+							{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
 
 									--print("after solve")
 
@@ -220,7 +220,7 @@ function calcBoxPos(pos)
 		while j <= boxes.n do
 			-- go through all the known boxes
 			dis = boxes[j].average - boxcenters[i]	
-			if (dis:len() < halfBox) then								-- the threshold
+			if (dis:len() < halfBox*1.5) then								-- the threshold
 				-- it mean this tag belongs to a known box, boxes[j]
 				boxes[j].average = 	(boxes[j].average * boxes[j].nTags + boxcenters[i]) / 
 									(boxes[j].nTags + 1)

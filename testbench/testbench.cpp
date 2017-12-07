@@ -1,5 +1,7 @@
 #include "testbench.h"
 
+int drawLine(Mat img, int x1, int y1, int x2, int y2, const char colour[]);
+
 ///////////////////////// vars ////////////////////////////////////////
 lua_State *L;
 apriltag_detector* m_psTagDetector;
@@ -66,7 +68,7 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	m_psTagFamily->black_border = 1;
 	apriltag_detector_add_family(m_psTagDetector, m_psTagFamily);
 
-	camera_flag = 0;
+	camera_flag = 1;
 	if (camera_flag == 1)
 	{
 		video1_testbench.open(0);
@@ -477,6 +479,7 @@ int testbench_step(char charFileName[])
 	cv::Matx31d RotationVector;
 	cv::Matx31d TranslationVector;
 	double rotationscale;
+	double axisth,axisx,axisy,axisz;
 
 	std::vector<cv::Point3d> m_vecOriginPts;
 	m_vecOriginPts.push_back(cv::Point3d(0.0f,0.0f, 0.0f));
@@ -542,7 +545,7 @@ int testbench_step(char charFileName[])
 		//printf("%d %d\n",x_temp, y_temp);
 		//drawCross(imageRGB,x_temp,y_temp,"green");
 
-		drawCross(imageRGB,x_temp,y_temp,"red");
+		//drawCross(imageRGB,x_temp,y_temp,"red");
 
 		////////// draw corners /////////
 		for (k = 0; k < 4; k++)
@@ -551,18 +554,19 @@ int testbench_step(char charFileName[])
 			y_temp = psDetection->p[k][0];
 			//drawCross(imageRGB,x_temp,y_temp,"blue");
 			if (k == 0)
-				drawCross(imageRGB,x_temp,y_temp,"red");
+				drawCross(imageRGB,x_temp,y_temp,"blue");
 			if (k == 1)
 				drawCross(imageRGB,x_temp,y_temp,"blue");
 			if (k == 2)
-				drawCross(imageRGB,x_temp,y_temp,"green");
+				drawCross(imageRGB,x_temp,y_temp,"blue");
 			if (k == 3)
-				drawCross(imageRGB,x_temp,y_temp,"red");
+				drawCross(imageRGB,x_temp,y_temp,"blue");
 		}
 	}
 
 											//printf("before projection");
 
+	// draw center of tags
 	for (j = 0; j < tags_n; j++)
 	{
 		//printf("label[%d] = %d\n",j,label[j]);
@@ -576,11 +580,17 @@ int testbench_step(char charFileName[])
 		qy = tags_pos[j][7];
 		qz = tags_pos[j][8];
 		qw = tags_pos[j][9];
-		rotationscale = sqrt(qx*qx+qy*qy+qz*qz) / qw;
-		qx = qx / rotationscale;
-		qy = qy / rotationscale;
-		qz = qz / rotationscale;
-		RotationVector = cv::Matx31d( qx, -qy, -qz);
+
+		axisth = 2 * acos(qw);
+		axisx = qx / sin(axisth/2);
+		axisy = qy / sin(axisth/2);
+		axisz = qz / sin(axisth/2);
+
+		rotationscale = sqrt(axisx*axisx+axisy*axisy+axisz*axisz) / axisth;
+		axisx = axisx / rotationscale;
+		axisy = axisy / rotationscale;
+		axisz = axisz / rotationscale;
+		RotationVector = cv::Matx31d( axisx, -axisy, -axisz);
 
 		cv::projectPoints(	m_vecOriginPts,
 							RotationVector,
@@ -594,6 +604,20 @@ int testbench_step(char charFileName[])
 		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"green",label[j]);
 	}
 
+	double halfBox = 0.0275;
+	const char framecolor[20] = "blue";
+	std::vector<cv::Point3d> m_vecOriginPts_box;
+	m_vecOriginPts_box.push_back(cv::Point3d(0.0f,0.0f, 0.0f));
+	m_vecOriginPts_box.push_back(cv::Point3d( halfBox, halfBox, halfBox));
+	m_vecOriginPts_box.push_back(cv::Point3d( halfBox,-halfBox, halfBox));
+	m_vecOriginPts_box.push_back(cv::Point3d(-halfBox,-halfBox, halfBox));
+	m_vecOriginPts_box.push_back(cv::Point3d(-halfBox, halfBox, halfBox));
+	m_vecOriginPts_box.push_back(cv::Point3d( halfBox, halfBox,-halfBox));
+	m_vecOriginPts_box.push_back(cv::Point3d( halfBox,-halfBox,-halfBox));
+	m_vecOriginPts_box.push_back(cv::Point3d(-halfBox,-halfBox,-halfBox));
+	m_vecOriginPts_box.push_back(cv::Point3d(-halfBox, halfBox,-halfBox));
+
+	// draw center of boxes
 	for (j = 0; j < boxes_n; j++)
 	{
 		//printf("label[%d] = %d\n",j,label[j]);
@@ -607,21 +631,47 @@ int testbench_step(char charFileName[])
 		qy = boxes_pos[j][7];
 		qz = boxes_pos[j][8];
 		qw = boxes_pos[j][9];
-		rotationscale = sqrt(qx*qx+qy*qy+qz*qz) / qw;
-		qx = qx / rotationscale;
-		qy = qy / rotationscale;
-		qz = qz / rotationscale;
-		RotationVector = cv::Matx31d( qx, -qy, -qz);
 
-		cv::projectPoints(	m_vecOriginPts,
+		axisth = 2 * acos(qw);
+		axisx = qx / sin(axisth/2);
+		axisy = qy / sin(axisth/2);
+		axisz = qz / sin(axisth/2);
+
+		rotationscale = sqrt(axisx*axisx+axisy*axisy+axisz*axisz) / axisth;
+		axisx = axisx / rotationscale;
+		axisy = axisy / rotationscale;
+		axisz = axisz / rotationscale;
+
+		RotationVector = cv::Matx31d( axisx, -axisy, -axisz);
+
+		cv::projectPoints(	m_vecOriginPts_box,
 							RotationVector,
 							TranslationVector,
 							cCameraMatrix,
 							cDistortionParameters,
 							vecBlockCentrePixel);
-		//printf("%lf %lf\n",vecBlockCentrePixel[0].x, vecBlockCentrePixel[0].y);
 		
 		//drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,colour,label[j]);
+		//printf("before draw box\n");
+		//for (i = 1; i <= 8; i++)
+		//	drawCross(imageRGB,(int)vecBlockCentrePixel[i].x,(int)vecBlockCentrePixel[i].y,"red");
+		for (i = 1; i <=3; i++)
+		{
+			drawLine(imageRGB,(int)vecBlockCentrePixel[i].x,(int)vecBlockCentrePixel[i].y,
+							  (int)vecBlockCentrePixel[i+1].x,(int)vecBlockCentrePixel[i+1].y,framecolor);
+			drawLine(imageRGB,(int)vecBlockCentrePixel[i+4].x,(int)vecBlockCentrePixel[i+4].y,
+							  (int)vecBlockCentrePixel[i+5].x,(int)vecBlockCentrePixel[i+5].y,framecolor);
+		}
+		drawLine(imageRGB,(int)vecBlockCentrePixel[4].x,(int)vecBlockCentrePixel[4].y,
+						  (int)vecBlockCentrePixel[1].x,(int)vecBlockCentrePixel[1].y,framecolor);
+		drawLine(imageRGB,(int)vecBlockCentrePixel[8].x,(int)vecBlockCentrePixel[8].y,
+						  (int)vecBlockCentrePixel[5].x,(int)vecBlockCentrePixel[5].y,framecolor);
+
+
+		for (i = 1; i <=4; i++)
+			drawLine(imageRGB,(int)vecBlockCentrePixel[i].x,(int)vecBlockCentrePixel[i].y,
+							  (int)vecBlockCentrePixel[i+4].x,(int)vecBlockCentrePixel[i+4].y,framecolor);
+
 		drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"red",boxlabel[j]);
 	}
 
@@ -645,6 +695,58 @@ int testbench_close()
 }
 
 ///////  OpenCV draw  ////////////////////////////////////////////////
+
+int drawLine(Mat img, int x1, int y1, int x2, int y2, const char colour[])
+{
+	double k; 
+	double b;
+	int start,end;
+	int i,j;
+
+	if ((abs(x2 - x1) > abs(y2 - y1)) && (x2 - x1 != 0))
+	{
+		k = 1.0 * (y2 - y1) / (x2 - x1);
+		b = y1 - x1 * k;
+		if (x1 < x2) 
+		{	
+			start = x1;
+			end = x2;
+		}
+		else
+		{
+			start = x2;
+			end = x1;
+		}
+		for (i = start; i <= end; i++)
+		{
+			j = (int)(i * k + b);
+			//drawCross(img,i,j,colour);
+			drawPoint(img,i,j,colour);
+		}
+	}
+	else if (y2 - y1 != 0)
+	{
+		k = 1.0 * (x2 - x1) / (y2 - y1);
+		b = x1 - y1 * k;
+		if (y1 < y2) 
+		{	
+			start = y1;
+			end = y2;
+		}
+		else
+		{
+			start = y2;
+			end = y1;
+		}
+		for (j = start; j <= end; j++)
+		{
+			i = (int)(j * k + b);
+			//drawCross(img,i,j,colour);
+			drawPoint(img,i,j,colour);
+		}
+	}
+	return 0;
+}
 
 int drawCross(Mat img, int x, int y, const char colour[],int label)
 {
@@ -727,6 +829,8 @@ int drawCross(Mat img, int x, int y, const char colour[],int label)
 
 int drawCross(Mat img, int x, int y, const char color[])
 {
+	if ((x > img.rows-1) || (x < 0) || (y > img.cols-1) || (y < 0)) return -1;
+
 	int R,G,B;
 	if (strcmp(color,"blue") == 0)
 	{ R = 0; G = 0; B = 255; }
@@ -737,9 +841,26 @@ int drawCross(Mat img, int x, int y, const char color[])
 	Mat_<Vec3b> _image = img;
 	setColor(_image(x,y),R,G,B);
 	if (x != 0) 			setColor(_image(x-1,y),R,G,B);
-	if (x != img.cols-1) 	setColor(_image(x+1,y),R,G,B);
+	if (x != img.rows-1) 	setColor(_image(x+1,y),R,G,B);
 	if (y != 0) 			setColor(_image(x,y-1),R,G,B);
-	if (y != img.rows-1) 	setColor(_image(x,y+1),R,G,B);
+	if (y != img.cols-1) 	setColor(_image(x,y+1),R,G,B);
+	img = _image;
+	return 0;
+}
+
+int drawPoint(Mat img, int x, int y, const char color[])
+{
+	if ((x > img.rows-1) || (x < 0) || (y > img.cols-1) || (y < 0)) return -1;
+
+	int R,G,B;
+	if (strcmp(color,"blue") == 0)
+	{ R = 0; G = 0; B = 255; }
+	else if (strcmp(color,"green") == 0)
+	{ R = 0; G = 255; B = 0; }
+	else if (strcmp(color,"red") == 0)
+	{ R = 255; G = 0; B = 0; }
+	Mat_<Vec3b> _image = img;
+	setColor(_image(x,y),R,G,B);
 	img = _image;
 	return 0;
 }

@@ -4,7 +4,7 @@ Hungarian = require("hungarian")
 --  Tags
 -----------------------------------------------------------------------------
 function trackingTags(tags,tags_seeing,_threshold)
-	local threshold = _threshold or 50 -- the unit should be pixel
+	local threshold = _threshold or 200 -- the unit should be pixel
 	local inf = 999999999
 	--[[
 		{n, 1 2 3 4}
@@ -82,7 +82,7 @@ function trackingTags(tags,tags_seeing,_threshold)
 			-- lost
 			if tags[i].tracking == "lost" then
 				tags[i].lostcount = tags[i].lostcount + 1
-				if tags[i].lostcount >= 1 then
+				if tags[i].lostcount >= 30 then
 					tags[i].tracking = "abandon"
 				end
 			else
@@ -214,7 +214,7 @@ function trackingBoxes(boxes,boxes_seeing)
 		local flag = 0
 		for j = 1, boxes[i].nTags do
 			if boxes[i][j].tracking ~= "lost" then
-				if boxes[i][j].box.assigned == true then
+				if boxes[i][j].box == nil or boxes[i][j].box.assigned == true then
 					boxes[i].tracking = "abandon"
 					break
 				end
@@ -227,17 +227,26 @@ function trackingBoxes(boxes,boxes_seeing)
 				boxes[i].rotation = boxes[i][j].box.rotation
 				boxes[i].quaternion = boxes[i][j].box.quaternion
 
+				--keep lost tags
+				local lostkeep = {n = 0}
+				for k = 1, boxes[i].nTags do
+					if boxes[i][k].tracking == "lost" then
+						lostkeep.n = lostkeep.n + 1
+						lostkeep[lostkeep.n] = boxes[i][k]
+					end
+				end
+
+				--link the matching box in boxes_seeing to boxes
 				boxes[i].nTags = boxes[i][j].box.nTags
-				local temp = boxes[i]
 				for k = 1, boxes[i].nTags do
 					boxes[i][k] = tempbox[k]
 					tempbox[k].box = nil
 				end
-				for k = 1, temp.nTags do
-					if temp[k].tracking == "lost" then
-						boxes[i].nTags = boxes[i].nTags + 1
-						boxes[i][boxes[i].nTags] = temp[k]
-					end
+
+				--link those lost tags
+				for k = 1, lostkeep.n do
+					boxes[i].nTags = boxes[i].nTags + 1
+					boxes[i][boxes[i].nTags] = lostkeep[k]
 				end
 
 				flag = 1
@@ -248,6 +257,8 @@ function trackingBoxes(boxes,boxes_seeing)
 		end
 		if flag == 0 and boxes[i].tracking ~= "abandon" then
 			-- means there are tags but all tags are lost
+			boxes[i].tracking = "lost"
+			--[[
 			if boxes[i].tracking == "lost" then
 				boxes[i].lostcount = boxes[i].lostcount + 1
 				if boxes[i].lostcount >= 1 then
@@ -257,6 +268,7 @@ function trackingBoxes(boxes,boxes_seeing)
 				boxes[i].tracking = "lost"
 				boxes[i].lostcount = 0
 			end
+			--]]
 		end
 
 		if boxes[i].tracking == "abandon" then

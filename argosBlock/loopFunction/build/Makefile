@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction
+CMAKE_SOURCE_DIR = /home/harry/testBlock/argosBlock/loopFunction
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction/build
+CMAKE_BINARY_DIR = /home/harry/testBlock/argosBlock/loopFunction/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction/build/CMakeFiles /mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles /home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -123,32 +123,32 @@ testLoopFunction/fast:
 	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/build
 .PHONY : testLoopFunction/fast
 
-mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.o: mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.o
+home/harry/testBlock/testbench/testbench.o: home/harry/testBlock/testbench/testbench.cpp.o
 
-.PHONY : mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.o
+.PHONY : home/harry/testBlock/testbench/testbench.o
 
 # target to build an object file
-mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.o:
-	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.o
-.PHONY : mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.o
+home/harry/testBlock/testbench/testbench.cpp.o:
+	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o
+.PHONY : home/harry/testBlock/testbench/testbench.cpp.o
 
-mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.i: mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.i
+home/harry/testBlock/testbench/testbench.i: home/harry/testBlock/testbench/testbench.cpp.i
 
-.PHONY : mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.i
+.PHONY : home/harry/testBlock/testbench/testbench.i
 
 # target to preprocess a source file
-mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.i:
-	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.i
-.PHONY : mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.i
+home/harry/testBlock/testbench/testbench.cpp.i:
+	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.i
+.PHONY : home/harry/testBlock/testbench/testbench.cpp.i
 
-mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.s: mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.s
+home/harry/testBlock/testbench/testbench.s: home/harry/testBlock/testbench/testbench.cpp.s
 
-.PHONY : mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.s
+.PHONY : home/harry/testBlock/testbench/testbench.s
 
 # target to generate assembly for a file
-mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.s:
-	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.s
-.PHONY : mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.s
+home/harry/testBlock/testbench/testbench.cpp.s:
+	$(MAKE) -f CMakeFiles/testLoopFunction.dir/build.make CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.s
+.PHONY : home/harry/testBlock/testbench/testbench.cpp.s
 
 testLoopFunction.o: testLoopFunction.cpp.o
 
@@ -186,9 +186,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... testLoopFunction"
-	@echo "... mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.o"
-	@echo "... mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.i"
-	@echo "... mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.s"
+	@echo "... home/harry/testBlock/testbench/testbench.o"
+	@echo "... home/harry/testBlock/testbench/testbench.i"
+	@echo "... home/harry/testBlock/testbench/testbench.s"
 	@echo "... testLoopFunction.o"
 	@echo "... testLoopFunction.i"
 	@echo "... testLoopFunction.s"

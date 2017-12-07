@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction
+# Install script for directory: /home/harry/testBlock/argosBlock/loopFunction
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/harry/testBlock/argosBlock/loopFunction/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

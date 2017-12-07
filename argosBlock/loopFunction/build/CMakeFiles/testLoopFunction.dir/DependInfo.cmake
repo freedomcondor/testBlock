@@ -4,14 +4,15 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp" "/mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction/build/CMakeFiles/testLoopFunction.dir/mnt/c/Users/freed/Desktop/testBlock/testbench/testbench.cpp.o"
-  "/mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction/testLoopFunction.cpp" "/mnt/c/Users/freed/Desktop/testBlock/argosBlock/loopFunction/build/CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.o"
+  "/home/harry/testBlock/testbench/testbench.cpp" "/home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles/testLoopFunction.dir/home/harry/testBlock/testbench/testbench.cpp.o"
+  "/home/harry/testBlock/argosBlock/loopFunction/testLoopFunction.cpp" "/home/harry/testBlock/argosBlock/loopFunction/build/CMakeFiles/testLoopFunction.dir/testLoopFunction.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/usr/include/opencv"
+  "/usr/local/include"
+  "/usr/local/include/opencv"
   "/usr/local/include/apriltag"
   "/usr/include/lua5.2"
   )
