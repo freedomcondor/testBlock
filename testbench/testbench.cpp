@@ -70,7 +70,7 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	m_psTagFamily->black_border = 1;
 	apriltag_detector_add_family(m_psTagDetector, m_psTagFamily);
 
-	camera_flag = 1;
+	//camera_flag = 1;
 	if (camera_flag == 1)
 	{
 		video1_testbench.open(0);
@@ -263,6 +263,7 @@ int testbench_step(char charFileName[])
 
 	//////////////// call lua function  /////////////////////////////////
 													//printf("before pcak lua");
+	//if (lua_pcall(L,1,1,0) != 0)	// one para, one return
 	if (lua_pcall(L,1,1,0) != 0)	// one para, one return
 		{printf("call func fail %s\n",lua_tostring(L,-1)); return -1;}
 
@@ -535,7 +536,8 @@ int testbench_step(char charFileName[])
 									0.0f,  0.0f,  1.0f);
 	/* camera distortion parameters */
 	const cv::Matx<double, 5, 1> cDistortionParameters =
-		cv::Matx<double, 5, 1>(m_fK1, m_fK2, 0.0f, 0.0f, m_fK3);
+		//cv::Matx<double, 5, 1>(m_fK1, m_fK2, 0.0f, 0.0f, m_fK3);
+		cv::Matx<double, 5, 1>(0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 	std::vector<cv::Point2d> vecBlockCentrePixel;
 
 	char colour[10];

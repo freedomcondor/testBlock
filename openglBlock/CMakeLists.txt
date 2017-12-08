@@ -58,6 +58,9 @@ include_directories( 	${OpenCV_INCLUDE_DIRS}
 						${OPENGL_INCLUDE_DIRS}
 						${GLUT_INCLUDE_DIRS}
 					)
+
+set(CMAKE_BUILD_TYPE Debug)
+
 #add_executable( luaBlock main.cpp )
 add_executable( luaBlock 
 					debug_opengl.cpp 

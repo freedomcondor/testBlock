@@ -1,2 +1,2 @@
 #!/bin/bash
-find ../../data/exp-13-passed/*.png | ./luaBlock
+find ../../data/exp-11-passed/*.png | ./luaBlock

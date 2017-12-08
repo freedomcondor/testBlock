@@ -14,6 +14,11 @@ double plot_y_max = 0;
 double plot_x_max = 0;
 double datalog[Max_plot];
 
+char filenamebase[100] = "../../data/";
+char filenameline[100];
+FILE *namelist;
+#define MAX_LINE 1024
+
 ///////////////////  functions  ///////////////////////////
 int function_exit()
 {
@@ -26,8 +31,19 @@ int function_exit()
 }
 int function_init(int SystemWeight, int SystemHeight)
 {
+	//namelist = fopen("loopFunction/data/exp-13-passed.txt","r");
+	//namelist = fopen("../../data/exp-10-failed.txt","r");
+	namelist = fopen("../../data/exp-11-passed.txt","r");
+	//namelist = fopen("../../data/exp-13-passed.txt","r");
+	//namelist = fopen("../../data/exp-16-passed.txt","r");
+	if (namelist == NULL)
+	{
+		printf("open file namelist failed\n");
+	}
+
+
 	//camera_flag = 1;
-	camera_flag = 0;
+	//camera_flag = 0;
 	testbench_init( SystemWeight, SystemHeight);
 	/*
 	herd.msg_ControltoHerd.n_dime = 2;
@@ -145,6 +161,23 @@ int function_step()
 	string name;
 	int flag;
 	
+	char thename[100];
+	if (!feof(namelist))
+	{
+		fgets(filenameline,MAX_LINE,namelist);
+		//printf("%s : %d\n",filenameline,strlen(filenameline));
+		filenameline[strlen(filenameline)-1] = '\0';
+
+		strcpy(thename,filenamebase);
+		strcat(thename,filenameline);
+
+		//printf("%s\n", thename);
+		//testbench_step("loopFunction/data/output_00021.png");
+		//testbench_step("loopFunction/data/exp-13-passed/cap_0000091.png");
+		flag = testbench_step(thename);
+	}
+
+	/*
 	cin >> name;
 	//return testbench_step(name.c_str());
 	//printf("---------------------\n");
@@ -152,6 +185,7 @@ int function_step()
 	flag = testbench_step((char*)name.c_str());
 	//printf("after calling testbench\n");
 	//printf("---------------------\n");
+	*/
 	/*
 	herd.run();
 	datalog[herd.time] = herd.value[herd.queue[0]];
