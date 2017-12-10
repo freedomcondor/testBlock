@@ -46,9 +46,11 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	luaL_openlibs(L);
 	//if ((luaL_loadfile(L,"../func.lua")) || (lua_pcall(L,0,0,0)))
 	//if ((luaL_loadfile(L,"../func.lua")) || (lua_pcall(L,0,0,0)))
-	if ((luaL_loadfile(L,"../lua/func.lua")) || (lua_pcall(L,0,0,0)))
+	//if ((luaL_loadfile(L,"../lua/func.lua")) || (lua_pcall(L,0,0,0)))
+	if ((luaL_loadfile(L,"../lua/debugger.lua")) || (lua_pcall(L,0,0,0)))
 	{
-		if ((luaL_loadfile(L,"../../lua/func.lua")) || (lua_pcall(L,0,0,0)))
+		//if ((luaL_loadfile(L,"../../lua/func.lua")) || (lua_pcall(L,0,0,0)))
+		if ((luaL_loadfile(L,"../../lua/debugger.lua")) || (lua_pcall(L,0,0,0)))
 			{printf("open lua file fail : %s\n",lua_tostring(L,-1));return -1;}
 	}
 
@@ -180,7 +182,8 @@ int testbench_step(char charFileName[])
 					}
 		*/
 	lua_settop(L,0);
-	lua_getglobal(L,"func"); // stack 1 is the function
+	//lua_getglobal(L,"func"); // stack 1 is the function
+	lua_getglobal(L,"debugger"); // stack 1 is the function
 	lua_newtable(L);		 // stack 2 is the table (without a name)
 	lua_pushstring(L,"timestamp");	// stack 3 is the index of timestamp
 	lua_pushstring(L,"tobefilled");	// stack 4 is the value of timestamp

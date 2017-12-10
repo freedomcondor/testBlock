@@ -62,6 +62,7 @@ local structures = {n = 0,label = {}}
 --]]
 
 function func(tags_seeing)
+	print("first enter = ",DEBUGGERVAR.firstenter)
 	--[[
 	-- tagList has:
 		{
