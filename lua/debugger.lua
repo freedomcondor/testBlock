@@ -376,6 +376,7 @@ end
 
 function debug.getvaluefromstring(targetlevel, name)
 	local th, ta = debug.tableBind(name)
+
 	print(th)
 	for _,pp in ipairs(ta) do print(pp) end
 
@@ -396,7 +397,7 @@ function debug.tableBind(c)
 	local head
 	local arr = {}
 	local i = 0
-	for w in string.gmatch(c,"([^'.']+)") do
+	for w in string.gmatch(c,"([^%[.%]]+)") do
 		i = i + 1
 		if i == 1 then
 			head = w
