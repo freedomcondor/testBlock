@@ -1,0 +1,4 @@
+stack traceback:
+	../../lua/debugger.lua:138: in function 'hookline'
+	../../lua/debugger.lua:44: in function <../../lua/debugger.lua:37>
+	../../lua/func.lua:169: in function <../../lua/func.lua:66>

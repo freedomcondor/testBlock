@@ -6,6 +6,8 @@ debug.DEBUGGERVAR.functionstop = nil
 debug.DEBUGGERVAR.stepoverstack = 0
 
 debug.DEBUGGERVAR.configfilename = "config_debugger.lua"
+debug.DEBUGGERVAR.tracebackfilename = "traceback.txt"
+debug.DEBUGGERVAR.tracebackfileswitch = false
 
 debug.DEBUGGERVAR.level = {n = 0}
 debug.DEBUGGERVAR.breakpoint = {n = 0}
@@ -26,6 +28,8 @@ if debug.DEBUGGERVAR.firstenter == true then
 else
 	debug.DEBUGGERVAR.step = false
 end
+
+--local tracef = io.open(debug.DEBUGGERVAR.tracebackfilename,"w")
 
 ------------------------------------------------------------------------
 --   Hook Call and Return
@@ -64,7 +68,8 @@ function debug.doIstop(line,s)
 	-- breakpoint
 	for i = 1, debug.DEBUGGERVAR.breakpoint.n do
 		if debug.DEBUGGERVAR.breakpoint[i].file == s.short_src and
-		   debug.DEBUGGERVAR.breakpoint[i].line == line then
+		   debug.DEBUGGERVAR.breakpoint[i].line == line and
+		   debug.DEBUGGERVAR.breakpoint[i].enable == true then
 			return true
 		end
 
@@ -100,7 +105,8 @@ function debug.hookcall(event, targetlevel)
 	-- check breakpoint
 	local bp = debug.DEBUGGERVAR.breakpoint
 	for i = 1, bp.n do
-		if bp[i].line == s.name then
+		if bp[i].line == s.name and
+		   bp[i].enable == true then
 			debug.DEBUGGERVAR.functionstop = true
 		end
 	end
@@ -128,6 +134,13 @@ end
 ------------------------------------------------------------------------
 
 function debug.hookline(event, line, targetlevel)
+	-- record traceback
+	if debug.DEBUGGERVAR.tracebackfileswitch == true then
+		local tracef = io.open(debug.DEBUGGERVAR.tracebackfilename,"w")
+		tracef:write(debug.traceback())
+		tracef:close()
+	end
+
 	-- do I stop?
 	local s = debug.getinfo(targetlevel)
 	if debug.doIstop(line,s) == false then
@@ -178,9 +191,17 @@ function debug.hookline(event, line, targetlevel)
 			os.exit()
 		end
 
-		if command == "c" or command == "r" then
+		if command == "c" then
 			debug.DEBUGGERVAR.step = false
 			--return nil
+			break
+		end
+
+		if command == "r" then
+			for i = 1, debug.DEBUGGERVAR.breakpoint.n do
+				debug.DEBUGGERVAR.breakpoint[i].enable = false
+			end
+			debug.DEBUGGERVAR.step = false
 			break
 		end
 
@@ -231,7 +252,7 @@ function debug.hookline(event, line, targetlevel)
 			if tonumber(value[1]) ~= nil then value[1] = tonumber(value[1]) end
 			debug.DEBUGGERVAR.breakpoint.n = debug.DEBUGGERVAR.breakpoint.n + 1
 			local bn = debug.DEBUGGERVAR.breakpoint.n
-			debug.DEBUGGERVAR.breakpoint[bn] = {file = s.short_src, line = value[1]}
+			debug.DEBUGGERVAR.breakpoint[bn] = {file = s.short_src, line = value[1], enable = true}
 			print("-----------------------------------")
 			debug.showFile(s.short_src, line, window)
 			print("-----------------------------------")
@@ -241,6 +262,30 @@ function debug.hookline(event, line, targetlevel)
 
 		if command == "lb" then
 			debug.showBreakpoints()
+		end
+
+		if command == "eb" or command == "enablebreakpoint" then
+			if tonumber(value[1]) ~= nil then 
+				value[1] = tonumber(value[1])
+				if value[1] <= debug.DEBUGGERVAR.breakpoint.n then
+					debug.DEBUGGERVAR.breakpoint[value[1]].enable = true
+				end
+			end
+			print("-----------------------------------")
+			debug.showBreakpoints()
+			print("-----------------------------------")
+		end
+
+		if command == "sb" or command == "suspendbreakpoint" then
+			if tonumber(value[1]) ~= nil then 
+				value[1] = tonumber(value[1])
+				if value[1] <= debug.DEBUGGERVAR.breakpoint.n then
+					debug.DEBUGGERVAR.breakpoint[value[1]].enable = false
+				end
+			end
+			print("-----------------------------------")
+			debug.showBreakpoints()
+			print("-----------------------------------")
 		end
 		
 		if command == "db" then
@@ -296,7 +341,8 @@ function debug.showBreakpoints()
 	print("breakpoints:")
 	for i = 1, debug.DEBUGGERVAR.breakpoint.n do
 		print(i,debug.DEBUGGERVAR.breakpoint[i].file,
-				debug.DEBUGGERVAR.breakpoint[i].line)
+				debug.DEBUGGERVAR.breakpoint[i].line,
+				debug.DEBUGGERVAR.breakpoint[i].enable)
 	end
 end
 
@@ -465,14 +511,16 @@ function saveConfig()
 	for i = 1, debug.DEBUGGERVAR.breakpoint.n do
 		if type(debug.DEBUGGERVAR.breakpoint[i].line) == "number" then
 			f:write(string.format(
-					"debug.DEBUGGERVAR.breakpoint[%d] = {file = \"%s\",line = %d}\n",
+					"debug.DEBUGGERVAR.breakpoint[%d] = {file = \"%s\",line = %d, enable = %s}\n",
 					i,debug.DEBUGGERVAR.breakpoint[i].file,
-					  debug.DEBUGGERVAR.breakpoint[i].line))
+					  debug.DEBUGGERVAR.breakpoint[i].line,
+					  debug.DEBUGGERVAR.breakpoint[i].enable))
 		else
 			f:write(string.format(
-					"debug.DEBUGGERVAR.breakpoint[%d] = {file = \"%s\",line = \"%s\"}\n",
+					"debug.DEBUGGERVAR.breakpoint[%d] = {file = \"%s\",line = \"%s\", enable = %s}\n",
 					i,debug.DEBUGGERVAR.breakpoint[i].file,
-					  debug.DEBUGGERVAR.breakpoint[i].line))
+					  debug.DEBUGGERVAR.breakpoint[i].line,
+					  debug.DEBUGGERVAR.breakpoint[i].enable))
 		end
 	end
 
