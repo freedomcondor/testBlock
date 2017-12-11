@@ -23,6 +23,8 @@ require("calcPos")
 require("tracking")
 Vec3 = require("Vector3")
 
+require("debugger")
+
 --[[
 for every frame, build a taglist, which is a table, to lua
 taglist, as the para of func
@@ -62,7 +64,6 @@ local structures = {n = 0,label = {}}
 --]]
 
 function func(tags_seeing)
-	print("first enter = ",DEBUGGERVAR.firstenter)
 	--[[
 	-- tagList has:
 		{
