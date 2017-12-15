@@ -90,6 +90,7 @@ static int solvepnp(lua_State *L)
 	Mat translation_vector;
 
 	solvePnP(ob,im,cCameraMatrix,cDistortionParameters,rotation_vector, translation_vector,false,CV_P3P);
+	//solvePnP(ob,im,cCameraMatrix,cDistortionParameters,rotation_vector, translation_vector,false);
 
 	//cout << "rotation" << rotation_vector << endl;
 	//cout << "translation" << translation_vector << endl;

@@ -2,7 +2,7 @@
 
 int drawLine(Mat img, int x1, int y1, int x2, int y2, const char colour[]);
 int drawString(Mat img, int x1, int y1, char str[], const char colour[]);
-int Num2Str(int x, char str[]);
+int Num2Str(int x, char str[], int length);
 
 ///////////////////////// vars ////////////////////////////////////////
 lua_State *L;
@@ -14,7 +14,7 @@ char fileName[30];
 char fileNameBase[20] = "../data/output_";
 //char fileNameBase[20] = "data/output_";
 char fileExt[10] = ".png";
-char fileNumber[5];
+char fileNumber[10];
 string strFileName;
 string strFileSuffix("output_");
 std::string strFileExtension(".png");
@@ -23,6 +23,9 @@ int nTimestamp;
 Mat imageRGB, image;
 VideoCapture video1_testbench;
 int camera_flag;
+
+int record_flag;
+int record_count;
 
 //double rx,ry,rz,tx,ty,tz;
 /*
@@ -44,10 +47,11 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	//printf("init\n");
 	L = luaL_newstate();
 	luaL_openlibs(L);
-	if ((luaL_loadfile(L,"../lua/func.lua")) || (lua_pcall(L,0,0,0)))
-	//if ((luaL_loadfile(L,"../lua/debugger.lua")) || (lua_pcall(L,0,0,0)))
+	//if ((luaL_loadfile(L,"../lua/func.lua")) || (lua_pcall(L,0,0,0)))
+	if ((luaL_loadfile(L,"../lua/func_fordata.lua")) || (lua_pcall(L,0,0,0)))
 	{
-		if ((luaL_loadfile(L,"../../lua/func.lua")) || (lua_pcall(L,0,0,0)))
+		//if ((luaL_loadfile(L,"../../lua/func.lua")) || (lua_pcall(L,0,0,0)))
+		if ((luaL_loadfile(L,"../../lua/func_fordata.lua")) || (lua_pcall(L,0,0,0)))
 		//if ((luaL_loadfile(L,"../../lua/debugger.lua")) || (lua_pcall(L,0,0,0)))
 			{printf("open lua file fail : %s\n",lua_tostring(L,-1));return -1;}
 	}
@@ -71,6 +75,8 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	apriltag_detector_add_family(m_psTagDetector, m_psTagFamily);
 
 	camera_flag = 1;
+	record_flag = 1;
+
 	if (camera_flag == 1)
 	{
 		video1_testbench.open(0);
@@ -81,6 +87,11 @@ int testbench_init(int SystemWeight, int SystemHeight)
 			printf("video1 open failed\n");
 			camera_flag = 0;
 		}
+	}
+
+	if (record_flag == 1)
+	{
+		record_count = 0;
 	}
 
 	namedWindow("output",WINDOW_NORMAL);
@@ -99,7 +110,23 @@ int testbench_step(char charFileName[])
 	//printf("%s\n",charFileName);
 	//if (strcmp(charFileName,"camera") == 0)
 	if (camera_flag == 1)
+	{
 		video1_testbench >> imageRGB;
+
+		if (record_flag == 1)
+		{
+			record_count++;
+
+			strcpy(fileNameBase,"../data/record/output_");
+			Num2Str(record_count,fileNumber,8);
+			strcpy(fileName,fileNameBase);
+			strcat(fileName,fileNumber);
+			strcat(fileName,fileExt);
+
+			//printf("record %s\n",fileName);
+			imwrite( fileName, imageRGB );
+		}
+	}
 	else
 	{
 		imageRGB = cv::imread(charFileName, 1);
@@ -135,7 +162,7 @@ int testbench_step(char charFileName[])
 
 					//printf("row and col,%d %d ",imageRGB.rows,imageRGB.cols);
 
-	if ( !imageRGB.data ) { printf("Can't open image %s \n",fileName); return -1; }
+	if ( !imageRGB.data ) { printf("Can't open image %s \n",charFileName); return -1; }
 	cvtColor(imageRGB,image,CV_BGR2GRAY);
 
 	/* convert image to apriltags format */
@@ -687,7 +714,7 @@ int testbench_step(char charFileName[])
 							  (int)vecBlockCentrePixel[i+4].x,(int)vecBlockCentrePixel[i+4].y,framecolor);
 
 		//drawCross(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,"red",boxlabel[j]);
-		Num2Str(boxlabel[j],tempstr);
+		Num2Str(boxlabel[j],tempstr,2);
 		drawString(imageRGB,(int)vecBlockCentrePixel[0].x,(int)vecBlockCentrePixel[0].y,tempstr,"red");
 	}
 
@@ -712,10 +739,18 @@ int testbench_close()
 
 //////////////////////////////////////////////////////////////////////
 
-int Num2Str(int x, char str[])
+int Num2Str(int x, char str[], int length)
 {
-	str[0] = x + '0';
-	str[1] = '\0';
+	int y,i = length;
+	y = x;
+
+	str[i] = '\0';
+	for (i = length-1; i >=0; i--)
+	{
+		str[i] = y % 10 + '0';
+		y = y / 10;
+	}
+
 	return 0;
 }
 

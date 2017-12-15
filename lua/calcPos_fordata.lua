@@ -29,13 +29,14 @@ function calTagPos(tag,nnn)
 	tag.corners.halfL = tag.halfL;
 	res_cv = libsolvepnp.solvepnp(tag.corners)
 									--print("before solve")
-	resSqu, count = solveSquare(	tag.corners,
+	--resSqu, count = solveSquare(	tag.corners,
+	resSqu = solveSquare(	tag.corners,
 							tag.halfL * 2,
-							{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
-							{0.018433,0.16727,0,0,-1.548088})			-- distort para
+							--{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
+							--{0.018433,0.16727,0,0,-1.548088})			-- distort para
 
-							--{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
-							--{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
+							{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
+							{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
 							--{0,0,0,0,0})			-- distort para
 
 									--print("after solve")
@@ -150,7 +151,7 @@ function calTagPos(tag,nnn)
 										print("solveSqu res loc:",resSqu.translation)
 										file:write(string.format("%s\n",resSqu.translation:__tostring()))
 
-										file:write(string.format("%d\n",count))
+										--file:write(string.format("%d\n",count))
 
 										print("------")
 									end
@@ -165,8 +166,8 @@ function calTagPos(tag,nnn)
 										print("\t\tin lua result: ",res.translation.z)
 									--]]
 									--resSqu.quaternion = resCV.quaternion
-	return resSqu
-	--return resCV
+	--return resSqu
+	return resCV
 end
 
 ------------------------------------------------------------------------------------------
