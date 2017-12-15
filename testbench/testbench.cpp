@@ -44,7 +44,7 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	//printf("init\n");
 	L = luaL_newstate();
 	luaL_openlibs(L);
-	if ((luaL_loadfile(L,"../func.lua")) || (lua_pcall(L,0,0,0)))
+	if ((luaL_loadfile(L,"../lua/func.lua")) || (lua_pcall(L,0,0,0)))
 	//if ((luaL_loadfile(L,"../lua/debugger.lua")) || (lua_pcall(L,0,0,0)))
 	{
 		if ((luaL_loadfile(L,"../../lua/func.lua")) || (lua_pcall(L,0,0,0)))
@@ -70,7 +70,7 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	m_psTagFamily->black_border = 1;
 	apriltag_detector_add_family(m_psTagDetector, m_psTagFamily);
 
-	//camera_flag = 1;
+	camera_flag = 1;
 	if (camera_flag == 1)
 	{
 		video1_testbench.open(0);

@@ -23,7 +23,7 @@ require("calcPos")
 require("tracking")
 Vec3 = require("Vector3")
 
-require("debugger")
+--require("debugger")
 
 --[[
 for every frame, build a taglist, which is a table, to lua
