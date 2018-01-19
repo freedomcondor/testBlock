@@ -1,14 +1,78 @@
-to run this testbench, you should have 	1. apriltag
-										2. opencv
-										3. argos
-										4. opengl
+#####################################################################################
+Brief Introduction
+
+to run this test, you should have there libraries
+	1. apriltag
+	2. OpenCV
+	3. ARGoS or OpenGL
+
+The structure of the code is like this:
 
 argosBlock   <----|  testbench  <----- lua
 openglBlock	 <----|
 
-you can use either argos or opengl to run the testbench,
+you can use either argos or opengl to be the GUI, and call testbench functions,
 
-the testbench loads an image, finds its tags, and call lua to calc the pos of the tags
+the testbench loads an image, finds its tags, and call lua to calculate the pos of the tags, and further more detect blocks
 after calling lua, it stores the result in a array (in testbench.h), so that argos or opengl can see the results.
 
-argos and opengl call testbench, and use the results to draw 3D items.
+argos and opengl call receive the results, and use them to draw 3D items.
+
+######################################################################################
+
+Folders and Files
+
+There are 5 folders really matters, which are : argosBlock, openglBlock, testbench, lua, data
+
+1. argosBlock contains files to generate argos GUI.
+2. openglBlock contains files to generate opengl GUI.
+3. Either one you choose, they will call functions in testbench.h and testbench.cpp in 
+	testbench folder.
+4. And then testbench functions will run lua script in lua folder and collect results.
+
+	In lua folder, additional to lua, there is also a solvepnp folder containing a lua wrap on 
+	opencv's solvepnp function so that opencv can be tested to compare. 
+
+5. data contains testing pictures
+#####################################################################################
+
+Compile and run
+
+1. ARGoS
+  Compile:
+	If you choose ARGoS, go to folder argosBlock/loopFunction, there is a CMakeLists there. 
+	Create a build folder, go inside and run cmake to generate a Makefile, and make, this will
+	generate a libtestLoopFunction.so, which is needed by argos:
+		
+	commands:
+		argosBlock/loopFunction$ mkdir build
+		argosBlock/loopFunction$ cd build
+		argosBlock/loopFunction/build$ cmake ..
+		argosBlock/loopFunction/build$ make
+  Run:
+  	To run, go back to argosBlock folder, and run argos command :
+		argosBlock$ argos3 -c fsm_testing.lua
+
+2. OpenGL
+  Compile:
+    If you choose OpenGL, go to openglBlock folder, do the same cmake and make thing. 
+	A executable file luaBlock will be generated.
+	
+	commands:
+		openglBlock$ mkdir build
+		openglBlock$ cd build
+		openglBlock/build$ cd cmake ..
+		openglBlock/build$ make
+
+  Run:
+  	Simply run luaBlock:
+		openglBlock/build$ ./luaBlock
+
+3. OpenCV
+    If you want to use solvepnp function in opencv to compare, go to folder lua/solvepnp, 
+	build, cmake and make, generate a libsolvepnp.so in the build folder. It will be used by lua.
+    
+###################################################################################
+	
+Some flags in the code:
+
