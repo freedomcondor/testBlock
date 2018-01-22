@@ -1,7 +1,10 @@
+updated by Jan 22, 2018
+
+we run this on ubuntu 16.04 LTS, with lua5.2, argos3.0.0-beta.
 #####################################################################################
 Brief Introduction
 
-to run this test, you should have there libraries
+to run this test, you should have these libraries
 	1. apriltag
 	2. OpenCV
 	3. ARGoS or OpenGL
@@ -13,10 +16,10 @@ openglBlock	 <----|
 
 you can use either argos or opengl to be the GUI, and call testbench functions,
 
-the testbench loads an image, finds its tags, and call lua to calculate the pos of the tags, and further more detect blocks
-after calling lua, it stores the result in a array (in testbench.h), so that argos or opengl can see the results.
+the testbench loads images one by one from camera of data sets, finds tags, and call lua to calculate the pos of the tags.
+After calling lua, it stores the result in a array (in testbench.h), so that argos or opengl can see the results.
 
-argos and opengl call receive the results, and use them to draw 3D items.
+argos or opengl receive the results, and use them to draw 3D items.
 
 ######################################################################################
 
@@ -55,8 +58,8 @@ Compile and run
 
 2. OpenGL
   Compile:
-    If you choose OpenGL, go to openglBlock folder, do the same cmake and make thing. 
-	A executable file luaBlock will be generated.
+    If you choose OpenGL, go to openglBlock folder, do the same cmake-make thing. 
+	A executable file 'luaBlock' will be generated.
 	
 	commands:
 		openglBlock$ mkdir build
@@ -73,6 +76,29 @@ Compile and run
 	build, cmake and make, generate a libsolvepnp.so in the build folder. It will be used by lua.
     
 ###################################################################################
+SolveSqu:
+
+The core function (the solveSquare(), who calculate the location and rotation of a tag) is located in 
+	lua/solveSqu/solveSqu.lua
+There is also another file called solveSqu_dynamic.lua, which also works. it uses matrix library to dynamically
+solve linear equations, while solveSqu.lua uses static formula which is fixed in the code. To switch between these
+two, change the require in lua/calcPos.lua Line 2 and 3
+###################################################################################
 	
 Some flags in the code:
 
+There are some flag to switch between different modes in the code.
+1. camera_flag : in testbench/testbench.cpp Line 77, if camera_flag == 1, program will open your camera and use 
+    			 camera as frame input, otherwise it will use pictures in data folder. 
+
+				Be careful this camera_flag does not change the camera parameters in opencv(lua/solvepnp), 
+				If you want to use opencv's solvepnp as a compare, make sure you check lua/solvepnp/solvepnp.cpp 
+				Line 14-36 to use the right camera parameters.
+
+2. data set: in data folder there are several data set, 
+			 openglBlock/function_opengl.cpp Line 34-38 (opengl) or 
+			 argosBlock/loopFunction/testLoopFunction.cpp Line 178-182 (argos) is where to choose data set.
+
+3. In opengl GUI, some keyboard command may be useful, 'p' means pause, 'n' mean step by step and so on. You can 
+	see all the keyboard response in openglBlock/debug_opengl.cpp Line 320 and 432, in function SpecialKeyOperate() 
+	and BoardKeysOperate(). 

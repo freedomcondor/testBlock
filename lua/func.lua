@@ -104,6 +104,7 @@ function func(tags_seeing)
 									--print("\tfor the",i,"tag")
 
 		tags_seeing[i].halfL = halfTag
+		tags_seeing[i].camera_flag = tags_seeing.camera_flag
 									--print("before calc")
 		local pos = calTagPos(tags_seeing[i])
 									--print("after calc")

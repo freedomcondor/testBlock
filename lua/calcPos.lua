@@ -1,6 +1,6 @@
 --require("libsolvepnp")
---require("solveSquare")
-require("solveSquare_dynamic")
+require("solveSquare")
+--require("solveSquare_dynamic")
 
 local Vec3 = require("Vector3")
 local Qua = require("Quaternion")
@@ -29,13 +29,24 @@ function calTagPos(tag)
 	tag.corners.halfL = tag.halfL;
 	--res_cv = libsolvepnp.solvepnp(tag.corners)
 									--print("before solve")
+	if tag.camera_flag == 1 then
+		cam_para = {939.001439,939.001439,320,240}
+		dis_para = {-0.4117914,5.17498964,0,0,-17.7026842}	
+	else
+		cam_para = {883.9614,883.9614,319.5000,179.5000}
+		dis_para = {0.018433,0.16727,0,0,-1.548088}
+	end
+
 	resSqu = solveSquare(	tag.corners,
 							tag.halfL * 2,
+							cam_para,
+							dis_para
+						)
 							--{883.9614,883.9614,319.5000,179.5000},		-- ku kv u0 v0
 							--{0.018433,0.16727,0,0,-1.548088})			-- distort para
 
-							{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
-							{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
+							--{939.001439,939.001439,320,240},		-- ku kv u0 v0       -- camera
+							--{-0.4117914,5.17498964,0,0,-17.7026842})			-- distort para
 							--{0,0,0,0,0})			-- distort para
 
 									--print("after solve")

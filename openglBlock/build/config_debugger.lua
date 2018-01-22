@@ -1,4 +1,4 @@
-debug.DEBUGGERVAR.firstenter = false
+debug.DEBUGGERVAR.firstenter = true
 debug.DEBUGGERVAR.step = false
 debug.DEBUGGERVAR.focalfunc = nil
 debug.DEBUGGERVAR.window = 50

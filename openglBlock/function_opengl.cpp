@@ -33,28 +33,15 @@ int function_init(int SystemWeight, int SystemHeight)
 {
 	//namelist = fopen("loopFunction/data/exp-13-passed.txt","r");
 	//namelist = fopen("../../data/exp-10-failed.txt","r");
-	namelist = fopen("../../data/exp-11-passed.txt","r");
+	//namelist = fopen("../../data/exp-11-passed.txt","r");
 	//namelist = fopen("../../data/exp-13-passed.txt","r");
-	//namelist = fopen("../../data/exp-16-passed.txt","r");
+	namelist = fopen("../../data/exp-16-passed.txt","r");
 	if (namelist == NULL)
 	{
 		printf("open file namelist failed\n");
 	}
 
-
-	//camera_flag = 1;
-	//camera_flag = 0;
 	testbench_init( SystemWeight, SystemHeight);
-	/*
-	herd.msg_ControltoHerd.n_dime = 2;
-	herd.msg_ControltoHerd.n_indi = 100;			// has to be an even number
-	herd.msg_ControltoHerd.flag_minmax = 0;
-	herd.init(&herd.msg_ControltoHerd);	
-
-	datalog[herd.time] = herd.value[herd.queue[0]];
-	plot_y_max = herd.value[herd.queue[0]];
-	plot_x_max = 10; 
-	*/
 
 	return 0;
 }
@@ -63,15 +50,7 @@ int function_draw()
 {
 	double rx,ry,rz,tx,ty,tz,qx,qy,qz,qw;
 	int i;
-	/*
-	for (int i = 0; i < herd.n_indi; i++)
-	{
-		double x,y;
-		x = herd.indi[i].vector[0];
-		y = herd.indi[i].vector[1];
-		drawSphere(x,y,0,0.02);
-	}
-	*/
+
 	double scale = 0.2;
 	if (0 == 1)
 	for (i = 0; i < tags_n; i++)

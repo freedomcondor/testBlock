@@ -82,7 +82,7 @@ function trackingTags(tags,tags_seeing,_threshold)
 			-- lost
 			if tags[i].tracking == "lost" then
 				tags[i].lostcount = tags[i].lostcount + 1
-				if tags[i].lostcount >= 30 then
+				if tags[i].lostcount >= 3 then
 					tags[i].tracking = "abandon"
 				end
 			else

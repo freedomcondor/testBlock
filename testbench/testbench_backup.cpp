@@ -36,8 +36,6 @@ struct tagsinfo
 } tags;
 */
 
-FILE *outapril;
-
 int tags_n;
 double tags_pos[50][10];
 int boxes_n;
@@ -99,8 +97,6 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	namedWindow("output",WINDOW_NORMAL);
 	moveWindow("output",SystemWeight/2,0);
 	resizeWindow("output",SystemWeight/2,SystemHeight/2);
-
-	outapril = fopen("outapril.dat","w");
 
 	return 0;
 }
@@ -227,18 +223,6 @@ int testbench_step(char charFileName[])
 	// go through all the tags
 
 						//printf("tags: %d\n: ",zarray_size(psDetections));
-	fprintf(outapril,"%d\n",zarray_size(psDetections));
-	for (j = 0; j < zarray_size(psDetections); j++)
-	{
-		apriltag_detection_t *psDetection;
-		zarray_get(psDetections, j, &psDetection);
-		fprintf(outapril,"%f,%f\n",psDetection->c[1],psDetection->c[0]);
-		fprintf(outapril,"%f,%f\n",psDetection->p[0][1],psDetection->p[0][0]);
-		fprintf(outapril,"%f,%f\n",psDetection->p[1][1],psDetection->p[1][0]);
-		fprintf(outapril,"%f,%f\n",psDetection->p[2][1],psDetection->p[2][0]);
-		fprintf(outapril,"%f,%f\n",psDetection->p[3][1],psDetection->p[3][0]);
-	}
-
 	for (j = 0; j < zarray_size(psDetections); j++)
 	{
 		// for every tag : 
@@ -751,7 +735,6 @@ int testbench_step(char charFileName[])
 int testbench_close()
 {
 	//printf("close\n");
-	fclose(outapril);
 	cvDestroyWindow("output");
 	lua_close(L);
 	return 0;
