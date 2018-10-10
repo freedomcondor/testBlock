@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/luaBlock.dir/debug_opengl.cpp.o"
   "CMakeFiles/luaBlock.dir/function_opengl.cpp.o"
-  "CMakeFiles/luaBlock.dir/home/harry/testBlock/testbench/testbench.cpp.o"
+  "CMakeFiles/luaBlock.dir/home/harry/code/testBlock/testbench/testbench.cpp.o"
   "luaBlock.pdb"
   "luaBlock"
 )

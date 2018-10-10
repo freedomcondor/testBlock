@@ -10,9 +10,9 @@ apriltag_detector* m_psTagDetector;
 apriltag_family* m_psTagFamily;
 
 ////////// loop filename initail //////////////
-char fileName[30];
-char fileNameBase[20] = "../data/output_";
-//char fileNameBase[20] = "data/output_";
+char fileName[50];
+char fileNameBase[50] = "../data/output_";
+//char fileNameBase[50] = "data/output_";
 char fileExt[10] = ".png";
 char fileNumber[10];
 string strFileName;
@@ -76,8 +76,8 @@ int testbench_init(int SystemWeight, int SystemHeight)
 	m_psTagFamily->black_border = 1;
 	apriltag_detector_add_family(m_psTagDetector, m_psTagFamily);
 
-	camera_flag = 0;
-	//record_flag = 1;
+	camera_flag = 1;
+	record_flag = 0;
 
 	if (camera_flag == 1)
 	{

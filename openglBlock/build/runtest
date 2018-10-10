@@ -1,2 +1,0 @@
-#!/bin/bash
-find ../../data/exp-11-passed/*.png | ./luaBlock

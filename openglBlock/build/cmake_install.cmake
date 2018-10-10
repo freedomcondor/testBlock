@@ -1,4 +1,4 @@
-# Install script for directory: /home/harry/testBlock/openglBlock
+# Install script for directory: /home/harry/code/testBlock/openglBlock
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/harry/testBlock/openglBlock/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/harry/code/testBlock/openglBlock/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
