@@ -1,3 +1,11 @@
+/*----------------------------------------------------------------*/
+/*
+ *    ZHU Weixu 
+ *      zhuweixu_harry@126.com
+ *
+ *    version 2.0 : fixed left hand right hand problem
+ */
+/*----------------------------------------------------------------*/
 #include "testbench.h"
 
 int drawLine(Mat img, int x1, int y1, int x2, int y2, const char colour[]);
@@ -632,7 +640,9 @@ int testbench_step(char charFileName[])
 		if (label[j] % 3 == 2) strcpy(colour,"blue");
 		// draw 3D point, using boxes_pos and tags_pos
 		// left and right hand using opencv
-		TranslationVector = cv::Matx31d( -tags_pos[j][3], tags_pos[j][4], tags_pos[j][5]);
+		
+		TranslationVector = cv::Matx31d( tags_pos[j][3], tags_pos[j][4], tags_pos[j][5]);
+
 		qx = tags_pos[j][6];
 		qy = tags_pos[j][7];
 		qz = tags_pos[j][8];
@@ -647,7 +657,8 @@ int testbench_step(char charFileName[])
 		axisx = axisx / rotationscale;
 		axisy = axisy / rotationscale;
 		axisz = axisz / rotationscale;
-		RotationVector = cv::Matx31d( axisx, -axisy, -axisz);
+
+		RotationVector = cv::Matx31d( axisx, axisy, axisz);
 
 		cv::projectPoints(	m_vecOriginPts,
 							RotationVector,
@@ -684,7 +695,7 @@ int testbench_step(char charFileName[])
 		if (label[j] % 3 == 2) strcpy(colour,"blue");
 		// draw 3D point, using boxes_pos and boxes_pos
 		// left and right hand using opencv
-		TranslationVector = cv::Matx31d( -boxes_pos[j][3], boxes_pos[j][4], boxes_pos[j][5]);
+		TranslationVector = cv::Matx31d( boxes_pos[j][3], boxes_pos[j][4], boxes_pos[j][5]);
 		qx = boxes_pos[j][6];
 		qy = boxes_pos[j][7];
 		qz = boxes_pos[j][8];
@@ -700,7 +711,7 @@ int testbench_step(char charFileName[])
 		axisy = axisy / rotationscale;
 		axisz = axisz / rotationscale;
 
-		RotationVector = cv::Matx31d( axisx, -axisy, -axisz);
+		RotationVector = cv::Matx31d( axisx, axisy, axisz);
 
 		cv::projectPoints(	m_vecOriginPts_box,
 							RotationVector,
