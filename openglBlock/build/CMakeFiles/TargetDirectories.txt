@@ -1,3 +1,0 @@
-/home/harry/code/testBlock/openglBlock/build/CMakeFiles/rebuild_cache.dir
-/home/harry/code/testBlock/openglBlock/build/CMakeFiles/luaBlock.dir
-/home/harry/code/testBlock/openglBlock/build/CMakeFiles/edit_cache.dir
